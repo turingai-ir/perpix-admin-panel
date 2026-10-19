@@ -7,6 +7,7 @@ import { APP_ROUTES_KEY } from "./routes";
 import { ErrorFallbackPage, LoadingSection } from "@/components/custom";
 import RootLayout from "@/pages/(root)/layout";
 import { OverviewPage } from "@/features/overview";
+import { UsersListPage, UserDetailPage } from "@/features/users";
 import { LoginPage, SessionGate } from "@/features/auth";
 
 export const router = createBrowserRouter([
@@ -26,6 +27,16 @@ export const router = createBrowserRouter([
             path: APP_ROUTES_KEY.overview.path,
             element: <OverviewPage />,
             handle: { title: APP_ROUTES_KEY.overview.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.users.list.path,
+            element: <UsersListPage />,
+            handle: { title: APP_ROUTES_KEY.users.list.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.users.detail.path,
+            element: <UserDetailPage />,
+            handle: { title: APP_ROUTES_KEY.users.detail.meta.title },
           },
           {
             path: APP_ROUTES_KEY.smsTest.path,

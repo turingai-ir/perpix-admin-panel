@@ -6,3 +6,4 @@ export * from "./use-viewport-breakpoint";
 export * from "./use-route-back";
 export * from "./app";
 export * from "./use-infinite-scroll";
+export * from "./use-table-query";

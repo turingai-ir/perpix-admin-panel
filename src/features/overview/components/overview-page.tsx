@@ -7,6 +7,7 @@ import {
   RefreshCw,
   Users,
 } from "lucide-react";
+import { Link } from "react-router";
 import { useOverview } from "../hooks/use-overview";
 import { ReportPanel } from "./report-panel";
 import { useAppTranslate } from "@/hooks";
@@ -32,24 +33,28 @@ export function OverviewPage() {
       icon: Users,
       query: data.users,
       color: "text-blue-600 bg-blue-500/10",
+      href: "/users",
     },
     {
       key: "payments",
       icon: CreditCard,
       query: data.payments,
       color: "text-emerald-600 bg-emerald-500/10",
+      href: undefined,
     },
     {
       key: "tasks",
       icon: Activity,
       query: data.tasks,
       color: "text-violet-600 bg-violet-500/10",
+      href: undefined,
     },
     {
       key: "subscriptions",
       icon: Layers,
       query: data.subscriptions,
       color: "text-amber-600 bg-amber-500/10",
+      href: undefined,
     },
   ] as const;
   const daily = Array.from(data.daily.data?.items ?? []).sort((a, b) =>
@@ -107,37 +112,57 @@ export function OverviewPage() {
           </div>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map(({ key, icon: Icon, query, color }) => (
-            <section
-              key={key}
-              className="border-border bg-card rounded-2xl border p-5"
-            >
-              <div className="mb-6 flex items-center justify-between">
-                <span
-                  className={`flex size-10 items-center justify-center rounded-xl ${color}`}
+          {cards.map(({ key, icon: Icon, query, color, href }) => {
+            const content = (
+              <>
+                <div className="mb-6 flex items-center justify-between">
+                  <span
+                    className={`flex size-10 items-center justify-center rounded-xl ${color}`}
+                  >
+                    <Icon aria-hidden="true" className="size-5" />
+                  </span>
+                  <ArrowUpLeft
+                    aria-hidden="true"
+                    className="text-muted-foreground size-4 transition-transform group-hover:-translate-x-0.5 group-hover:-translate-y-0.5"
+                  />
+                </div>
+                <p className="text-muted-foreground text-sm">
+                  {t(`overview.${key}`)}
+                </p>
+                <p className="mt-3 text-3xl font-bold tabular-nums">
+                  {query.isPending
+                    ? "…"
+                    : query.isError
+                      ? "—"
+                      : number(query.data?.total_count ?? 0)}
+                </p>
+                <p className="text-muted-foreground mt-3 text-xs">
+                  {t(query.isError ? "overview.error" : "overview.inPeriod")}
+                </p>
+              </>
+            );
+
+            if (href) {
+              return (
+                <Link
+                  key={key}
+                  to={href}
+                  className="group border-border bg-card hover:border-primary/40 rounded-2xl border p-5 transition-all hover:shadow-md"
                 >
-                  <Icon aria-hidden="true" className="size-5" />
-                </span>
-                <ArrowUpLeft
-                  aria-hidden="true"
-                  className="text-muted-foreground size-4"
-                />
-              </div>
-              <p className="text-muted-foreground text-sm">
-                {t(`overview.${key}`)}
-              </p>
-              <p className="mt-3 text-3xl font-bold tabular-nums">
-                {query.isPending
-                  ? "…"
-                  : query.isError
-                    ? "—"
-                    : number(query.data?.total_count ?? 0)}
-              </p>
-              <p className="text-muted-foreground mt-3 text-xs">
-                {t(query.isError ? "overview.error" : "overview.inPeriod")}
-              </p>
-            </section>
-          ))}
+                  {content}
+                </Link>
+              );
+            }
+
+            return (
+              <section
+                key={key}
+                className="border-border bg-card rounded-2xl border p-5"
+              >
+                {content}
+              </section>
+            );
+          })}
         </div>
         <div className="grid gap-5 lg:grid-cols-[1.7fr_1fr]">
           <ReportPanel

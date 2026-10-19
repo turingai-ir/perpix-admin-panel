@@ -6,6 +6,7 @@ import {
   Menu,
   MessageSquareText,
   ShieldCheck,
+  Users,
   X,
 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
@@ -19,6 +20,11 @@ const items = [
     path: APP_ROUTES_KEY.overview.path,
     label: "overview.title",
     icon: LayoutDashboard,
+  },
+  {
+    path: APP_ROUTES_KEY.users.list.path,
+    label: "features.users.menuTitle",
+    icon: Users,
   },
   {
     path: APP_ROUTES_KEY.smsTest.path,

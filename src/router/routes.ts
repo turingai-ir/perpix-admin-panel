@@ -4,6 +4,16 @@ export const APP_ROUTES_KEY = {
     path: "/overview",
     meta: { title: "نمای کلی | پرپیکس" },
   },
+  users: {
+    list: {
+      path: "/users",
+      meta: { title: "مدیریت کاربران | پرپیکس" },
+    },
+    detail: {
+      path: "/users/:userUuid",
+      meta: { title: "جزئیات کاربر | پرپیکس" },
+    },
+  },
   root: {
     path: "/",
     meta: {
