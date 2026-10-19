@@ -1197,6 +1197,273 @@ export interface paths {
     readonly patch: operations["update_provider_link_api_admin_v1_ai_registry_models__ai_model_uuid__providers__ai_provider_uuid__patch"];
     readonly trace?: never;
   };
+  readonly "/api/v1/auth/login": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Sign in with a phone number and password */
+    readonly post: operations["auth_login"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/csrf": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Recover the refresh CSRF value after a page reload */
+    readonly get: operations["auth_csrf"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/refresh": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Refresh an existing session
+     * @description Use credentials: include and X-CSRF-TOKEN. Coordinate refresh across tabs. Retries share a fixed 10-second grace window; the session expires 30 days after login.
+     */
+    readonly post: operations["auth_refresh"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/logout": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Revoke this session
+     * @description Repeated logout with a valid refresh signature and CSRF returns 204.
+     */
+    readonly post: operations["auth_logout"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/logout-all": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Revoke all of your browser sessions */
+    readonly post: operations["auth_logout_all"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/registration-challenges": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Request a registration code
+     * @description Returns the same challenge shape for new and existing accounts. No session is created.
+     */
+    readonly post: operations["auth_registration_challenge"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/registrations": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Verify a registration code and create a session */
+    readonly post: operations["auth_register"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/challenges/{challenge_id}/resend": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly challenge_id: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Resend a registration or password reset code
+     * @description Requires an unexpired challenge. Replaces the code without resetting its attempt budget.
+     */
+    readonly post: operations["auth_challenge_resend"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/password-reset-challenges": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Request a password reset code
+     * @description Returns the same challenge shape for eligible and unknown phone numbers.
+     */
+    readonly post: operations["auth_password_reset_challenge"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/password-resets": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Reset a password with an OTP and revoke all sessions
+     * @description Does not sign in automatically. Registration codes cannot reset passwords.
+     */
+    readonly post: operations["auth_password_reset"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/password-changes": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Change a password and revoke all sessions
+     * @description Requires the current password and a live access session. Sign in again after success.
+     */
+    readonly post: operations["auth_password_change"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/start": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /**
+     * Start sign-in or registration with a phone number
+     * @description Returns password for existing or unavailable accounts. Registerable numbers receive a registration challenge and an SMS is queued. This endpoint reveals account registration state. Repeated requests consume the shared phone/IP send budget and replace the registration code.
+     */
+    readonly post: operations["auth_start"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/api-tokens": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** List your machine credentials without raw tokens */
+    readonly get: operations["auth_list_api_tokens"];
+    readonly put?: never;
+    /** Create a machine credential; raw token is returned only once */
+    readonly post: operations["auth_create_api_token"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/v1/auth/api-tokens/{token_uuid}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly token_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    readonly post?: never;
+    /** Revoke your token; repeat revocation is idempotent */
+    readonly delete: operations["auth_revoke_api_token"];
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2848,6 +3115,287 @@ export interface components {
        */
       readonly created_at: string;
     };
+    /** AccessTokenResponse */
+    readonly AccessTokenResponse: {
+      /** Access Token */
+      readonly access_token: string;
+      /**
+       * Token Type
+       * @default bearer
+       * @constant
+       */
+      readonly token_type: "bearer";
+      /** Expires In */
+      readonly expires_in: number;
+    };
+    /** ApiTokenListResponse */
+    readonly ApiTokenListResponse: {
+      /** Items */
+      readonly items: readonly components["schemas"]["ApiTokenResponse"][];
+      /** Has Next */
+      readonly has_next: boolean;
+    };
+    /** ApiTokenResponse */
+    readonly ApiTokenResponse: {
+      /**
+       * Uuid
+       * Format: uuid
+       */
+      readonly uuid: string;
+      /** Name */
+      readonly name: string;
+      /** Scopes */
+      readonly scopes: readonly components["schemas"]["MachineScope"][];
+      /**
+       * Created At
+       * Format: date-time
+       */
+      readonly created_at: string;
+      /**
+       * Expires At
+       * Format: date-time
+       */
+      readonly expires_at: string;
+      /** Revoked At */
+      readonly revoked_at: string | null;
+    };
+    /** AuthStartRequest */
+    readonly AuthStartRequest: {
+      /**
+       * Phone Number
+       * @example +989123456789
+       */
+      readonly phone_number: string;
+    };
+    readonly AuthStartResponse:
+      | components["schemas"]["PasswordStepResponse"]
+      | components["schemas"]["RegistrationStepResponse"];
+    /** ChallengeResponse */
+    readonly ChallengeResponse: {
+      /**
+       * Challenge Id
+       * Format: uuid
+       */
+      readonly challenge_id: string;
+      /**
+       * Expires At
+       * Format: date-time
+       */
+      readonly expires_at: string;
+      /**
+       * Resend Available At
+       * Format: date-time
+       */
+      readonly resend_available_at: string;
+    };
+    /**
+     * CreateApiTokenRequest
+     * @example {
+     *       "expires_in_days": 30,
+     *       "name": "AI worker",
+     *       "scopes": [
+     *         "ai_task:read",
+     *         "ai_task:write"
+     *       ]
+     *     }
+     */
+    readonly CreateApiTokenRequest: {
+      /** Name */
+      readonly name: string;
+      /** Scopes */
+      readonly scopes: readonly components["schemas"]["MachineScope"][];
+      /**
+       * Expires In Days
+       * @default 30
+       */
+      readonly expires_in_days: number;
+    };
+    /** CreatedApiTokenResponse */
+    readonly CreatedApiTokenResponse: {
+      /**
+       * Uuid
+       * Format: uuid
+       */
+      readonly uuid: string;
+      /** Name */
+      readonly name: string;
+      /** Scopes */
+      readonly scopes: readonly components["schemas"]["MachineScope"][];
+      /**
+       * Created At
+       * Format: date-time
+       */
+      readonly created_at: string;
+      /**
+       * Expires At
+       * Format: date-time
+       */
+      readonly expires_at: string;
+      /** Revoked At */
+      readonly revoked_at: string | null;
+      /** Token */
+      readonly token: string;
+      /**
+       * Token Type
+       * @default bearer
+       * @constant
+       */
+      readonly token_type: "bearer";
+    };
+    /** CsrfResponse */
+    readonly CsrfResponse: {
+      /** Csrf Token */
+      readonly csrf_token: string;
+    };
+    /**
+     * LoginRequest
+     * @example {
+     *       "password": "example-password-only",
+     *       "phone_number": "+989123456789"
+     *     }
+     */
+    readonly LoginRequest: {
+      /**
+       * Phone Number
+       * @example +989123456789
+       */
+      readonly phone_number: string;
+      /**
+       * Password
+       * Format: password
+       */
+      readonly password: string;
+    };
+    /**
+     * MachineScope
+     * @enum {string}
+     */
+    readonly MachineScope:
+      | "ai_registry:read"
+      | "ai_task:read"
+      | "ai_task:write"
+      | "file_manager:read"
+      | "file_manager:write";
+    /**
+     * PasswordChangeRequest
+     * @example {
+     *       "current_password": "example-password-only",
+     *       "new_password": "new-example-password-only"
+     *     }
+     */
+    readonly PasswordChangeRequest: {
+      /**
+       * Current Password
+       * Format: password
+       */
+      readonly current_password: string;
+      /**
+       * New Password
+       * Format: password
+       */
+      readonly new_password: string;
+    };
+    /**
+     * PasswordResetChallengeRequest
+     * @example {
+     *       "phone_number": "+989123456789"
+     *     }
+     */
+    readonly PasswordResetChallengeRequest: {
+      /**
+       * Phone Number
+       * @example +989123456789
+       */
+      readonly phone_number: string;
+    };
+    /**
+     * PasswordResetRequest
+     * @example {
+     *       "challenge_id": "11111111-1111-4111-8111-111111111111",
+     *       "new_password": "new-example-password-only",
+     *       "otp_code": "123456"
+     *     }
+     */
+    readonly PasswordResetRequest: {
+      /**
+       * Challenge Id
+       * Format: uuid
+       */
+      readonly challenge_id: string;
+      /** Otp Code */
+      readonly otp_code: string;
+      /**
+       * New Password
+       * Format: password
+       */
+      readonly new_password: string;
+    };
+    /** PasswordStepResponse */
+    readonly PasswordStepResponse: {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      readonly next_step: "password";
+    };
+    /**
+     * RegistrationChallengeRequest
+     * @example {
+     *       "phone_number": "+989123456789"
+     *     }
+     */
+    readonly RegistrationChallengeRequest: {
+      /**
+       * Phone Number
+       * @example +989123456789
+       */
+      readonly phone_number: string;
+    };
+    /**
+     * RegistrationRequest
+     * @example {
+     *       "challenge_id": "11111111-1111-4111-8111-111111111111",
+     *       "otp_code": "123456",
+     *       "password": "example-password-only"
+     *     }
+     */
+    readonly RegistrationRequest: {
+      /**
+       * Challenge Id
+       * Format: uuid
+       */
+      readonly challenge_id: string;
+      /** Otp Code */
+      readonly otp_code: string;
+      /**
+       * Password
+       * Format: password
+       */
+      readonly password: string;
+    };
+    /** RegistrationStepResponse */
+    readonly RegistrationStepResponse: {
+      /**
+       * Challenge Id
+       * Format: uuid
+       */
+      readonly challenge_id: string;
+      /**
+       * Expires At
+       * Format: date-time
+       */
+      readonly expires_at: string;
+      /**
+       * Resend Available At
+       * Format: date-time
+       */
+      readonly resend_available_at: string;
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      readonly next_step: "registration";
+    };
   };
   responses: never;
   parameters: never;
@@ -3004,6 +3552,37 @@ export type SchemaWalletTransactionResponse =
 export type SchemaWalletTransactionTypeEnum =
   components["schemas"]["WalletTransactionTypeEnum"];
 export type SchemaWalletsRow = components["schemas"]["WalletsRow"];
+export type SchemaAccessTokenResponse =
+  components["schemas"]["AccessTokenResponse"];
+export type SchemaApiTokenListResponse =
+  components["schemas"]["ApiTokenListResponse"];
+export type SchemaApiTokenResponse = components["schemas"]["ApiTokenResponse"];
+export type SchemaAuthStartRequest = components["schemas"]["AuthStartRequest"];
+export type SchemaAuthStartResponse =
+  components["schemas"]["AuthStartResponse"];
+export type SchemaChallengeResponse =
+  components["schemas"]["ChallengeResponse"];
+export type SchemaCreateApiTokenRequest =
+  components["schemas"]["CreateApiTokenRequest"];
+export type SchemaCreatedApiTokenResponse =
+  components["schemas"]["CreatedApiTokenResponse"];
+export type SchemaCsrfResponse = components["schemas"]["CsrfResponse"];
+export type SchemaLoginRequest = components["schemas"]["LoginRequest"];
+export type SchemaMachineScope = components["schemas"]["MachineScope"];
+export type SchemaPasswordChangeRequest =
+  components["schemas"]["PasswordChangeRequest"];
+export type SchemaPasswordResetChallengeRequest =
+  components["schemas"]["PasswordResetChallengeRequest"];
+export type SchemaPasswordResetRequest =
+  components["schemas"]["PasswordResetRequest"];
+export type SchemaPasswordStepResponse =
+  components["schemas"]["PasswordStepResponse"];
+export type SchemaRegistrationChallengeRequest =
+  components["schemas"]["RegistrationChallengeRequest"];
+export type SchemaRegistrationRequest =
+  components["schemas"]["RegistrationRequest"];
+export type SchemaRegistrationStepResponse =
+  components["schemas"]["RegistrationStepResponse"];
 export type $defs = Record<string, never>;
 export interface operations {
   readonly admin_payment_list_payments: {
@@ -6670,6 +7249,688 @@ export interface operations {
       };
     };
   };
+  readonly auth_login: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["LoginRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Access token; refresh token is set in a Secure HttpOnly cookie. */
+      readonly 200: {
+        headers: {
+          readonly "X-CSRF-TOKEN"?: string;
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AccessTokenResponse"];
+        };
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_csrf: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["CsrfResponse"];
+        };
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_refresh: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header: {
+        /** @description CSRF value from login/refresh response header or GET /auth/csrf. */
+        readonly "X-CSRF-TOKEN": string;
+      };
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Access token; refresh token is set in a Secure HttpOnly cookie. */
+      readonly 200: {
+        headers: {
+          readonly "X-CSRF-TOKEN"?: string;
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AccessTokenResponse"];
+        };
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_logout: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header: {
+        /** @description CSRF value from login/refresh response header or GET /auth/csrf. */
+        readonly "X-CSRF-TOKEN": string;
+      };
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 204: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_logout_all: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 204: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_registration_challenge: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["RegistrationChallengeRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 201: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ChallengeResponse"];
+        };
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_register: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["RegistrationRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Access token; refresh token is set in a Secure HttpOnly cookie. */
+      readonly 201: {
+        headers: {
+          readonly "X-CSRF-TOKEN"?: string;
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AccessTokenResponse"];
+        };
+      };
+      /** @description Invalid challenge or code */
+      readonly 400: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_challenge_resend: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly challenge_id: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ChallengeResponse"];
+        };
+      };
+      /** @description Invalid challenge or code */
+      readonly 400: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_password_reset_challenge: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["PasswordResetChallengeRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 201: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ChallengeResponse"];
+        };
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_password_reset: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["PasswordResetRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 204: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Invalid challenge or code */
+      readonly 400: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_password_change: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["PasswordChangeRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 204: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_start: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["AuthStartRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AuthStartResponse"];
+        };
+      };
+      /** @description Unauthorized */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Rate limit exceeded */
+      readonly 429: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_list_api_tokens: {
+    readonly parameters: {
+      readonly query?: {
+        readonly offset?: number;
+        readonly limit?: number;
+      };
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApiTokenListResponse"];
+        };
+      };
+      /** @description Live browser session required */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Owned token not found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly auth_create_api_token: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["CreateApiTokenRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 201: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["CreatedApiTokenResponse"];
+        };
+      };
+      /** @description Live browser session required */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Owned token not found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Maximum 20 active tokens */
+      readonly 409: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Current plan must grant every requested scope */
+      readonly 426: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  readonly auth_revoke_api_token: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly token_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 204: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Live browser session required */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Owned token not found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
 }
 type FlattenedDeepRequired<T> = {
   [K in keyof T]-?: FlattenedDeepRequired<
@@ -6790,6 +8051,21 @@ export const walletOperationSourceEnumValues: ReadonlyArray<
 export const walletTransactionTypeEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["WalletTransactionTypeEnum"]
 > = ["DEPOSIT", "WITHDRAW", "REFUND"];
+export const machineScopeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["MachineScope"]
+> = [
+  "ai_registry:read",
+  "ai_task:read",
+  "ai_task:write",
+  "file_manager:read",
+  "file_manager:write",
+];
+export const passwordStepResponseNext_stepValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["PasswordStepResponse"]["next_step"]
+> = ["password"];
+export const registrationStepResponseNext_stepValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["RegistrationStepResponse"]["next_step"]
+> = ["registration"];
 
 export const AdminSortMap = {
   "-created_at": "-created_at",
@@ -6954,3 +8230,13 @@ export type WalletTransactionTypeEnumKey =
   keyof typeof WalletTransactionTypeEnumMap;
 export type WalletTransactionTypeEnumValue =
   (typeof WalletTransactionTypeEnumMap)[WalletTransactionTypeEnumKey];
+
+export const MachineScopeMap = {
+  "ai_registry:read": "ai_registry:read",
+  "ai_task:read": "ai_task:read",
+  "ai_task:write": "ai_task:write",
+  "file_manager:read": "file_manager:read",
+  "file_manager:write": "file_manager:write",
+} as const;
+export type MachineScopeKey = keyof typeof MachineScopeMap;
+export type MachineScopeValue = (typeof MachineScopeMap)[MachineScopeKey];

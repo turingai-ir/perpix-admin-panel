@@ -1,4 +1,9 @@
 export const APP_ROUTES_KEY = {
+  smsTest: { path: "/sms-test", meta: { title: "تست پیامک | پرپیکس" } },
+  overview: {
+    path: "/overview",
+    meta: { title: "نمای کلی | پرپیکس" },
+  },
   root: {
     path: "/",
     meta: {

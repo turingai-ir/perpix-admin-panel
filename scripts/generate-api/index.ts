@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 
 import openapiTS, { astToString } from "openapi-typescript";
 import prettier from "prettier";
@@ -26,8 +26,7 @@ try {
   /* .env file optional */
 }
 
-const API_BASE_URL =
-  process.env.VITE_PERPIX_API_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.VITE_PERPIX_API_URL || "http://localhost:8000";
 const OPENAPI_URL =
   process.env.OPENAPI_URL ||
   `${API_BASE_URL.replace(/\/+$/, "")}/api-admin-schema-6f47a9d2c18b4e30.json`;
@@ -47,8 +46,27 @@ const downloadOpenApiSchema = async (targetPath: string) => {
     });
 
     if (response.ok) {
-      const raw = await response.json();
-      const schema = JSON.stringify(adminApiSchema(raw), null, 2);
+      const raw = adminApiSchema(await response.json());
+      const publicResponse = await fetch(
+        process.env.PUBLIC_OPENAPI_URL ||
+          `${API_BASE_URL.replace(/\/+$/, "")}/api-schema-6f47a9d2c18b4e30.json`,
+        { signal: AbortSignal.timeout(5000) },
+      );
+      if (!publicResponse.ok)
+        throw new Error("Could not load authentication schema");
+      const auth = adminApiSchema(await publicResponse.json());
+      const schema = JSON.stringify(
+        {
+          ...raw,
+          paths: { ...raw.paths, ...auth.paths },
+          components: {
+            ...raw.components,
+            schemas: { ...raw.components.schemas, ...auth.components.schemas },
+          },
+        },
+        null,
+        2,
+      );
       await fs.writeFile(targetPath, schema, "utf-8");
       return targetPath;
     }
@@ -87,13 +105,10 @@ schema = {
 }
 print(json.dumps(schema))
 `;
-    const output = execSync(
-      `${pythonVenv} -c '${pyScript.replace(/'/g, "'\\''")}'`,
-      {
-        cwd: CORE_API_DIR,
-        maxBuffer: 50 * 1024 * 1024,
-      },
-    ).toString();
+    const output = execFileSync(pythonVenv, ["-c", pyScript], {
+      cwd: CORE_API_DIR,
+      maxBuffer: 50 * 1024 * 1024,
+    }).toString();
 
     const raw = JSON.parse(output);
     const schema = JSON.stringify(adminApiSchema(raw), null, 2);
@@ -105,7 +120,14 @@ print(json.dumps(schema))
 
   // 3. Fallback to existing local openapi.json if present
   try {
-    await fs.access(targetPath);
+    const cached = adminApiSchema(
+      JSON.parse(await fs.readFile(targetPath, "utf-8")),
+    );
+    if (!("/api/v1/auth/login" in cached.paths))
+      throw new Error("Cached schema has no login contract");
+    console.warn(
+      "Using cached OpenAPI schema; backend schema could not be loaded.",
+    );
     return targetPath;
   } catch {
     throw new Error(
