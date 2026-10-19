@@ -1,0 +1,781 @@
+{
+  "common": {
+    "addAudio": "افزودن صدا",
+    "addImage": "افزودن عکس",
+    "addVideo": "افزودن ویدیو",
+    "advancedSettings": "تنظیمات پیشرفته",
+    "aiProvider": "ارائه‌دهنده هوش مصنوعی",
+    "invalidField": "مقدار این فیلد معتبر نیست",
+    "and": "و",
+    "cancel": "انصراف",
+    "chat": "چت",
+    "chooseModel": "انتخاب مدل",
+    "coolTexts": {
+      "cooking": "درحال پخت و پز هستیم ..."
+    },
+    "day": "روز",
+    "download": "دانلود",
+    "dynamicConfig": {
+      "fields": {
+        "audio_reference_type": "نوع مرجع صوتی",
+        "copyright_detection": "تشخیص کپی‌رایت",
+        "delivery_method": "روش تحویل",
+        "duration": "مدت زمان",
+        "elements": "المان‌ها",
+        "enhance_prompt": "بهبود پرامپت",
+        "frame_images": "تصاویر فریم",
+        "generate_audio": "تولید صدا",
+        "character_orientation": "جهت‌گیری کاراکتر",
+        "image_search": "جستجوی تصویر",
+        "include_cost": "نمایش هزینه",
+        "input_video": "ویدیوی ورودی",
+        "keep_original_sound": "حفظ صدای اصلی",
+        "mode": "حالت تولید",
+        "multi_prompt": "پرامپت چندبخشی",
+        "n": "تعداد خروجی",
+        "negative_prompt": "پرامپت منفی",
+        "output_format": "فرمت خروجی",
+        "output_quality": "کیفیت خروجی",
+        "output_type": "نوع خروجی",
+        "prompt": "پرامپت",
+        "prompt_upsampling": "ارتقای پرامپت",
+        "raw": "حالت خام",
+        "reference_audios": "صداهای مرجع",
+        "reference_images": "تصاویر مرجع",
+        "reference_videos": "ویدیوی مرجع",
+        "rendering_speed": "سرعت رندر",
+        "resize_mode": "حالت تغییر اندازه",
+        "resolution": "رزولوشن",
+        "safety_check": "بررسی ایمنی",
+        "safety_mode": "حالت ایمنی",
+        "safety_tolerance": "تلرانس ایمنی",
+        "seed": "سید",
+        "size": "اندازه",
+        "supports_audio": "پشتیبانی از صدا",
+        "supports_edit": "پشتیبانی از ویرایش",
+        "supports_extend": "پشتیبانی از گسترش",
+        "supports_lipsync": "پشتیبانی از لیپ‌سینک",
+        "supports_mask": "پشتیبانی از ماسک",
+        "thinking": "سطح تفکر",
+        "ttl": "مدت نگهداری",
+        "upload_endpoint": "آدرس آپلود",
+        "web_search": "جستجوی وب"
+      },
+      "optionLabels": {
+        "mode": {
+          "audio_driven_video": "ویدیوی صوت‌محور",
+          "image_to_video": "عکس به ویدیو",
+          "motion_control": "کنترل حرکت",
+          "text_to_video": "متن به ویدیو",
+          "video_edit": "ویرایش ویدیو"
+        }
+      }
+    },
+    "emptyTitle": "بدون عنوان",
+    "error": "خطا",
+    "errorOnUploading": "خطایی هنگام آپلود فایل پیش آمده است",
+    "fetchErrors": {
+      "forbidden": "شما دسترسی لازم را ندارید",
+      "network": "خطای شبکه لطفا اتصال خود را بررسی کنید",
+      "offlineMutation": "شما آفلاین هستید. لطفا آنلاین شوید",
+      "serverError": "خطای داخلی رخ داده است بعدا امتحان کنید",
+      "timeout": "متاسفانه خطایی رخ داده است دوباره تلاش کنید"
+    },
+    "hour": "ساعت",
+    "image": "عکس",
+    "minute": "دقیقه",
+    "older": "قدیمی تر",
+    "seconds": "ثانیه",
+    "selectDuration": "انتخاب مدت زمان",
+    "selectSize": "انتخاب سایز",
+    "taskStatus": {
+      "canceled": "لغو شده",
+      "completed": "انجام شده",
+      "failed": "نا موفق",
+      "inProgress": "در حال انجام",
+      "pending": "در حال انجام"
+    },
+    "thisMonth": "این ماه",
+    "thisWeek": "این هفته",
+    "today": "امروز",
+    "token": "توکن",
+    "tomans": "تومان",
+    "upgradeRequired": "نیازمند ارتقا",
+    "uploaded": "آپلود شد",
+    "uploadErrors": {
+      "etagMissing": "آپلود فایل کامل نشد. لطفا دوباره تلاش کنید.",
+      "partFailed": "آپلود فایل کامل نشد. لطفا دوباره تلاش کنید."
+    },
+    "uploading": "در حال آپلود",
+    "video": "ویدیو",
+    "validationErrors": {
+      "duplicateFile": "این فایل از قبل موجود است",
+      "dynamicConfig": {
+        "invalidArray": "مقدار باید آرایه باشد",
+        "invalidEnum": "مقدار انتخاب‌شده معتبر نیست",
+        "invalidInteger": "مقدار باید عدد صحیح باشد",
+        "invalidNumber": "مقدار باید عدد باشد",
+        "invalidString": "مقدار باید متن باشد",
+        "maxItems": "حداکثر {{max}} آیتم مجاز است",
+        "maxLength": "حداکثر {{max}} کاراکتر مجاز است",
+        "maxNumber": "حداکثر مقدار {{max}} است",
+        "minItems": "حداقل {{min}} آیتم لازم است",
+        "minLength": "حداقل {{min}} کاراکتر لازم است",
+        "minNumber": "حداقل مقدار {{min}} است",
+        "required": "این فیلد الزامی است"
+      },
+      "email": "ایمیل نامعتبر است",
+      "equalCharacter": " {{name}} باید {{length}} کاراکتر باشد",
+      "imageDimensionsUnreadable": "امکان بررسی ابعاد عکس وجود ندارد",
+      "imageMaxSize": "حجم عکس باید کمتر از {{maxSize}} مگابایت باشد",
+      "imageTooSmall": "عکس خیلی کوچک است",
+      "invalidFileFormat": "فرمت فایل مجاز نمی باشد",
+      "max": "{{name}} حداکثر می می تواند {{max}} باشد",
+      "maxLength": "{{name}} باید کمتر از {{max}} کاراکتر باشد",
+      "maxSize": "حجم فایل باید کمتر از {{maxSizeMb}} مگابایت باشد",
+      "min": "{{name}} حداقل باید {{min}} باشد",
+      "minLength": "{{name}} باید بیشتر از {{min}} کاراکتر باشد",
+      "mobile": "شماره تلفن نامعتبر است",
+      "number": "{{name}} باید عدد باشد",
+      "onlyEnglishAndPersianCharacters": "{{name}} فقط حروف انگلیسی و فارسی مجاز است",
+      "password": "رمز عبور باید حداقل شامل هشت کاراکتر و حداقل یک حرف بزرگ و یک حرف کوچک انگلیسی باشد",
+      "passwordMatch": "رمز عبور با تکرار آن برابر نیست",
+      "required": "{{name}} الزامی است"
+    },
+    "yesterday": "دیروز"
+  },
+  "components": {
+    "custom": {
+      "errorBoundary": {
+        "fallbackMessage": "متاسفانه خطایی رخ داده است لطفا صفحه را رفرش کنید"
+      },
+      "errorSection": {
+        "description": "متاسفانه خطایی رخ داده است دوباره تلاش کنید",
+        "retry": "تلاش مجدد"
+      },
+      "multiImageUploadInput": {
+        "maxSize": "حجم عکس باید کمتر از {{maxSize}} مگابایت باشد"
+      }
+    },
+    "form": {
+      "rules": {
+        "incorrectRegex": "{{name}} نامعتبر است",
+        "maxLength": "{{name}} باید کمتر از {{max}} کاراکتر باشد",
+        "minLength": "{{name}} باید بیشتر از {{min}} کاراکتر باشد",
+        "phoneNumber": "شماره تلفن نامعتبر است",
+        "required": "{{name}} الزامی است"
+      }
+    }
+  },
+  "features": {
+    "auth": {
+      "validation": {
+        "phone": "شماره موبایل معتبر ایران وارد کنید.",
+        "otp": "کد تأیید باید ۶ رقم باشد.",
+        "passwordRequired": "رمز عبور را وارد کنید.",
+        "newPasswordLength": "رمز عبور باید بین ۸ تا ۱۲۸ کاراکتر باشد.",
+        "passwordMismatch": "رمز عبور با تکرار آن برابر نیست."
+      },
+      "failures": {
+        "invalidCredentials": "شماره یا رمز عبور معتبر نیست.",
+        "currentPasswordInvalid": "رمز عبور فعلی صحیح نیست.",
+        "challengeInvalid": "کد تأیید نامعتبر یا منقضی شده است. در صورت نیاز کد تازه درخواست کنید.",
+        "rateLimited": "تعداد درخواست‌ها زیاد است. {{seconds}} ثانیه بعد دوباره تلاش کنید.",
+        "rateLimitedUnknown": "تعداد درخواست‌ها زیاد است. کمی بعد دوباره تلاش کنید.",
+        "validation": "ورودی نامعتبر است.",
+        "forbidden": "شما دسترسی لازم را ندارید.",
+        "upgradeRequired": "برای این عملیات به اشتراک مناسب نیاز دارید.",
+        "conflict": "این درخواست قابل انجام نیست.",
+        "network": "ارتباط با سرور برقرار نشد. اتصال خود را بررسی کنید.",
+        "server": "خطای موقت رخ داد. دوباره تلاش کنید؛ نتیجهٔ عملیات قبلی نامعلوم است.",
+        "contract": "پاسخ نامعتبر از سرور دریافت شد.",
+        "aborted": "درخواست لغو شد."
+      },
+      "login": {
+        "title": "ورود",
+        "description": "به پر پیکسل ای آی خوش آمدید",
+        "phoneLabel": "شماره موبایل",
+        "phoneHint": "مثال: 09123456789",
+        "passwordLabel": "رمز عبور",
+        "submit": "ورود",
+        "forgotPassword": "فراموشی رمز عبور",
+        "createAccount": "ثبت‌نام",
+        "changePhone": "تغییر شماره موبایل"
+      },
+      "register": {
+        "title": "ثبت‌نام",
+        "description": "شمارهٔ موبایل خود را وارد کنید تا کد تأیید ارسال شود.",
+        "submit": "دریافت کد تأیید",
+        "haveAccount": "حساب دارید؟ وارد شوید"
+      },
+      "reset": {
+        "title": "بازیابی رمز عبور",
+        "description": "شمارهٔ موبایل خود را وارد کنید.",
+        "submit": "دریافت کد تأیید",
+        "backToLogin": "بازگشت به ورود"
+      },
+      "complete": {
+        "registrationTitle": "تأیید شماره و انتخاب رمز",
+        "registrationDescription": "کد تأیید برای شماره شما ارسال شد. کد و رمز عبور دلخواه خود را وارد کنید.",
+        "resetTitle": "انتخاب رمز عبور جدید",
+        "description": "اگر این شماره واجد شرایط باشد، کد تأیید ارسال می‌شود.",
+        "otpLabel": "کد تأیید",
+        "passwordLabel": "رمز عبور",
+        "newPasswordLabel": "رمز عبور جدید",
+        "confirmLabel": "تکرار رمز عبور",
+        "passwordHint": "بین ۸ تا ۱۲۸ کاراکتر",
+        "submitRegistration": "ثبت‌نام",
+        "submitReset": "تغییر رمز عبور",
+        "resend": "ارسال مجدد کد",
+        "resendIn": "ارسال مجدد کد تا {{seconds}} ثانیه دیگر",
+        "expiresIn": "اعتبار کد: {{seconds}} ثانیه",
+        "expired": "کد منقضی شد.",
+        "requestNew": "درخواست کد تازه",
+        "back": "تغییر شماره"
+      },
+      "toasts": {
+        "loggedIn": "با موفقیت وارد شدید",
+        "registered": "ثبت‌نام با موفقیت انجام شد",
+        "resetDone": "رمز عبور تغییر کرد. با رمز جدید وارد شوید.",
+        "codeResent": "اگر این شماره واجد شرایط باشد، کد تأیید ارسال می‌شود.",
+        "signOutUnconfirmed": "خروج از حساب روی سرور تأیید نشد.",
+        "signOutRetry": "تلاش مجدد",
+        "signedOutEverywhere": "از همهٔ دستگاه‌ها خارج شدید",
+        "passwordChanged": "رمز عبور تغییر کرد. دوباره وارد شوید.",
+        "sessionEnded": "نشست شما پایان یافت. دوباره وارد شوید."
+      },
+      "changePassword": {
+        "menu": "تغییر رمز عبور",
+        "title": "تغییر رمز عبور",
+        "description": "با تغییر رمز، از همهٔ دستگاه‌ها خارج می‌شوید.",
+        "currentLabel": "رمز عبور فعلی",
+        "newLabel": "رمز عبور جدید",
+        "confirmLabel": "تکرار رمز عبور جدید",
+        "submit": "تغییر رمز عبور",
+        "cancel": "انصراف"
+      },
+      "logoutAll": {
+        "menu": "خروج از همهٔ دستگاه‌ها"
+      },
+      "bootstrap": {
+        "loading": "در حال بررسی نشست…",
+        "unavailableTitle": "اتصال برقرار نشد",
+        "unavailableDescription": "بررسی نشست انجام نشد. اتصال خود را بررسی و دوباره تلاش کنید.",
+        "retry": "تلاش مجدد"
+      }
+    },
+    "mediaUploader": {
+      "actions": {
+        "close": "بستن",
+        "upload": "آپلود"
+      },
+      "dialog": {
+        "description": "فایل‌های قبلی را انتخاب کنید یا فایل جدید آپلود کنید."
+      },
+      "emptyFiles": "فایلی برای نمایش وجود ندارد.",
+      "loadingMore": "در حال بارگذاری فایل‌ها...",
+      "newFile": {
+        "description": "پس از پایان آپلود، فایل به انتخاب‌ها اضافه می‌شود.",
+        "title": "آپلود فایل جدید"
+      },
+      "uploadStatus": "وضعیت آپلود",
+      "userFiles": "فایل‌های شما"
+    },
+    "pricing": {
+      "currentPrice": "قیمت",
+      "discountedPrice": "قیمت با تخفیف",
+      "discountPercent": "{{percent}}٪ تخفیف",
+      "description": "شما برای استفاده از امکانات پرپیکس نیاز دارید یکی از بسته های زیر را خریداری کنید",
+      "previousPrice": "قیمت قبل از تخفیف",
+      "priceUnavailable": "قیمت در دسترس نیست",
+      "plans": {
+        "basic": {
+          "action": "خرید",
+          "description": "مناسب برای همه",
+          "features": [
+            "نگه داری فایل ها تا ۷روز",
+            "دسترسی به تولید عکس",
+            "دسترسی به تولید ویدیو",
+            "تولید ۱۲۰ عکس یا ۴ ویدیو"
+          ],
+          "title": "پایه"
+        },
+        "economic": {
+          "action": "خرید",
+          "description": "مناسب برای کم مصرف ها",
+          "features": [
+            "نگه داری فایل ها تا ۷روز",
+            "دسترسی به تولید عکس",
+            "تولید ۷۰ عکس"
+          ],
+          "title": "اقتصادی"
+        },
+        "free": {
+          "title": "بدون اشتراک"
+        },
+        "pro": {
+          "action": "خرید",
+          "description": "مناسب برای حرفه ای ها",
+          "features": [
+            "نگه داری فایل ها تا ۷روز",
+            "دسترسی به تولید عکس",
+            "دسترسی به تولید ویدیو",
+            "تولید ۳۶۰ عکس یا ۲۰ ویدیو"
+          ],
+          "title": "حرفه ای"
+        }
+      },
+      "purchase": "خرید",
+      "title": "بسته ها"
+    },
+    "pwaInstall": {
+      "action": "نصب برنامه",
+      "ios": {
+        "description": "در آیفون نصب مستقیم از داخل مرورگر پشتیبانی نمی‌شود. با دو قدم زیر برنامه را به صفحه اصلی اضافه کنید.",
+        "steps": {
+          "addToHome": {
+            "description": "گزینه Add to Home Screen را بزنید و سپس Add را انتخاب کنید.",
+            "title": "Add to Home Screen را انتخاب کنید"
+          },
+          "share": {
+            "description": "در پایین Safari روی آیکن Share، همان مربع فلش‌دار، بزنید.",
+            "title": "منوی Share را باز کنید"
+          }
+        },
+        "title": "نصب روی آیفون"
+      }
+    }
+  },
+  "pages": {
+    "editor": {
+      "title": "ویرایشگر تصویر",
+      "smartTitle": "ویرایشگر هوشمند تصویر",
+      "uploaderDesc": "برای شروع، یک عکس را انتخاب کنید. می‌توانید آن را برش دهید، تغییر اندازه دهید یا فیلترهای مختلف اعمال کنید.",
+      "uploaderBtn": "انتخاب عکس از گالری یا دوربین",
+      "back": "بازگشت",
+      "changeImage": "تغییر عکس",
+      "cropImage": "برش تصویر",
+      "resizeImage": "تغییر اندازه",
+      "filters": "فیلترها",
+      "download": "دانلود",
+      "downloadSuccess": "تصویر با موفقیت دانلود شد",
+      "downloadError": "خطا در دانلود تصویر",
+      "widthPx": "عرض (پیکسل)",
+      "heightPx": "ارتفاع (پیکسل)",
+      "brightness": "روشنایی",
+      "contrast": "کنتراست",
+      "blur": "تاری",
+      "sepia": "سپیا",
+      "grayscale": "سیاه و سفید",
+      "filtersTitle": "فیلترهای تصویر",
+      "uploaderError": "لطفاً یک فایل تصویر انتخاب کنید",
+      "toggleGrid": "نمایش شبکه",
+      "toggleRuler": "نمایش خط‌کش",
+      "zoomIn": "بزرگنمایی",
+      "zoomOut": "کوچک‌نمایی",
+      "resetZoom": "بازنشانی زوم",
+      "uploaderSuccess": "تصویر با موفقیت ویرایش و ذخیره شد",
+      "saveOptions": "ذخیره تصویر",
+      "edit": "ویرایش",
+      "saveToGallery": "ذخیره در گالری (فایل‌ها)",
+      "saveToGallerySuccess": "تصویر با موفقیت در گالری ذخیره شد",
+      "saveToGalleryError": "خطا در ذخیره‌سازی تصویر در گالری",
+      "loadingImage": "در حال دریافت تصویر...",
+      "loadError": "خطا در دریافت تصویر از سرور",
+      "cropFree": "آزاد",
+      "categories": {
+        "manual": "تنظیمات دستی",
+        "color": "رنگی و پایه",
+        "cinematic": "هنری و سینمایی",
+        "atmosphere": "فصل‌ها و طبیعت"
+      },
+      "presets": {
+        "none": "بدون فیلتر",
+        "grayscale": "سیاه و سفید",
+        "sepia": "سپیا",
+        "vintage": "کلاسیک",
+        "warm": "گرم",
+        "cool": "سرد",
+        "vivid": "پویا",
+        "dramatic": "دراماتیک",
+        "cinematic": "سینمایی",
+        "cyberpunk": "سایبرپانک",
+        "golden": "طلایی",
+        "noir": "نوآر",
+        "matte": "مات",
+        "lomo": "لومو",
+        "retro": "رترو",
+        "rosy": "گلبهی",
+        "forest": "جنگلی",
+        "invert": "معکوس",
+        "fade": "محو",
+        "solarize": "سولاریزه",
+        "noise": "نویز",
+        "winter": "زمستانی"
+      }
+    },
+    "app": {
+      "layout": {
+        "chooseModel": {
+          "empty": "یافت نشد",
+          "searchBoxPlaceholder": "نام مدل"
+        },
+        "sidebar": {
+          "balanceCard": {
+            "actions": {
+              "addFunds": "افزودن اعتبار",
+              "label": "پیوندهای مالی",
+              "transactions": "مشاهده تراکنش‌ها"
+            },
+            "chargeWallet": {
+              "action": "پرداخت ({{amount}} ریال) ",
+              "description": "میزان توکن برای خریداری را وارد کنید و سپس از طریق درگاه پرداخت کنید",
+              "nonAction": "پرداخت",
+              "subscriptionRequiredAlert": {
+                "cta": "خرید اشتراک",
+                "description": "شما برای شارژ کیف پول باید ابتدا اشتراک خود را خریداری کنید.",
+                "title": "برای ادامه، ابتدا اشتراک را خریداری کنید"
+              },
+              "title": "افزایش موجودی کیف پول"
+            },
+            "title": "موجودی حساب"
+          },
+          "history": {
+            "emptyTitle": "بدون عنوان"
+          },
+          "menu": {
+            "home": {
+              "label": "صفحه اصلی"
+            },
+            "gallery": {
+              "label": "گالری"
+            },
+            "editor": {
+              "badge": "آزمایشی",
+              "label": "ویرایشگر تصویر"
+            },
+            "imageGeneration": {
+              "label": "تولید عکس"
+            },
+            "videoGeneration": {
+              "label": "تولید  ویدیو"
+            }
+          },
+          "toggle": {
+            "close": "بستن نوار کناری",
+            "menu": "منو",
+            "open": "باز کردن نوار کناری"
+          },
+          "user": {
+            "account": "حساب کاربری",
+            "logout": "خروج",
+            "noPlan": "بدون اشتراک",
+            "chatSupport": "پشتیبانی چت",
+            "telegramSupport": "پشتیبانی تلگرام",
+            "upgrade": "خرید اشتراک"
+          }
+        }
+      }
+    },
+    "gallery": {
+      "actions": {
+        "delete": "حذف",
+        "refresh": "بروزرسانی"
+      },
+      "delete": {
+        "deleting": "در حال حذف...",
+        "description": "فایل «{{fileName}}» حذف شود؟ این عملیات قابل بازگشت نیست.",
+        "error": "حذف فایل با خطا مواجه شد. دوباره تلاش کنید.",
+        "success": "فایل حذف شد",
+        "title": "حذف فایل"
+      },
+      "description": "همه فایل‌های آپلودشده و تولیدشده شما در یکجا",
+      "empty": {
+        "description": "بعد از آپلود یا تولید عکس، ویدیو یا صدا، فایل‌ها اینجا نمایش داده می‌شوند.",
+        "title": "هنوز فایلی ندارید"
+      },
+      "error": {
+        "description": "دریافت فایل‌ها با خطا مواجه شد. دوباره تلاش کنید.",
+        "title": "گالری بارگذاری نشد"
+      },
+      "filters": {
+        "all": "همه",
+        "audio": "صدا",
+        "image": "عکس",
+        "video": "ویدیو"
+      },
+      "loadingMore": "در حال بارگذاری فایل‌ها...",
+      "mediaTypes": {
+        "audio": "صدا",
+        "image": "عکس",
+        "video": "ویدیو"
+      },
+      "title": "گالری"
+    },
+    "auth": {
+      "login": {
+        "description": "به پر پیکسل ای آی خوش آمدید",
+        "enterPasswordForm": {
+          "password": {
+            "description": "رمز عبور خود را وارد کنید",
+            "label": "رمز عبور"
+          },
+          "submit": "ورود",
+          "successLoginToast": "با موفقیت وارد شدید"
+        },
+        "forgetPassword": "فراموشی رمز عبور",
+        "registrationPolicies": {
+          "agreementSuffix": "را مطالعه کرده‌اید و با آن‌ها موافقید.",
+          "description": "با ثبت‌نام در پرپیکس، اعلام می‌کنید که",
+          "privacy": "سیاست حریم خصوصی",
+          "separator": "و",
+          "terms": "شرایط استفاده"
+        },
+        "setPasswordForm": {
+          "confirmPassword": {
+            "description": "تکرار رمز عبور خود را وارد کنید",
+            "label": "تکرار رمز عبور"
+          },
+          "description": "در این مرحله شما رمز عبور برای خودو انتخاب می کنید",
+          "otp": {
+            "description": "کد فعال سازی را وارد کنید",
+            "label": "کد فعال سازی"
+          },
+          "password": {
+            "description": "رمز عبور خود را وارد کنید",
+            "label": "رمز عبور"
+          },
+          "resend": "ارسال مجدد کد فعال سازی",
+          "resendUntil": "ارسال مجدد کد فعال سازی در {{time}} دقیقه",
+          "submit": "ورود",
+          "successSetPasswordToast": "رمز عبور با موفقیت ثبت شد",
+          "title": "ایجاد رمز عبور"
+        },
+        "startForm": {
+          "mobile": {
+            "description": "شماره همراه تلفن خود را وارد کنید",
+            "label": "شماره تلفن"
+          },
+          "submit": "ادامه دادن"
+        },
+        "successSendOtp": "کد تایید با موفقیت برای شما ارسال گردید",
+        "title": "ورود"
+      }
+    },
+    "generation": {
+      "rules": {
+        "trigger": "راهنمای قوانین تولید",
+        "title": "قوانین مهم تولید",
+        "description": "برای جلوگیری از تأخیر یا مسدود شدن حساب، این نکات را پیش از ارسال درخواست بخوانید.",
+        "prohibitedContent": {
+          "title": "محتوای ممنوعه",
+          "description": "تولید محتوای +۱۸، جنسی، خشونت شدید، نفرت‌پراکنی، دیپ‌فیک بدون رضایت و نقض حقوق دیگران ممنوع است."
+        },
+        "tokenProcessing": {
+          "title": "وضعیت توکن و زمان پردازش",
+          "description": "بسته به ارائه‌دهنده، پاسخ به درخواست ممکن است تا ۷۲ ساعت طول بکشد. در این مدت توکن شما موقتاً رزرو می‌شود و اگر تولید ناموفق باشد، به حسابتان برمی‌گردد."
+        },
+        "fullTerms": "مشاهده قوانین کامل"
+      },
+      "modelTokenPrice": {
+        "ariaLabel": "نمایش بازه مصرف توکن مدل",
+        "empty": "بازه مصرف توکن برای این مدل ثبت نشده است.",
+        "loading": "در حال دریافت بازه مصرف توکن مدل...",
+        "range": "این مدل حداقل {{min}} و حداکثر {{max}} توکن مصرف می‌کند."
+      },
+      "image": {
+        "title": "تولید عکس",
+        "generationError": {
+          "action": "تلاش مجدد",
+          "content": "متاسفانه خطایی رخ داده است دوباره تلاش کنید",
+          "title": "تولید عکس ناموفق بود"
+        },
+        "generationLoading": {
+          "content": "در حال تولید عکس ..."
+        },
+        "promptBox": {
+          "edit": "ویرایش",
+          "generate": "تولید",
+          "promptTextArea": {
+            "placeholder": "شروع به تایپ کنید"
+          },
+          "referenceImages": {
+            "label": "عکس منبع"
+          }
+        },
+        "requirementsSection": {
+          "required": {
+            "image": "حداقل یک عکس به عنوان منبع وارد کنید",
+            "prompt": "حداقل ۵ کاراکتر برای دستور وارد کنید"
+          },
+          "title": "ورودی های لازم برای کار با {{modelName}}"
+        },
+        "typingAnimation": {
+          "words": [
+            "با هوش مصنوعی رویاهتو بساز 🚀",
+            "هرچی که نمیشه اینجا میشه ✨",
+            "تخیلتو تبدیل به تصویر کن 🎨",
+            "از ایده تا واقعیت، فقط یک کلیک ⚡"
+          ]
+        }
+      },
+      "video": {
+        "title": "تولید ویدیو",
+        "generationError": {
+          "action": "تلاش مجدد",
+          "content": "متاسفانه خطایی رخ داده است دوباره تلاش کنید",
+          "title": "تولید ویدیو ناموفق بود"
+        },
+        "generationLoading": {
+          "content": "درحال تولید ویدیو لطفا صبر کنید"
+        },
+        "promptBox": {
+          "exclusiveImageInputsHint": "لطفا یا تصاویر مرجع اضافه کنید یا تصاویر فریم",
+          "generate": "تولید",
+          "includeAudio": {
+            "label": "شامل صدا"
+          },
+          "promptTextArea": {
+            "placeholder": "شروع به تایپ کنید"
+          },
+          "referenceImages": {
+            "first": "عکس اول",
+            "last": "عکس آخر"
+          }
+        },
+        "requirementsSection": {
+          "required": {
+            "image": "حداقل یک عکس به عنوان منبع وارد کنید",
+            "prompt": "حداقل ۵ کاراکتر برای دستور وارد کنید"
+          },
+          "title": "ورودی های لازم برای کار با {{modelName}}"
+        },
+        "typingAnimation": {
+          "words": [
+            "🚀 ایده‌ات رو به ویدیویی دیدنی تبدیل کن",
+            "🎥 هر صحنه‌ای که توی ذهنت می‌چرخه، بساز",
+            "🪄 از یک تصویر ساده، یک ویدیوی کامل خلق کن",
+            "⚡ به تخیلت حرکت بده و زنده‌اش کن"
+          ]
+        }
+      }
+    },
+    "payment": {
+      "redirect": {
+        "autoRedirect": "انتقال خودکار تا {{seconds}} ثانیه دیگر",
+        "continue": "ادامه پرداخت",
+        "description": "مبلغ نهایی پرداخت را بررسی کنید و سپس به درگاه بروید.",
+        "baseAmount": "مبلغ پایه",
+        "taxAmount": "مالیات",
+        "finalAmount": "مبلغ نهایی",
+        "title": "تایید مبلغ پرداخت"
+      },
+      "result": {
+        "title": "نتیجه پرداخت",
+        "amount": "مبلغ تراکنش",
+        "return": "بازگشت به صفحه اصلی",
+        "retry": "تلاش دوباره برای پرداخت",
+        "trackingCode": "کد پیگیری",
+        "fulfillmentPending": "درخواست شما هنوز تکمیل نشده است.",
+        "states": {
+          "pending": {
+            "title": "در انتظار نتیجه پرداخت",
+            "description": "وضعیت پرداخت در حال بررسی است. این صفحه خودکار به‌روز می‌شود."
+          },
+          "processing": {
+            "title": "پرداخت انجام شد؛ در حال تکمیل درخواست",
+            "description": "پرداخت تأیید شده و تکمیل درخواست شما در حال انجام است."
+          },
+          "succeeded": {
+            "title": "پرداخت تکمیل شد",
+            "description": "درخواست شما با موفقیت تکمیل شد."
+          },
+          "failed": {
+            "title": "پرداخت ناموفق",
+            "description": "پرداخت کامل نشد. برای جزئیات، فهرست پرداخت‌ها را بررسی کنید."
+          },
+          "review": {
+            "title": "پرداخت نیاز به بررسی دارد",
+            "description": "پرداخت برای بررسی بیشتر ثبت شده است. کد پیگیری را نزد خود نگه دارید."
+          }
+        }
+      }
+    },
+    "profile": {
+      "payments": {
+        "title": "پرداخت‌ها",
+        "empty": "پرداختی برای نمایش وجود ندارد",
+        "details": "جزئیات مبلغ",
+        "trackingCode": "کد پیگیری",
+        "paymentStatus": "وضعیت پرداخت",
+        "fulfillmentStatus": "وضعیت تکمیل درخواست",
+        "amount": "مبلغ",
+        "baseAmount": "مبلغ پایه",
+        "taxAmount": "مالیات",
+        "totalAmount": "مبلغ کل",
+        "type": "نوع",
+        "date": "تاریخ",
+        "states": {
+          "pending": "در انتظار نتیجه",
+          "processing": "پرداخت شده؛ در حال اعمال",
+          "succeeded": "پرداخت و تحویل کامل",
+          "failed": "ناموفق",
+          "review": "نیازمند بررسی"
+        },
+        "fulfillment": {
+          "NOT_READY": "شروع نشده",
+          "PENDING": "در حال اعمال",
+          "SUCCEEDED": "اعمال شد",
+          "NEEDS_REVIEW": "نیازمند بررسی"
+        },
+        "targets": {
+          "wallet_topup": "شارژ کیف پول",
+          "subscription": "خرید اشتراک",
+          "other": "سایر"
+        }
+      },
+      "settings": {
+        "title": "ویرایش حساب کاربری",
+        "userInfo": {
+          "backToHome": "بازگشت به صفحه اصلی",
+          "form": {
+            "email": {
+              "label": "ایمیل"
+            },
+            "mobile": {
+              "description": "شماره همراه تلفن خود را وارد کنید",
+              "label": "شماره تلفن همراه"
+            },
+            "name": {
+              "description": "فقط شامل حروف انگلیسی و فارسی و حداکثر ۶۴ کاراکتر",
+              "label": "نام کامل"
+            },
+            "submit": "ویرایش اطلاعات",
+            "successSetPasswordToast": "اطلاعات کاربری با موفقیت بروزرسانی گردید"
+          }
+        }
+      },
+      "walletTransactions": {
+        "title": "تراکنش‌های کیف پول"
+      }
+    },
+    "root": {
+      "title": "پرپیکس",
+      "accessToSections": {
+        "action": "کلیک کنید",
+        "imageGeneration": {
+          "description": "دسترسی به آخرین مدل های تولید و ویرایش تصویر",
+          "title": "تولید عکس"
+        },
+        "userProfile": {
+          "description": "دسترسی به پروفایل کاربری و مشخصات شخصی",
+          "title": "حساب کاربری"
+        },
+        "videoGeneration": {
+          "description": "دسترسی به آخرین مدل های تولید ویدیو، هرآنچه میخواهید تصور کنید",
+          "title": "تولید ویدیو"
+        }
+      }
+    }
+  }
+}
