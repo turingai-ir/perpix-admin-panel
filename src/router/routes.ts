@@ -44,6 +44,24 @@ export const APP_ROUTES_KEY = {
       meta: { title: "نرخ ارز و گزارش‌ها | پرپیکس" },
     },
   },
+  subscriptions: {
+    list: {
+      path: "/subscriptions",
+      meta: { title: "مدیریت اشتراک‌ها | پرپیکس" },
+    },
+    detail: {
+      path: "/subscriptions/:subscriptionUuid",
+      meta: { title: "جزئیات اشتراک | پرپیکس" },
+    },
+    plans: {
+      path: "/subscription-plans",
+      meta: { title: "پلن‌های اشتراکی | پرپیکس" },
+    },
+    operations: {
+      path: "/subscription-operations",
+      meta: { title: "سوابق عملیات اشتراک | پرپیکس" },
+    },
+  },
   root: {
     path: "/",
     meta: {

@@ -569,6 +569,131 @@
         "rateRefreshError": "بروزرسانی نرخ ارز با خطا مواجه شد."
       }
     },
+    "subscriptions": {
+      "menuSection": "مدیریت اشتراک‌ها",
+      "menuTitle": "اشتراک‌ها",
+      "title": "مدیریت اشتراک کاربران",
+      "description": "مشاهده، فعال‌سازی، بررسی وضعیت و تاریخ انقضای اشتراک‌های کاربران",
+      "detailTitle": "جزئیات اشتراک",
+      "backToList": "بازگشت به لیست اشتراک‌ها",
+      "columns": {
+        "id": "شناسه اشتراک",
+        "user": "کاربر",
+        "plan": "پلن اشتراکی",
+        "status": "وضعیت",
+        "startedAt": "تاریخ شروع",
+        "expiresAt": "تاریخ انقضا"
+      },
+      "statusLabels": {
+        "active": "فعال",
+        "expired": "منقضی شده",
+        "scheduled": "زمان‌بندی‌شده",
+        "replaced": "جایگزین‌شده"
+      },
+      "filters": {
+        "searchPlaceholder": "جستجو با شناسه اشتراک یا کاربر...",
+        "allStatuses": "همه وضعیت‌ها",
+        "allPlans": "همه پلن‌ها",
+        "activeFiltersApplied": "فیلترها اعمال شده‌اند",
+        "reset": "پاک کردن همه فیلترها"
+      },
+      "fields": {
+        "uuid": "شناسه اشتراک (UUID)",
+        "user": "کاربر مشترک",
+        "plan": "پلن اشتراکی",
+        "startedAt": "تاریخ شروع",
+        "expiresAt": "تاریخ انقضا",
+        "createdAt": "تاریخ ثبت در سیستم"
+      },
+      "cards": {
+        "timingTitle": "وضعیت و زمان‌بندی",
+        "userPlanTitle": "مشخصات کاربر و پلن"
+      },
+      "activateModal": {
+        "title": "فعال‌سازی دستی اشتراک",
+        "description": "شناسه کاربر و پلن اشتراکی مورد نظر را جهت فعال‌سازی فوری وارد کنید.",
+        "userUuidLabel": "شناسه کاربری (User UUID):",
+        "planLabel": "انتخاب پلن اشتراکی:",
+        "selectPlan": "یک پلن را انتخاب کنید...",
+        "submit": "فعال‌سازی اشتراک"
+      },
+      "dialogs": {
+        "deactivateTitle": "غیرفعال‌سازی اشتراک کاربر",
+        "deactivateDescription": "با غیرفعال‌سازی، دسترسی کاربر به امکانات و مدل‌های این پلن قطع خواهد شد. آیا از این عملیات اطمینان دارید؟",
+        "deactivateConfirm": "غیرفعال‌سازی اشتراک"
+      },
+      "actions": {
+        "activateNew": "فعال‌سازی اشتراک کاربر",
+        "deactivate": "غیرفعال‌سازی",
+        "activateSuccess": "اشتراک کاربر با موفقیت فعال شد.",
+        "activateError": "فعال‌سازی اشتراک با خطا مواجه شد.",
+        "deactivateSuccess": "اشتراک کاربر با موفقیت غیرفعال شد.",
+        "deactivateError": "غیرفعال‌سازی اشتراک با خطا مواجه شد.",
+        "createPlanSuccess": "پلن جدید با موفقیت ایجاد شد.",
+        "createPlanError": "ایجاد پلن با خطا مواجه شد.",
+        "updatePlanSuccess": "پلن با موفقیت ویرایش شد.",
+        "updatePlanError": "ویرایش پلن با خطا مواجه شد."
+      },
+      "plans": {
+        "menuTitle": "پلن‌ها",
+        "title": "مدیریت پلن‌های اشتراکی",
+        "description": "تعریف و ویرایش پلن‌ها، قیمت‌گذاری، تعیین مدت اعتبار و سهمیه ابزارهای هوش مصنوعی",
+        "createNew": "افزودن پلن جدید",
+        "searchPlaceholder": "جستجو در نام و توضیحات پلن...",
+        "recommended": "پیشنهادی",
+        "default": "پیش‌فرض",
+        "active": "فعال",
+        "inactive": "غیرفعال",
+        "createTitle": "ایجاد پلن اشتراکی جدید",
+        "editTitle": "ویرایش پلن اشتراکی",
+        "formDescription": "مشخصات، قیمت‌ها، مدت زمان اعتبار و دسترسی‌های این پلن را تعیین کنید.",
+        "createSubmit": "ایجاد پلن",
+        "columns": {
+          "name": "نام و عنوان پلن",
+          "duration": "مدت اعتبار",
+          "prices": "قیمت ریالی",
+          "gift": "اعتبار هدیه",
+          "status": "وضعیت"
+        },
+        "fields": {
+          "name": "شناسه انگلیسی (slug):",
+          "displayName": "عنوان نمایشی فارسی:",
+          "description": "توضیحات پلن:",
+          "duration": "مدت اعتبار (روز):",
+          "basePrice": "قیمت پایه ($):",
+          "discountedPrice": "قیمت تخفیف‌خورده ($):",
+          "giftAmount": "اعتبار هدیه کیف پول دلاری ($):",
+          "scopes": "دسترسی‌ها و مجوزها (با کاما جدا کنید):",
+          "models": "مدل‌های مجاز (با کاما جدا کنید):",
+          "isActive": "پلن فعال است",
+          "isRecommended": "پیشنهاد ویژه (Recommended)",
+          "isDefault": "پلن پیش‌فرض"
+        }
+      },
+      "operations": {
+        "menuTitle": "سوابق عملیات",
+        "title": "سوابق عملیات و گزارش‌های اشتراک",
+        "description": "رهگیری تغییرات وضعیت، فعال‌سازی‌های مدیر و گزارش‌های تجمیعی پلن‌ها",
+        "reportsTitle": "گزارش‌های دوره‌ای اشتراک‌ها",
+        "tabs": {
+          "logs": "سوابق عملیات",
+          "reports": "گزارش‌های آماری"
+        },
+        "success": "موفق",
+        "failed": "ناموفق",
+        "columns": {
+          "operation": "نوع عملیات",
+          "status": "نتیجه",
+          "targetUser": "کاربر هدف",
+          "actor": "انجام‌دهنده (مدیر / سیستم)",
+          "date": "زمان ثبت"
+        }
+      },
+      "reports": {
+        "plansTitle": "توزیع اشتراک‌ها بر اساس پلن",
+        "expirationsTitle": "روند انقضای اشتراک‌ها"
+      }
+    },
     "mediaUploader": {
       "actions": {
         "close": "بستن",

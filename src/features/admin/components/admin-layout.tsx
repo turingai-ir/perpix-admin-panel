@@ -11,6 +11,9 @@ import {
   Wallet,
   ArrowLeftRight,
   TrendingUp,
+  Sparkles,
+  Package,
+  History,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -66,6 +69,26 @@ const navGroups: readonly NavGroup[] = [
         path: APP_ROUTES_KEY.finance.exchangeRate.path,
         label: "features.finance.exchangeRate.menuTitle",
         icon: TrendingUp,
+      },
+    ],
+  },
+  {
+    sectionKey: "features.subscriptions.menuSection",
+    items: [
+      {
+        path: APP_ROUTES_KEY.subscriptions.list.path,
+        label: "features.subscriptions.menuTitle",
+        icon: Sparkles,
+      },
+      {
+        path: APP_ROUTES_KEY.subscriptions.plans.path,
+        label: "features.subscriptions.plans.menuTitle",
+        icon: Package,
+      },
+      {
+        path: APP_ROUTES_KEY.subscriptions.operations.path,
+        label: "features.subscriptions.operations.menuTitle",
+        icon: History,
       },
     ],
   },

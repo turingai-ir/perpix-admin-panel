@@ -16,6 +16,12 @@ import {
   TransactionsListPage,
   ExchangeRatePage,
 } from "@/features/finance";
+import {
+  SubscriptionsListPage,
+  SubscriptionDetailPage,
+  PlansListPage,
+  SubscriptionOperationsPage,
+} from "@/features/subscriptions";
 import { LoginPage, SessionGate } from "@/features/auth";
 
 export const router = createBrowserRouter([
@@ -77,6 +83,30 @@ export const router = createBrowserRouter([
             path: APP_ROUTES_KEY.finance.exchangeRate.path,
             element: <ExchangeRatePage />,
             handle: { title: APP_ROUTES_KEY.finance.exchangeRate.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.subscriptions.list.path,
+            element: <SubscriptionsListPage />,
+            handle: { title: APP_ROUTES_KEY.subscriptions.list.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.subscriptions.detail.path,
+            element: <SubscriptionDetailPage />,
+            handle: {
+              title: APP_ROUTES_KEY.subscriptions.detail.meta.title,
+            },
+          },
+          {
+            path: APP_ROUTES_KEY.subscriptions.plans.path,
+            element: <PlansListPage />,
+            handle: { title: APP_ROUTES_KEY.subscriptions.plans.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.subscriptions.operations.path,
+            element: <SubscriptionOperationsPage />,
+            handle: {
+              title: APP_ROUTES_KEY.subscriptions.operations.meta.title,
+            },
           },
           {
             path: APP_ROUTES_KEY.smsTest.path,
