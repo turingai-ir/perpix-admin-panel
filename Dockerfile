@@ -45,6 +45,10 @@ RUN pnpm build
 
 FROM caddy:2-alpine AS runner
 
+# Port 8080 needs no privileged bind capability. Remove the file capability
+# so Caddy can execute with Compose's cap_drop: ALL.
+RUN setcap -r /usr/bin/caddy
+
 ENV XDG_DATA_HOME=/tmp/data \
     XDG_CONFIG_HOME=/tmp/config
 
