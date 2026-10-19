@@ -387,6 +387,188 @@
         "enterPhonePrompt": "جهت تأیید شماره همراه «{{phone}}» را در کادر زیر وارد کنید:"
       }
     },
+    "finance": {
+      "menuSection": "مدیریت مالی",
+      "payments": {
+        "menuTitle": "پرداخت‌ها",
+        "title": "لیست پرداخت‌ها",
+        "description": "مشاهده و پیگیری تمام تراکنش‌های پرداخت، وضعیت‌های بانکی و جزئیات مبالغ",
+        "detailTitle": "جزئیات پرداخت",
+        "detailSubtitle": "اطلاعات کامل درگاه، شناسه تراکنش بانکی و وضعیت پردازش",
+        "backToList": "بازگشت به لیست پرداخت‌ها",
+        "columns": {
+          "id": "شناسه پرداخت",
+          "user": "کاربر",
+          "target": "نوع هدف",
+          "amount": "مبلغ (دلار / ریال)",
+          "financialStatus": "وضعیت مالی",
+          "fulfillmentStatus": "وضعیت تحویل",
+          "createdAt": "تاریخ ایجاد",
+          "actions": "عملیات"
+        },
+        "statusLabels": {
+          "SUCCEEDED": "پرداخت موفق",
+          "FAILED": "ناموفق",
+          "PENDING": "در انتظار پرداخت",
+          "PROCESSING": "در حال پردازش",
+          "CANCELED": "لغو شده",
+          "EXPIRED": "منقضی شده",
+          "REQUIRES_REVIEW": "نیازمند بررسی",
+          "REFUNDED": "مسترد شده"
+        },
+        "fulfillmentLabels": {
+          "FULFILLED": "تحویل شده",
+          "UNFULFILLED": "تحویل نشده",
+          "FAILED": "خطا در تحویل",
+          "PROCESSING": "در حال تحویل"
+        },
+        "targetLabels": {
+          "wallet_topup": "شارژ کیف پول",
+          "subscription": "خرید اشتراک"
+        },
+        "filters": {
+          "searchPlaceholder": "جستجو با شناسه پرداخت، کد پیگیری یا کاربر...",
+          "allFinancialStatuses": "همه وضعیت‌های مالی",
+          "allFulfillmentStatuses": "همه وضعیت‌های تحویل",
+          "allTargetTypes": "همه انواع هدف",
+          "activeFiltersApplied": "فیلترها اعمال شده‌اند",
+          "reset": "پاک کردن فیلترها"
+        },
+        "fields": {
+          "uuid": "شناسه پرداخت (UUID)",
+          "userUuid": "شناسه کاربر",
+          "provider": "درگاه پرداخت",
+          "trackId": "کد پیگیری درگاه",
+          "orderId": "شماره سفارش (Order ID)",
+          "targetType": "نوع تراکنش",
+          "amountUsd": "مبلغ دلاری",
+          "amountIrr": "مبلغ ریالی",
+          "financialStatus": "وضعیت پرداخت",
+          "fulfillmentStatus": "وضعیت تحویل سرویس",
+          "callbackUrl": "آدرس بازگشت (Callback)",
+          "createdAt": "زمان ایجاد",
+          "updatedAt": "آخرین بروزرسانی"
+        }
+      },
+      "wallets": {
+        "menuTitle": "کیف پول‌ها",
+        "title": "مدیریت کیف پول‌ها",
+        "description": "مشاهده موجودی کیف پول کاربران، وضعیت قفل و امکان شارژ دستی",
+        "detailTitle": "جزئیات کیف پول",
+        "detailSubtitle": "اطلاعات موجودی، سوابق تراکنش‌ها و تاریخچه شارژ",
+        "backToList": "بازگشت به لیست کیف پول‌ها",
+        "transactionsTitle": "سوابق تراکنش‌های این کیف پول",
+        "chargeButton": "شارژ کیف پول",
+        "columns": {
+          "id": "شناسه کیف پول",
+          "user": "کاربر",
+          "balance": "موجودی فعلی",
+          "status": "وضعیت",
+          "createdAt": "تاریخ ایجاد",
+          "actions": "عملیات"
+        },
+        "statuses": {
+          "locked": "قفل شده",
+          "unlocked": "فعال و آزاد"
+        },
+        "filters": {
+          "searchPlaceholder": "جستجو با شناسه کیف پول یا کاربر...",
+          "allStatuses": "همه وضعیت‌ها",
+          "activeFiltersApplied": "فیلترها اعمال شده‌اند",
+          "reset": "پاک کردن فیلترها"
+        },
+        "fields": {
+          "uuid": "شناسه کیف پول (UUID)",
+          "userUuid": "شناسه کاربر",
+          "balanceUsd": "موجودی دلاری",
+          "balanceMicro": "موجودی میکرودلار",
+          "isLocked": "وضعیت حساب",
+          "createdAt": "تاریخ ساخت",
+          "updatedAt": "آخرین تغییرات"
+        },
+        "chargeModal": {
+          "title": "شارژ دستی کیف پول",
+          "description": "مبلغ مورد نظر را به دلار وارد کنید. این مبلغ مستقیماً به موجودی کیف پول کاربر اضافه خواهد شد.",
+          "targetUser": "کاربر دریافت‌کننده:",
+          "amountLabel": "مبلغ شارژ (دلار آمریکا):",
+          "amountPlaceholder": "مثال: 10.00",
+          "microEquivalent": "معادل میکرودلار:",
+          "irrEquivalent": "تقریبی به ریال:",
+          "reasonLabel": "علت یا شماره ارجاع شارژ (اختیاری):",
+          "reasonPlaceholder": "مثال: هدیه ثبت‌نام، جبران اختلال سیستم...",
+          "confirmWarning": "این عملیات غیرقابل بازگشت است و مستقیماً موجودی کاربر را تغییر می‌دهد.",
+          "confirmCheckbox": "مبلغ و شناسه گیرنده را بررسی کرده و مسئولیت انجام شارژ را می‌پذیرم.",
+          "submit": "انجام شارژ کیف پول",
+          "cancel": "انصراف"
+        }
+      },
+      "transactions": {
+        "menuTitle": "تراکنش‌ها",
+        "title": "سوابق تراکنش‌ها",
+        "description": "رهگیری تمام تراکنش‌های سیستم، واریز، برداشت، مصرف سرویس و شارژ مدیر",
+        "columns": {
+          "id": "شناسه تراکنش",
+          "wallet": "کیف پول",
+          "user": "کاربر",
+          "type": "منبع تراکنش",
+          "direction": "جهت",
+          "amount": "مبلغ",
+          "balanceAfter": "موجودی پس از تراکنش",
+          "date": "زمان ثبت"
+        },
+        "directionLabels": {
+          "CREDIT": "افزایش اعتبار (واریز)",
+          "DEBIT": "کسر اعتبار (برداشت)"
+        },
+        "sourceLabels": {
+          "ADMIN_CHARGE": "شارژ دستی مدیر",
+          "PAYMENT": "درگاه پرداخت آنلاین",
+          "TASK_USAGE": "مصرف پردازش هوش مصنوعی",
+          "SUBSCRIPTION": "خرید بسته اشتراکی",
+          "REFUND": "استرداد وجه"
+        },
+        "filters": {
+          "searchPlaceholder": "جستجو با شناسه تراکنش، کاربر یا کیف پول...",
+          "allDirections": "همه جهت‌ها (واریز / برداشت)",
+          "allSources": "همه منابع تراکنش",
+          "activeFiltersApplied": "فیلترها اعمال شده‌اند",
+          "reset": "پاک کردن فیلترها"
+        }
+      },
+      "exchangeRate": {
+        "menuTitle": "نرخ ارز و گزارش‌ها",
+        "title": "نرخ ارز و گزارش‌های مالی",
+        "description": "مشاهدهٔ آخرین نرخ برابری ارز، بروزرسانی دستی و شاخص‌های مالی سیستم",
+        "refreshButton": "بروزرسانی نرخ ارز",
+        "usdToIrr": "نرخ ۱ دلار آمریکا (USD)",
+        "active": "فعال",
+        "unitRatio": "واحد محاسباتی میکرودلار",
+        "lastUpdate": "آخرین استعلام و بروزرسانی",
+        "calculatorTitle": "تبدیل و محاسبه‌گر سریع ارز",
+        "amountUsd": "مبلغ به دلار (USD):"
+      },
+      "reports": {
+        "title": "گزارش‌های آماری مالی",
+        "description": "بررسی حجم و آمار تفکیکی پرداخت‌ها، تراکنش‌ها و موجودی سیستم",
+        "tabs": {
+          "payments": "گزارش پرداخت‌ها",
+          "wallets": "تراکنش‌های کیف پول",
+          "balances": "موجودی‌ها"
+        },
+        "paymentStatusesTitle": "تفکیک پرداخت‌ها بر اساس وضعیت",
+        "paymentDailyTitle": "روند روزانه پرداخت‌ها",
+        "walletSourcesTitle": "تفکیک تراکنش‌ها بر اساس منبع (Source)",
+        "walletDirectionsTitle": "تفکیک بر اساس جهت (واریز / برداشت)",
+        "walletDailyTitle": "روند روزانه فعالیت کیف پول‌ها",
+        "balancesTitle": "گزارش تجمیعی موجودی‌های سیستم"
+      },
+      "actions": {
+        "chargeSuccess": "کیف پول با موفقیت شارژ شد.",
+        "chargeError": "شارژ کیف پول با خطا مواجه شد.",
+        "rateRefreshSuccess": "نرخ ارز با موفقیت بروزرسانی شد.",
+        "rateRefreshError": "بروزرسانی نرخ ارز با خطا مواجه شد."
+      }
+    },
     "mediaUploader": {
       "actions": {
         "close": "بستن",
@@ -965,7 +1147,9 @@
   "navigation": {
     "toggle": "باز و بسته کردن منو",
     "menu": "منوها",
-    "main": "منوی اصلی"
+    "main": "منوی اصلی",
+    "general": "عمومی",
+    "tools": "ابزارها"
   },
   "smsTest": {
     "title": "تست پیامک",

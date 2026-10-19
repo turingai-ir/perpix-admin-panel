@@ -21,4 +21,3 @@ export function useUserDetail(userUuid: string) {
 
   return query;
 }
-

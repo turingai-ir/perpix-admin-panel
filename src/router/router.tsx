@@ -8,6 +8,14 @@ import { ErrorFallbackPage, LoadingSection } from "@/components/custom";
 import RootLayout from "@/pages/(root)/layout";
 import { OverviewPage } from "@/features/overview";
 import { UsersListPage, UserDetailPage } from "@/features/users";
+import {
+  PaymentsListPage,
+  PaymentDetailPage,
+  WalletsListPage,
+  WalletDetailPage,
+  TransactionsListPage,
+  ExchangeRatePage,
+} from "@/features/finance";
 import { LoginPage, SessionGate } from "@/features/auth";
 
 export const router = createBrowserRouter([
@@ -37,6 +45,38 @@ export const router = createBrowserRouter([
             path: APP_ROUTES_KEY.users.detail.path,
             element: <UserDetailPage />,
             handle: { title: APP_ROUTES_KEY.users.detail.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.finance.payments.list.path,
+            element: <PaymentsListPage />,
+            handle: { title: APP_ROUTES_KEY.finance.payments.list.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.finance.payments.detail.path,
+            element: <PaymentDetailPage />,
+            handle: {
+              title: APP_ROUTES_KEY.finance.payments.detail.meta.title,
+            },
+          },
+          {
+            path: APP_ROUTES_KEY.finance.wallets.list.path,
+            element: <WalletsListPage />,
+            handle: { title: APP_ROUTES_KEY.finance.wallets.list.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.finance.wallets.detail.path,
+            element: <WalletDetailPage />,
+            handle: { title: APP_ROUTES_KEY.finance.wallets.detail.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.finance.transactions.path,
+            element: <TransactionsListPage />,
+            handle: { title: APP_ROUTES_KEY.finance.transactions.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.finance.exchangeRate.path,
+            element: <ExchangeRatePage />,
+            handle: { title: APP_ROUTES_KEY.finance.exchangeRate.meta.title },
           },
           {
             path: APP_ROUTES_KEY.smsTest.path,

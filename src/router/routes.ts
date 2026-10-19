@@ -14,6 +14,36 @@ export const APP_ROUTES_KEY = {
       meta: { title: "جزئیات کاربر | پرپیکس" },
     },
   },
+  finance: {
+    payments: {
+      list: {
+        path: "/finance/payments",
+        meta: { title: "پرداخت‌ها | پرپیکس" },
+      },
+      detail: {
+        path: "/finance/payments/:paymentUuid",
+        meta: { title: "جزئیات پرداخت | پرپیکس" },
+      },
+    },
+    wallets: {
+      list: {
+        path: "/finance/wallets",
+        meta: { title: "کیف پول‌ها | پرپیکس" },
+      },
+      detail: {
+        path: "/finance/wallets/:walletUuid",
+        meta: { title: "جزئیات کیف پول | پرپیکس" },
+      },
+    },
+    transactions: {
+      path: "/finance/transactions",
+      meta: { title: "تراکنش‌های کیف پول | پرپیکس" },
+    },
+    exchangeRate: {
+      path: "/finance/exchange-rate",
+      meta: { title: "نرخ ارز و گزارش‌ها | پرپیکس" },
+    },
+  },
   root: {
     path: "/",
     meta: {
