@@ -22,6 +22,15 @@ import {
   PlansListPage,
   SubscriptionOperationsPage,
 } from "@/features/subscriptions";
+import {
+  AiTasksListPage,
+  AiTaskDetailPage,
+  AiGatewayRequestsListPage,
+  AiGatewayRequestDetailPage,
+  AiModelsListPage,
+  AiProvidersListPage,
+} from "@/features/ai";
+import { FilesListPage, FileDetailPage } from "@/features/files";
 import { LoginPage, SessionGate } from "@/features/auth";
 
 export const router = createBrowserRouter([
@@ -107,6 +116,46 @@ export const router = createBrowserRouter([
             handle: {
               title: APP_ROUTES_KEY.subscriptions.operations.meta.title,
             },
+          },
+          {
+            path: APP_ROUTES_KEY.ai.tasks.list.path,
+            element: <AiTasksListPage />,
+            handle: { title: APP_ROUTES_KEY.ai.tasks.list.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.ai.tasks.detail.path,
+            element: <AiTaskDetailPage />,
+            handle: { title: APP_ROUTES_KEY.ai.tasks.detail.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.ai.gateway.list.path,
+            element: <AiGatewayRequestsListPage />,
+            handle: { title: APP_ROUTES_KEY.ai.gateway.list.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.ai.gateway.detail.path,
+            element: <AiGatewayRequestDetailPage />,
+            handle: { title: APP_ROUTES_KEY.ai.gateway.detail.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.ai.models.path,
+            element: <AiModelsListPage />,
+            handle: { title: APP_ROUTES_KEY.ai.models.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.ai.providers.path,
+            element: <AiProvidersListPage />,
+            handle: { title: APP_ROUTES_KEY.ai.providers.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.files.list.path,
+            element: <FilesListPage />,
+            handle: { title: APP_ROUTES_KEY.files.list.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.files.detail.path,
+            element: <FileDetailPage />,
+            handle: { title: APP_ROUTES_KEY.files.detail.meta.title },
           },
           {
             path: APP_ROUTES_KEY.smsTest.path,

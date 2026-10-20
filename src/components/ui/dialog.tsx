@@ -112,6 +112,7 @@ export {
   DialogPortal,
   DialogBackdrop,
   DialogPopup,
+  DialogPopup as DialogContent,
   DialogHeader,
   DialogFooter,
   DialogTitle,

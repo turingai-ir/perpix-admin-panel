@@ -14,6 +14,11 @@ import {
   Sparkles,
   Package,
   History,
+  Bot,
+  Cpu,
+  Boxes,
+  Server,
+  Files,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -89,6 +94,41 @@ const navGroups: readonly NavGroup[] = [
         path: APP_ROUTES_KEY.subscriptions.operations.path,
         label: "features.subscriptions.operations.menuTitle",
         icon: History,
+      },
+    ],
+  },
+  {
+    sectionKey: "features.ai.menuSection",
+    items: [
+      {
+        path: APP_ROUTES_KEY.ai.tasks.list.path,
+        label: "features.ai.tasks.menuTitle",
+        icon: Bot,
+      },
+      {
+        path: APP_ROUTES_KEY.ai.gateway.list.path,
+        label: "features.ai.gateway.menuTitle",
+        icon: Cpu,
+      },
+      {
+        path: APP_ROUTES_KEY.ai.models.path,
+        label: "features.ai.models.menuTitle",
+        icon: Boxes,
+      },
+      {
+        path: APP_ROUTES_KEY.ai.providers.path,
+        label: "features.ai.providers.menuTitle",
+        icon: Server,
+      },
+    ],
+  },
+  {
+    sectionKey: "features.files.menuSection",
+    items: [
+      {
+        path: APP_ROUTES_KEY.files.list.path,
+        label: "features.files.menuTitle",
+        icon: Files,
       },
     ],
   },

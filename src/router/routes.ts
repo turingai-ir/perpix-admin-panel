@@ -62,6 +62,46 @@ export const APP_ROUTES_KEY = {
       meta: { title: "سوابق عملیات اشتراک | پرپیکس" },
     },
   },
+  ai: {
+    tasks: {
+      list: {
+        path: "/ai/tasks",
+        meta: { title: "وظایف هوش مصنوعی | پرپیکس" },
+      },
+      detail: {
+        path: "/ai/tasks/:taskUuid",
+        meta: { title: "جزئیات وظیفه هوش مصنوعی | پرپیکس" },
+      },
+    },
+    gateway: {
+      list: {
+        path: "/ai/gateway-requests",
+        meta: { title: "درخواست‌های Gateway | پرپیکس" },
+      },
+      detail: {
+        path: "/ai/gateway-requests/:requestUuid",
+        meta: { title: "جزئیات درخواست Gateway | پرپیکس" },
+      },
+    },
+    models: {
+      path: "/ai/models",
+      meta: { title: "مدل‌های هوش مصنوعی | پرپیکس" },
+    },
+    providers: {
+      path: "/ai/providers",
+      meta: { title: "ارائه‌دهندگان هوش مصنوعی | پرپیکس" },
+    },
+  },
+  files: {
+    list: {
+      path: "/files",
+      meta: { title: "مدیریت فایل‌ها | پرپیکس" },
+    },
+    detail: {
+      path: "/files/:fileUuid",
+      meta: { title: "جزئیات فایل | پرپیکس" },
+    },
+  },
   root: {
     path: "/",
     meta: {

@@ -694,6 +694,209 @@
         "expirationsTitle": "روند انقضای اشتراک‌ها"
       }
     },
+    "ai": {
+      "menuSection": "هوش مصنوعی",
+      "menuTitle": "هوش مصنوعی",
+      "tasks": {
+        "menuTitle": "وظایف",
+        "pageTitle": "مدیریت وظایف هوش مصنوعی",
+        "pageDesc": "مشاهده و بررسی صف وظایف پردازشی کاربران، پیام‌ها و گزارش‌های روزانه",
+        "detailTitle": "جزئیات وظیفه هوش مصنوعی",
+        "overview": "مشخصات وظیفه",
+        "user": "کاربر",
+        "type": "نوع پردازش",
+        "createdAt": "تاریخ ثبت",
+        "updatedAt": "آخرین بروزرسانی",
+        "messagesList": "پیام‌های این وظیفه",
+        "noMessages": "پیامی برای این وظیفه ثبت نشده است.",
+        "searchPlaceholder": "جستجو در وظایف...",
+        "empty": "وظیفه‌ای مطابق با این فیلترها یافت نشد.",
+        "messageResultTitle": "نتیجه اجرای پیام وظیفه",
+        "messageResultDesc": "مشاهده خروجی و متادیتای پردازش شده توسط هوش مصنوعی",
+        "taskStatus": "وضعیت وظیفه",
+        "modelUuid": "شناسه مدل",
+        "modelConfig": "پیکربندی مدل (AI Model Config)",
+        "noResult": "نتیجه‌ای برای این پیام یافت نشد.",
+        "tabs": {
+          "list": "لیست وظایف",
+          "reports": "گزارش‌های آماری"
+        },
+        "types": {
+          "all": "همه انواع وظایف"
+        },
+        "reports": {
+          "typesTitle": "توزیع وظایف بر اساس نوع محتوا",
+          "dailyTitle": "روند روزانه ثبت وظایف"
+        },
+        "columns": {
+          "uuid": "شناسه وظیفه",
+          "type": "نوع وظیفه",
+          "user": "کاربر",
+          "createdAt": "تاریخ ثبت",
+          "updatedAt": "آخرین بروزرسانی"
+        },
+        "messages": {
+          "uuid": "شناسه پیام",
+          "role": "نقش (Role)",
+          "content": "متن پیام",
+          "status": "وضعیت",
+          "createdAt": "زمان ارسال",
+          "checkResult": "بررسی نتیجه"
+        }
+      },
+      "gateway": {
+        "menuTitle": "درخواست‌ها",
+        "pageTitle": "درخواست‌های AI Gateway",
+        "pageDesc": "مدیریت و نظارت بر کلیه فراخوانی‌های Gateway به ارائه‌دهندگان هوش مصنوعی",
+        "detailTitle": "جزئیات درخواست AI Gateway",
+        "overview": "اطلاعات کلی درخواست",
+        "user": "کاربر",
+        "status": "وضعیت درخواست",
+        "externalTaskId": "شناسه وظیفه ارائه‌دهنده خارجی",
+        "statusCode": "کد وضعیت HTTP",
+        "retries": "تعداد تلاش‌های مجدد",
+        "createdAt": "زمان ایجاد",
+        "costs": "هزینه و توکن‌ها",
+        "modelConfig": "پیکربندی مدل (AI Model Config)",
+        "rawRequest": "بدنه درخواست ارسالی (Raw Request)",
+        "rawResponse": "پاسخ دریافتی ارائه‌دهنده (Raw Response)",
+        "refreshAction": "بروزرسانی وضعیت از ارائه‌دهنده",
+        "refreshSuccess": "وضعیت درخواست با موفقیت بروزرسانی شد.",
+        "refreshError": "بروزرسانی وضعیت درخواست ناموفق بود.",
+        "searchPlaceholder": "جستجو در درخواست‌ها...",
+        "empty": "درخواستی یافت نشد.",
+        "tabs": {
+          "list": "لیست درخواست‌ها",
+          "reports": "گزارش‌های Gateway"
+        },
+        "statuses": {
+          "all": "همه وضعیت‌ها"
+        },
+        "reports": {
+          "statuses": "بر اساس وضعیت",
+          "models": "بر اساس مدل",
+          "providers": "بر اساس ارائه‌دهنده",
+          "daily": "روند روزانه"
+        },
+        "columns": {
+          "uuid": "شناسه درخواست",
+          "status": "وضعیت",
+          "model": "مدل",
+          "provider": "ارائه‌دهنده",
+          "cost": "هزینه (USD)",
+          "retries": "تلاش مجدد",
+          "createdAt": "زمان ثبت"
+        }
+      },
+      "models": {
+        "menuTitle": "مدل‌ها",
+        "pageTitle": "مدل‌های هوش مصنوعی (AI Models)",
+        "pageDesc": "مدیریت رجیستری مدل‌های هوش مصنوعی، انواع ورودی/خروجی و اتصال به ارائه‌دهندگان",
+        "newModel": "مدل جدید",
+        "searchPlaceholder": "جستجو در مدل‌ها...",
+        "empty": "مدلی یافت نشد.",
+        "createTitle": "ایجاد مدل هوش مصنوعی جدید",
+        "editTitle": "ویرایش مدل هوش مصنوعی",
+        "formDesc": "مشخصات مدل، ورودی/خروجی‌های پشتیبانی‌شده و مالک مدل را تعیین کنید.",
+        "name": "نام شناسه (کد مدل)",
+        "displayName": "عنوان نمایشی",
+        "owner": "مالک مدل (Model Owner)",
+        "iconUrl": "آدرس آیکون",
+        "description": "توضیحات",
+        "supportedInputs": "ورودی‌های پشتیبانی‌شده",
+        "supportedOutputs": "خروجی‌های پشتیبانی‌شده",
+        "tags": "برچسب‌ها (با کاما جدا کنید)",
+        "isActive": "مدل فعال و آماده سرویس‌دهی باشد",
+        "linkProviderTitle": "اتصال ارائه‌دهنده به مدل",
+        "selectProvider": "انتخاب ارائه‌دهنده (AI Provider)",
+        "priority": "اولویت فراخوانی (Priority)",
+        "linkConfirm": "اتصال ارائه‌دهنده",
+        "createSuccess": "مدل هوش مصنوعی با موفقیت ایجاد شد.",
+        "createError": "ایجاد مدل ناموفق بود.",
+        "updateSuccess": "اطلاعات مدل با موفقیت بروزرسانی شد.",
+        "updateError": "بروزرسانی مدل ناموفق بود.",
+        "addProviderSuccess": "ارائه‌دهنده با موفقیت به مدل متصل شد.",
+        "addProviderError": "اتصال ارائه‌دهنده به مدل ناموفق بود.",
+        "updateProviderLinkSuccess": "تنظیمات اتصال ارائه‌دهنده بروزرسانی شد.",
+        "updateProviderLinkError": "بروزرسانی اتصال ارائه‌دهنده ناموفق بود.",
+        "columns": {
+          "name": "نام و عنوان مدل",
+          "types": "ورودی / خروجی",
+          "costRange": "دامنه هزینه",
+          "status": "وضعیت"
+        }
+      },
+      "providers": {
+        "menuTitle": "ارائه‌دهندگان",
+        "pageTitle": "ارائه‌دهندگان هوش مصنوعی (AI Providers)",
+        "pageDesc": "مدیریت کلیدهای API و اتصال به سرویس‌دهنده‌های بالادست مثل OpenAI، Google و Runware",
+        "newProvider": "افزودن ارائه‌دهنده",
+        "searchPlaceholder": "جستجو در ارائه‌دهندگان...",
+        "empty": "ارائه‌دهنده‌ای یافت نشد.",
+        "createTitle": "افزودن ارائه‌دهنده جدید",
+        "editTitle": "ویرایش ارائه‌دهنده هوش مصنوعی",
+        "formDesc": "تنظیمات اتصال، کلید API و محدودیت نرخ درخواست ارائه‌دهنده را وارد کنید.",
+        "name": "نوع سرویس ارائه‌دهنده",
+        "displayName": "عنوان نمایشی",
+        "baseApiUrl": "آدرس Base API",
+        "apiKey": "کلید API (API Key)",
+        "rateLimit": "محدودیت نرخ (بر دقیقه)",
+        "costMicro": "هزینه (usdmicro)",
+        "createSuccess": "ارائه‌دهنده با موفقیت ایجاد شد.",
+        "createError": "ایجاد ارائه‌دهنده ناموفق بود.",
+        "updateSuccess": "ارائه‌دهنده با موفقیت بروزرسانی شد.",
+        "updateError": "بروزرسانی ارائه‌دهنده ناموفق بود.",
+        "columns": {
+          "name": "نام ارائه‌دهنده",
+          "hasKey": "وضعیت کلید API",
+          "createdAt": "تاریخ ثبت"
+        }
+      }
+    },
+    "files": {
+      "menuSection": "فایل‌ها",
+      "menuTitle": "فایل‌ها",
+      "pageTitle": "مدیریت فایل‌ها (File Manager)",
+      "pageDesc": "مشاهده، پیش‌نمایش، ویرایش مشخصات، و حذف تکی یا گروهی فایل‌های بارگذاری شده",
+      "detailTitle": "جزئیات فایل",
+      "overview": "مشخصات فنی فایل",
+      "download": "دانلود فایل",
+      "preview": "پیش‌نمایش محتوا",
+      "previewTitle": "پیش‌نمایش فایل",
+      "editTitle": "ویرایش اطلاعات فایل",
+      "fileName": "نام فایل",
+      "metaJson": "متادیتای JSON (اختیاری)",
+      "searchPlaceholder": "جستجو بر اساس نام فایل...",
+      "empty": "فایلی یافت نشد.",
+      "deleteConfirmTitle": "تأیید حذف فایل",
+      "bulkDeleteConfirmTitle": "تأیید حذف گروهی فایل‌ها",
+      "bulkDeleteConfirm": "حذف گروهی فایل‌ها",
+      "updateSuccess": "اطلاعات فایل با موفقیت ویرایش شد.",
+      "updateError": "ویرایش اطلاعات فایل ناموفق بود.",
+      "deleteSuccess": "فایل با موفقیت حذف شد.",
+      "deleteError": "حذف فایل ناموفق بود.",
+      "bulkDeleteSuccess": "فایل‌ها با موفقیت حذف شدند.",
+      "bulkDeleteError": "حذف گروهی فایل‌ها ناموفق بود.",
+      "tabs": {
+        "list": "لیست فایل‌ها",
+        "reports": "گزارش‌های فایل"
+      },
+      "access": {
+        "all": "همه دسترسی‌ها"
+      },
+      "reports": {
+        "typesTitle": "توزیع فایل‌ها بر اساس نوع محتوا (MIME Type)",
+        "dailyTitle": "روند روزانه آپلود فایل‌ها"
+      },
+      "columns": {
+        "name": "نام و فرمت فایل",
+        "size": "حجم فایل",
+        "access": "دسترسی",
+        "expiry": "وضعیت انقضا",
+        "user": "کاربر",
+        "createdAt": "تاریخ آپلود"
+      }
+    },
     "mediaUploader": {
       "actions": {
         "close": "بستن",
