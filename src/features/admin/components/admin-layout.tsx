@@ -19,6 +19,9 @@ import {
   Boxes,
   Server,
   Files,
+  Shield,
+  KeyRound,
+  ShieldAlert,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -129,6 +132,26 @@ const navGroups: readonly NavGroup[] = [
         path: APP_ROUTES_KEY.files.list.path,
         label: "features.files.menuTitle",
         icon: Files,
+      },
+    ],
+  },
+  {
+    sectionKey: "features.security.menuSection",
+    items: [
+      {
+        path: APP_ROUTES_KEY.security.sessions.path,
+        label: "features.security.sessions.menuTitle",
+        icon: Shield,
+      },
+      {
+        path: APP_ROUTES_KEY.security.tokens.path,
+        label: "features.security.tokens.menuTitle",
+        icon: KeyRound,
+      },
+      {
+        path: APP_ROUTES_KEY.security.audit.path,
+        label: "features.security.audit.menuTitle",
+        icon: ShieldAlert,
       },
     ],
   },

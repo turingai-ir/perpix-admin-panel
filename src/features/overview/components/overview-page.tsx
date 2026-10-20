@@ -6,6 +6,8 @@ import {
   LayoutDashboard,
   RefreshCw,
   Users,
+  Files,
+  Shield,
 } from "lucide-react";
 import { Link } from "react-router";
 import { useOverview } from "../hooks/use-overview";
@@ -40,21 +42,35 @@ export function OverviewPage() {
       icon: CreditCard,
       query: data.payments,
       color: "text-emerald-600 bg-emerald-500/10",
-      href: undefined,
+      href: "/finance/payments",
     },
     {
       key: "tasks",
       icon: Activity,
       query: data.tasks,
       color: "text-violet-600 bg-violet-500/10",
-      href: undefined,
+      href: "/ai/tasks",
     },
     {
       key: "subscriptions",
       icon: Layers,
       query: data.subscriptions,
       color: "text-amber-600 bg-amber-500/10",
-      href: undefined,
+      href: "/subscriptions",
+    },
+    {
+      key: "files",
+      icon: Files,
+      query: data.files,
+      color: "text-cyan-600 bg-cyan-500/10",
+      href: "/files",
+    },
+    {
+      key: "sessions",
+      icon: Shield,
+      query: data.sessions,
+      color: "text-rose-600 bg-rose-500/10",
+      href: "/auth/sessions",
     },
   ] as const;
   const daily = Array.from(data.daily.data?.items ?? []).sort((a, b) =>
@@ -111,7 +127,7 @@ export function OverviewPage() {
             </Button>
           </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map(({ key, icon: Icon, query, color, href }) => {
             const content = (
               <>

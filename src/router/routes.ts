@@ -102,6 +102,20 @@ export const APP_ROUTES_KEY = {
       meta: { title: "جزئیات فایل | پرپیکس" },
     },
   },
+  security: {
+    sessions: {
+      path: "/auth/sessions",
+      meta: { title: "مدیریت نشست‌ها | پرپیکس" },
+    },
+    tokens: {
+      path: "/auth/api-tokens",
+      meta: { title: "توکن‌های API | پرپیکس" },
+    },
+    audit: {
+      path: "/auth/audit-events",
+      meta: { title: "رویدادهای امنیتی | پرپیکس" },
+    },
+  },
   root: {
     path: "/",
     meta: {

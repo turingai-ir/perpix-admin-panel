@@ -31,6 +31,18 @@ export function useOverview() {
     params,
     options,
   );
+  const files = api.useQuery(
+    "get",
+    "/api/admin/v1/file-manager/files",
+    params,
+    options,
+  );
+  const sessions = api.useQuery(
+    "get",
+    "/api/admin/v1/auth/sessions",
+    params,
+    options,
+  );
   const daily = api.useQuery(
     "get",
     "/api/admin/v1/payment/reports/daily",
@@ -43,7 +55,16 @@ export function useOverview() {
     { params: { query: { ...range, limit: 100 } } },
     options,
   );
-  const queries = [users, payments, tasks, subscriptions, daily, statuses];
+  const queries = [
+    users,
+    payments,
+    tasks,
+    subscriptions,
+    files,
+    sessions,
+    daily,
+    statuses,
+  ];
   return {
     days,
     setDays,
@@ -51,6 +72,8 @@ export function useOverview() {
     payments,
     tasks,
     subscriptions,
+    files,
+    sessions,
     daily,
     statuses,
     fetching: queries.some((query) => query.isFetching),

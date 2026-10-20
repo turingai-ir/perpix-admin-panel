@@ -31,6 +31,11 @@ import {
   AiProvidersListPage,
 } from "@/features/ai";
 import { FilesListPage, FileDetailPage } from "@/features/files";
+import {
+  SessionsListPage,
+  ApiTokensListPage,
+  AuditEventsListPage,
+} from "@/features/security";
 import { LoginPage, SessionGate } from "@/features/auth";
 
 export const router = createBrowserRouter([
@@ -156,6 +161,21 @@ export const router = createBrowserRouter([
             path: APP_ROUTES_KEY.files.detail.path,
             element: <FileDetailPage />,
             handle: { title: APP_ROUTES_KEY.files.detail.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.security.sessions.path,
+            element: <SessionsListPage />,
+            handle: { title: APP_ROUTES_KEY.security.sessions.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.security.tokens.path,
+            element: <ApiTokensListPage />,
+            handle: { title: APP_ROUTES_KEY.security.tokens.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.security.audit.path,
+            element: <AuditEventsListPage />,
+            handle: { title: APP_ROUTES_KEY.security.audit.meta.title },
           },
           {
             path: APP_ROUTES_KEY.smsTest.path,
