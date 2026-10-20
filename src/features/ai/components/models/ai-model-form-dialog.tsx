@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -53,12 +53,15 @@ const SUPPORTED_TYPES: AiRegistryModelSupportedTypesEnum[] = [
   "VIDEO",
 ];
 
-export function AiModelFormDialog({
-  open,
-  onOpenChange,
+function AiModelFormContent({
   initialModel,
+  onClose,
   onSuccess,
-}: AiModelFormDialogProps) {
+}: {
+  initialModel?: ModelsRow | null;
+  onClose: () => void;
+  onSuccess?: () => void;
+}) {
   const { t } = useAppTranslate();
   const { createModel, updateModel, isCreatingModel, isUpdatingModel } =
     useAiModelActions();
@@ -66,52 +69,38 @@ export function AiModelFormDialog({
   const isEditing = Boolean(initialModel);
   const isSubmitting = isCreatingModel || isUpdatingModel;
 
-  const [name, setName] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [description, setDescription] = useState("");
-  const [modelOwner, setModelOwner] =
-    useState<AiRegistryModelOwnerEnum>("OPEN_AI");
-  const [iconUrl, setIconUrl] = useState("");
+  const [name, setName] = useState(initialModel?.name ?? "");
+  const [displayName, setDisplayName] = useState(
+    initialModel?.display_name ?? "",
+  );
+  const [description, setDescription] = useState(
+    initialModel?.description ?? "",
+  );
+  const [modelOwner, setModelOwner] = useState<AiRegistryModelOwnerEnum>(
+    (initialModel as unknown as { model_owner?: AiRegistryModelOwnerEnum })
+      ?.model_owner ?? "OPEN_AI",
+  );
+  const [iconUrl, setIconUrl] = useState(initialModel?.icon_url ?? "");
   const [selectedInputs, setSelectedInputs] = useState<
     AiRegistryModelSupportedTypesEnum[]
-  >(["TEXT"]);
+  >(
+    initialModel?.supported_inputs
+      ? Array.from(initialModel.supported_inputs)
+      : ["TEXT"],
+  );
   const [selectedOutputs, setSelectedOutputs] = useState<
     AiRegistryModelSupportedTypesEnum[]
-  >(["TEXT"]);
-  const [tagsStr, setTagsStr] = useState("");
-  const [isActive, setIsActive] = useState(true);
-
-  // Synchronize state when initialModel or open changes
-
-  useEffect(() => {
-    if (initialModel) {
-      setName(initialModel.name);
-      setDisplayName(initialModel.display_name || "");
-      setDescription(initialModel.description || "");
-      setIconUrl(initialModel.icon_url || "");
-      setSelectedInputs(Array.from(initialModel.supported_inputs || ["TEXT"]));
-      setSelectedOutputs(
-        Array.from(initialModel.supported_outputs || ["TEXT"]),
-      );
-      setIsActive(
-        (initialModel as unknown as { is_active?: boolean }).is_active ?? true,
-      );
-      const owner = (
-        initialModel as unknown as { model_owner?: AiRegistryModelOwnerEnum }
-      ).model_owner;
-      if (owner) setModelOwner(owner);
-    } else {
-      setName("");
-      setDisplayName("");
-      setDescription("");
-      setModelOwner("OPEN_AI");
-      setIconUrl("");
-      setSelectedInputs(["TEXT"]);
-      setSelectedOutputs(["TEXT"]);
-      setTagsStr("");
-      setIsActive(true);
-    }
-  }, [initialModel, open]);
+  >(
+    initialModel?.supported_outputs
+      ? Array.from(initialModel.supported_outputs)
+      : ["TEXT"],
+  );
+  const [tagsStr, setTagsStr] = useState(
+    initialModel?.tags ? Array.from(initialModel.tags).join(", ") : "",
+  );
+  const [isActive, setIsActive] = useState(
+    (initialModel as unknown as { is_active?: boolean })?.is_active ?? true,
+  );
 
   const toggleInputType = (type: AiRegistryModelSupportedTypesEnum) => {
     setSelectedInputs((prev) =>
@@ -160,12 +149,203 @@ export function AiModelFormDialog({
           is_active: isActive,
         });
       }
-      onOpenChange(false);
+      onClose();
       onSuccess?.();
     } catch {
       // toast handled in hook
     }
   };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 py-2 text-sm">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.models.name", {
+              defaultValue: "نام شناسه (کد مدل)",
+            })}{" "}
+            *
+          </label>
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="gpt-4o"
+            required
+            dir="ltr"
+          />
+        </div>
+
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.models.displayName", {
+              defaultValue: "نام نمایشی",
+            })}
+          </label>
+          <Input
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="GPT-4o (Omni)"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-foreground mb-1 block text-xs font-semibold">
+          {t("features.ai.models.description", {
+            defaultValue: "توضیحات مدل",
+          })}
+        </label>
+        <Input
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="مدل هوشمند چندحالته پرسرعت..."
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.models.modelOwner", {
+              defaultValue: "شرکت صاحب امتیاز",
+            })}
+          </label>
+          <Select
+            value={modelOwner}
+            onChange={(e) =>
+              setModelOwner(e.target.value as AiRegistryModelOwnerEnum)
+            }
+          >
+            {MODEL_OWNERS.map((owner) => (
+              <option key={owner} value={owner}>
+                {owner}
+              </option>
+            ))}
+          </Select>
+        </div>
+
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.models.iconUrl", {
+              defaultValue: "آدرس آیکون (URL)",
+            })}
+          </label>
+          <Input
+            value={iconUrl}
+            onChange={(e) => setIconUrl(e.target.value)}
+            placeholder="https://..."
+            dir="ltr"
+          />
+        </div>
+      </div>
+
+      {/* Supported Inputs */}
+      <div>
+        <label className="text-foreground mb-1.5 block text-xs font-semibold">
+          {t("features.ai.models.supportedInputs", {
+            defaultValue: "ورودی‌های پشتیبانی‌شده",
+          })}
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {SUPPORTED_TYPES.map((type) => {
+            const isSelected = selectedInputs.includes(type);
+            return (
+              <Button
+                key={type}
+                type="button"
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => toggleInputType(type)}
+              >
+                {type}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Supported Outputs */}
+      <div>
+        <label className="text-foreground mb-1.5 block text-xs font-semibold">
+          {t("features.ai.models.supportedOutputs", {
+            defaultValue: "خروجی‌های پشتیبانی‌شده",
+          })}
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {SUPPORTED_TYPES.map((type) => {
+            const isSelected = selectedOutputs.includes(type);
+            return (
+              <Button
+                key={type}
+                type="button"
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => toggleOutputType(type)}
+              >
+                {type}
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <label className="text-foreground mb-1 block text-xs font-semibold">
+          {t("features.ai.models.tags", {
+            defaultValue: "برچسب‌ها (با کاما جدا کنید)",
+          })}
+        </label>
+        <Input
+          value={tagsStr}
+          onChange={(e) => setTagsStr(e.target.value)}
+          placeholder="fast, vision, reasoning"
+          dir="ltr"
+        />
+      </div>
+
+      <div className="flex items-center gap-2 pt-2">
+        <input
+          type="checkbox"
+          id="model-active-toggle"
+          checked={isActive}
+          onChange={(e) => setIsActive(e.target.checked)}
+          className="text-primary focus:ring-primary size-4 rounded border-gray-300"
+        />
+        <label
+          htmlFor="model-active-toggle"
+          className="cursor-pointer text-xs font-medium"
+        >
+          {t("features.ai.models.isActive", {
+            defaultValue: "مدل فعال و آماده سرویس‌دهی باشد",
+          })}
+        </label>
+      </div>
+
+      <DialogFooter className="gap-2 pt-4">
+        <Button type="button" variant="outline" onClick={onClose}>
+          {t("common.cancel", { defaultValue: "انصراف" })}
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting
+            ? t("common.submitting", { defaultValue: "در حال ثبت..." })
+            : isEditing
+              ? t("common.update", { defaultValue: "بروزرسانی مدل" })
+              : t("common.create", { defaultValue: "ایجاد مدل" })}
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+export function AiModelFormDialog({
+  open,
+  onOpenChange,
+  initialModel,
+  onSuccess,
+}: AiModelFormDialogProps) {
+  const { t } = useAppTranslate();
+  const isEditing = Boolean(initialModel);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -188,186 +368,14 @@ export function AiModelFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 py-2 text-sm">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="text-foreground mb-1 block text-xs font-semibold">
-                {t("features.ai.models.name", {
-                  defaultValue: "نام شناسه (کد مدل)",
-                })}{" "}
-                *
-              </label>
-              <Input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="gpt-4o / claude-3-5-sonnet"
-                required
-                dir="ltr"
-              />
-            </div>
-
-            <div>
-              <label className="text-foreground mb-1 block text-xs font-semibold">
-                {t("features.ai.models.displayName", {
-                  defaultValue: "عنوان نمایشی",
-                })}
-              </label>
-              <Input
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="GPT-4o (OpenAI)"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="text-foreground mb-1 block text-xs font-semibold">
-                {t("features.ai.models.owner", {
-                  defaultValue: "مالک مدل (Model Owner)",
-                })}
-              </label>
-              <Select
-                value={modelOwner}
-                onChange={(e) =>
-                  setModelOwner(e.target.value as AiRegistryModelOwnerEnum)
-                }
-              >
-                {MODEL_OWNERS.map((o) => (
-                  <option key={o} value={o}>
-                    {o}
-                  </option>
-                ))}
-              </Select>
-            </div>
-
-            <div>
-              <label className="text-foreground mb-1 block text-xs font-semibold">
-                {t("features.ai.models.iconUrl", {
-                  defaultValue: "آدرس آیکون",
-                })}
-              </label>
-              <Input
-                value={iconUrl}
-                onChange={(e) => setIconUrl(e.target.value)}
-                placeholder="https://..."
-                dir="ltr"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.models.description", { defaultValue: "توضیحات" })}
-            </label>
-            <Input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="توضیحات مختصر درباره قابلیت‌ها و هزینه..."
-            />
-          </div>
-
-          {/* Supported Inputs */}
-          <div>
-            <label className="text-foreground mb-1.5 block text-xs font-semibold">
-              {t("features.ai.models.supportedInputs", {
-                defaultValue: "ورودی‌های پشتیبانی‌شده",
-              })}
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {SUPPORTED_TYPES.map((type) => {
-                const isSelected = selectedInputs.includes(type);
-                return (
-                  <Button
-                    key={type}
-                    type="button"
-                    variant={isSelected ? "default" : "outline"}
-                    size="sm"
-                    className="h-7 text-xs"
-                    onClick={() => toggleInputType(type)}
-                  >
-                    {type}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Supported Outputs */}
-          <div>
-            <label className="text-foreground mb-1.5 block text-xs font-semibold">
-              {t("features.ai.models.supportedOutputs", {
-                defaultValue: "خروجی‌های پشتیبانی‌شده",
-              })}
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {SUPPORTED_TYPES.map((type) => {
-                const isSelected = selectedOutputs.includes(type);
-                return (
-                  <Button
-                    key={type}
-                    type="button"
-                    variant={isSelected ? "default" : "outline"}
-                    size="sm"
-                    className="h-7 text-xs"
-                    onClick={() => toggleOutputType(type)}
-                  >
-                    {type}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div>
-            <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.models.tags", {
-                defaultValue: "برچسب‌ها (با کاما جدا کنید)",
-              })}
-            </label>
-            <Input
-              value={tagsStr}
-              onChange={(e) => setTagsStr(e.target.value)}
-              placeholder="fast, vision, reasoning"
-              dir="ltr"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 pt-2">
-            <input
-              type="checkbox"
-              id="model-active-toggle"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
-              className="text-primary focus:ring-primary size-4 rounded border-gray-300"
-            />
-            <label
-              htmlFor="model-active-toggle"
-              className="cursor-pointer text-xs font-medium"
-            >
-              {t("features.ai.models.isActive", {
-                defaultValue: "مدل فعال و آماده سرویس‌دهی باشد",
-              })}
-            </label>
-          </div>
-
-          <DialogFooter className="gap-2 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              {t("common.cancel", { defaultValue: "انصراف" })}
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting
-                ? t("common.submitting", { defaultValue: "در حال ثبت..." })
-                : isEditing
-                  ? t("common.update", { defaultValue: "بروزرسانی مدل" })
-                  : t("common.create", { defaultValue: "ایجاد مدل" })}
-            </Button>
-          </DialogFooter>
-        </form>
+        {open && (
+          <AiModelFormContent
+            key={initialModel ? initialModel.uuid : "create"}
+            initialModel={initialModel}
+            onClose={() => onOpenChange(false)}
+            onSuccess={onSuccess}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router";
 import {
   Shield,
@@ -73,10 +73,10 @@ export function SessionsListPage() {
 
   const { revokeSession, isRevokingSession } = useSecurityActions();
 
-  const handleRevokeClick = (session: SessionsRowItem) => {
+  const handleRevokeClick = useCallback((session: SessionsRowItem) => {
     setSessionToRevoke(session);
     setIsRevokeOpen(true);
-  };
+  }, []);
 
   const handleConfirmRevoke = async () => {
     if (!sessionToRevoke) return;
@@ -207,7 +207,7 @@ export function SessionsListPage() {
         ),
       },
     ],
-    [t],
+    [handleRevokeClick, t],
   );
 
   const hasActiveFilters = Boolean(

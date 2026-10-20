@@ -103,20 +103,20 @@ export function FilesListPage() {
     userUuid: (filters.user_uuid as string) || undefined,
   });
 
-  const handlePreviewClick = (file: FilesRowItem) => {
+  const handlePreviewClick = useCallback((file: FilesRowItem) => {
     setPreviewFile(file);
     setIsPreviewOpen(true);
-  };
+  }, []);
 
-  const handleEditClick = (file: FilesRowItem) => {
+  const handleEditClick = useCallback((file: FilesRowItem) => {
     setEditingFile(file);
     setIsEditOpen(true);
-  };
+  }, []);
 
-  const handleDeleteClick = (file: FilesRowItem) => {
+  const handleDeleteClick = useCallback((file: FilesRowItem) => {
     setDeletingFile(file);
     setIsSingleDeleteOpen(true);
-  };
+  }, []);
 
   const handleConfirmSingleDelete = async () => {
     if (!deletingFile) return;
@@ -142,15 +142,22 @@ export function FilesListPage() {
     }
   };
 
+  const isAllCurrentPageSelected = useMemo(() => {
+    if (!files || files.length === 0) return false;
+    return files.every((f) => selectedFileUuids.includes(f.uuid));
+  }, [files, selectedFileUuids]);
+
   const toggleSelectAll = useCallback(() => {
-    if (selectedFileUuids.length === files.length && files.length > 0) {
-      setSelectedFileUuids([]);
-    } else {
-      setSelectedFileUuids(
-        (files ? Array.from(files) : []).map((f: FilesRowItem) => f.uuid),
-      );
-    }
-  }, [files, selectedFileUuids.length]);
+    if (!files || files.length === 0) return;
+    const currentPageUuids = files.map((f: FilesRowItem) => f.uuid);
+    setSelectedFileUuids((prev) => {
+      const isAllSelected = currentPageUuids.every((id) => prev.includes(id));
+      if (isAllSelected) {
+        return prev.filter((id) => !currentPageUuids.includes(id));
+      }
+      return Array.from(new Set([...prev, ...currentPageUuids]));
+    });
+  }, [files]);
 
   const toggleSelectOne = useCallback((uuid: string) => {
     setSelectedFileUuids((prev) =>
@@ -181,12 +188,10 @@ export function FilesListPage() {
         header: (
           <input
             type="checkbox"
-            checked={
-              files.length > 0 && selectedFileUuids.length === files.length
-            }
+            checked={isAllCurrentPageSelected}
             onChange={toggleSelectAll}
             className="text-primary focus:ring-primary size-4 rounded border-gray-300"
-            aria-label="انتخاب همه"
+            aria-label="انتخاب همه فایل‌های این صفحه"
           />
         ),
         cell: (item) => (
@@ -335,7 +340,16 @@ export function FilesListPage() {
         ),
       },
     ],
-    [files.length, selectedFileUuids, toggleSelectAll, toggleSelectOne, t],
+    [
+      isAllCurrentPageSelected,
+      selectedFileUuids,
+      toggleSelectAll,
+      toggleSelectOne,
+      handlePreviewClick,
+      handleEditClick,
+      handleDeleteClick,
+      t,
+    ],
   );
 
   const hasActiveFilters = Boolean(

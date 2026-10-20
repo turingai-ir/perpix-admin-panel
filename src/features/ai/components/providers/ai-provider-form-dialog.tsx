@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -33,12 +33,15 @@ const PROVIDER_NAMES: AiRegistryProviderNameEnum[] = [
   "KIE",
 ];
 
-export function AiProviderFormDialog({
-  open,
-  onOpenChange,
+function AiProviderFormContent({
   initialProvider,
+  onClose,
   onSuccess,
-}: AiProviderFormDialogProps) {
+}: {
+  initialProvider?: ProvidersRow | null;
+  onClose: () => void;
+  onSuccess?: () => void;
+}) {
   const { t } = useAppTranslate();
   const {
     createProvider,
@@ -50,46 +53,30 @@ export function AiProviderFormDialog({
   const isEditing = Boolean(initialProvider);
   const isSubmitting = isCreatingProvider || isUpdatingProvider;
 
-  const [name, setName] = useState<AiRegistryProviderNameEnum>("OPENAI");
-  const [displayName, setDisplayName] = useState("");
-  const [baseApiUrl, setBaseApiUrl] = useState("");
+  const [name, setName] = useState<AiRegistryProviderNameEnum>(() => {
+    const pName = initialProvider?.name as AiRegistryProviderNameEnum;
+    return PROVIDER_NAMES.includes(pName) ? pName : "OPENAI";
+  });
+  const [displayName, setDisplayName] = useState(
+    initialProvider?.display_name || "",
+  );
+  const [baseApiUrl, setBaseApiUrl] = useState(
+    (initialProvider as unknown as { base_api_url?: string })?.base_api_url ||
+      "",
+  );
   const [apiKey, setApiKey] = useState("");
-  const [rateLimitPerMin, setRateLimitPerMin] = useState("60");
-  const [costToUsdmicro, setCostToUsdmicro] = useState("0");
-
-  useEffect(() => {
-    if (initialProvider) {
-      const pName = initialProvider.name as AiRegistryProviderNameEnum;
-      if (PROVIDER_NAMES.includes(pName)) {
-        setName(pName);
-      }
-      setDisplayName(initialProvider.display_name || "");
-      setApiKey(""); // Don't expose existing API key
-      setBaseApiUrl(
-        (initialProvider as unknown as { base_api_url?: string })
-          .base_api_url || "",
-      );
-      setRateLimitPerMin(
-        String(
-          (initialProvider as unknown as { rate_limit_per_min?: number })
-            .rate_limit_per_min ?? 60,
-        ),
-      );
-      setCostToUsdmicro(
-        String(
-          (initialProvider as unknown as { cost_to_usdmicro?: number })
-            .cost_to_usdmicro ?? 0,
-        ),
-      );
-    } else {
-      setName("OPENAI");
-      setDisplayName("");
-      setBaseApiUrl("");
-      setApiKey("");
-      setRateLimitPerMin("60");
-      setCostToUsdmicro("0");
-    }
-  }, [initialProvider, open]);
+  const [rateLimitPerMin, setRateLimitPerMin] = useState(
+    String(
+      (initialProvider as unknown as { rate_limit_per_min?: number })
+        ?.rate_limit_per_min ?? 60,
+    ),
+  );
+  const [costToUsdmicro, setCostToUsdmicro] = useState(
+    String(
+      (initialProvider as unknown as { cost_to_usdmicro?: number })
+        ?.cost_to_usdmicro ?? 0,
+    ),
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,9 +86,11 @@ export function AiProviderFormDialog({
         await updateProvider(initialProvider.uuid, {
           display_name: displayName || undefined,
           base_api_url: baseApiUrl || undefined,
-          api_key: apiKey ? apiKey : undefined,
-          rate_limit_per_min: Number(rateLimitPerMin) || undefined,
-          cost_to_usdmicro: Number(costToUsdmicro) || undefined,
+          api_key: apiKey || undefined,
+          rate_limit_per_min: rateLimitPerMin
+            ? Number(rateLimitPerMin)
+            : undefined,
+          cost_to_usdmicro: costToUsdmicro ? Number(costToUsdmicro) : undefined,
         });
       } else {
         await createProvider({
@@ -109,11 +98,13 @@ export function AiProviderFormDialog({
           display_name: displayName || undefined,
           base_api_url: baseApiUrl || undefined,
           api_key: apiKey || undefined,
-          rate_limit_per_min: Number(rateLimitPerMin) || undefined,
-          cost_to_usdmicro: Number(costToUsdmicro) || undefined,
+          rate_limit_per_min: rateLimitPerMin
+            ? Number(rateLimitPerMin)
+            : undefined,
+          cost_to_usdmicro: costToUsdmicro ? Number(costToUsdmicro) : undefined,
         });
       }
-      onOpenChange(false);
+      onClose();
       onSuccess?.();
     } catch {
       // toast handled in hook
@@ -121,8 +112,134 @@ export function AiProviderFormDialog({
   };
 
   return (
+    <form onSubmit={handleSubmit} className="space-y-4 py-2 text-sm">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.providers.name", {
+              defaultValue: "نوع سرویس‌دهنده",
+            })}
+          </label>
+          <Select
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value as AiRegistryProviderNameEnum)
+            }
+            disabled={isEditing}
+          >
+            {PROVIDER_NAMES.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </Select>
+        </div>
+
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.providers.displayName", {
+              defaultValue: "نام نمایشی",
+            })}
+          </label>
+          <Input
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="OpenAI Main Gateway"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-foreground mb-1 block text-xs font-semibold">
+          {t("features.ai.providers.baseApiUrl", {
+            defaultValue: "آدرس Base API URL (اختیاری)",
+          })}
+        </label>
+        <Input
+          value={baseApiUrl}
+          onChange={(e) => setBaseApiUrl(e.target.value)}
+          placeholder="https://api.openai.com/v1"
+          dir="ltr"
+        />
+      </div>
+
+      <div>
+        <label className="text-foreground mb-1 block text-xs font-semibold">
+          {t("features.ai.providers.apiKey", {
+            defaultValue: isEditing
+              ? "کلید دسترسی (API Key) جدید (برای حفظ قبلی خالی بگذارید)"
+              : "کلید دسترسی (API Key)",
+          })}
+        </label>
+        <Input
+          type="password"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          placeholder="sk-..."
+          dir="ltr"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.providers.rateLimit", {
+              defaultValue: "سقف درخواست در دقیقه (Rate Limit)",
+            })}
+          </label>
+          <Input
+            type="number"
+            value={rateLimitPerMin}
+            onChange={(e) => setRateLimitPerMin(e.target.value)}
+            placeholder="60"
+            min={1}
+          />
+        </div>
+
+        <div>
+          <label className="text-foreground mb-1 block text-xs font-semibold">
+            {t("features.ai.providers.costMicro", {
+              defaultValue: "هزینه به میکرو دلار (USD Micro)",
+            })}
+          </label>
+          <Input
+            type="number"
+            value={costToUsdmicro}
+            onChange={(e) => setCostToUsdmicro(e.target.value)}
+            placeholder="0"
+            min={0}
+          />
+        </div>
+      </div>
+
+      <DialogFooter className="gap-2 pt-4">
+        <Button type="button" variant="outline" onClick={onClose}>
+          {t("common.cancel", { defaultValue: "انصراف" })}
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting
+            ? t("common.submitting", { defaultValue: "در حال ثبت..." })
+            : isEditing
+              ? t("common.update", { defaultValue: "بروزرسانی" })
+              : t("common.create", { defaultValue: "افزودن" })}
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+export function AiProviderFormDialog({
+  open,
+  onOpenChange,
+  initialProvider,
+  onSuccess,
+}: AiProviderFormDialogProps) {
+  const { t } = useAppTranslate();
+  const isEditing = Boolean(initialProvider);
+
+  return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>
             {isEditing
@@ -136,126 +253,19 @@ export function AiProviderFormDialog({
           <DialogDescription>
             {t("features.ai.providers.formDesc", {
               defaultValue:
-                "تنظیمات اتصال، کلید API و محدودیت نرخ درخواست ارائه‌دهنده را وارد کنید.",
+                "تنظیمات اتصال به ارائه‌دهنده، کلید API و سقف درخواست‌ها را مشخص کنید.",
             })}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 py-2 text-sm">
-          <div>
-            <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.providers.name", {
-                defaultValue: "نوع سرویس ارائه‌دهنده",
-              })}{" "}
-              *
-            </label>
-            <Select
-              value={name}
-              disabled={isEditing}
-              onChange={(e) =>
-                setName(e.target.value as AiRegistryProviderNameEnum)
-              }
-            >
-              {PROVIDER_NAMES.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.providers.displayName", {
-                defaultValue: "عنوان نمایشی",
-              })}
-            </label>
-            <Input
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="OpenAI Production"
-            />
-          </div>
-
-          <div>
-            <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.providers.baseApiUrl", {
-                defaultValue: "آدرس Base API",
-              })}
-            </label>
-            <Input
-              value={baseApiUrl}
-              onChange={(e) => setBaseApiUrl(e.target.value)}
-              placeholder="https://api.openai.com/v1"
-              dir="ltr"
-            />
-          </div>
-
-          <div>
-            <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.providers.apiKey", {
-                defaultValue: "کلید API (API Key)",
-              })}
-              {isEditing && " (در صورت عدم تغییر خالی بگذارید)"}
-            </label>
-            <Input
-              type="password"
-              value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="sk-..."
-              dir="ltr"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-foreground mb-1 block text-xs font-semibold">
-                {t("features.ai.providers.rateLimit", {
-                  defaultValue: "محدودیت نرخ (بر دقیقه)",
-                })}
-              </label>
-              <Input
-                type="number"
-                value={rateLimitPerMin}
-                onChange={(e) => setRateLimitPerMin(e.target.value)}
-                placeholder="60"
-                min={1}
-              />
-            </div>
-
-            <div>
-              <label className="text-foreground mb-1 block text-xs font-semibold">
-                {t("features.ai.providers.costMicro", {
-                  defaultValue: "هزینه (usdmicro)",
-                })}
-              </label>
-              <Input
-                type="number"
-                value={costToUsdmicro}
-                onChange={(e) => setCostToUsdmicro(e.target.value)}
-                placeholder="0"
-                min={0}
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="gap-2 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              {t("common.cancel", { defaultValue: "انصراف" })}
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting
-                ? t("common.submitting", { defaultValue: "در حال ثبت..." })
-                : isEditing
-                  ? t("common.update", { defaultValue: "بروزرسانی" })
-                  : t("common.create", { defaultValue: "افزودن" })}
-            </Button>
-          </DialogFooter>
-        </form>
+        {open && (
+          <AiProviderFormContent
+            key={initialProvider ? initialProvider.uuid : "create"}
+            initialProvider={initialProvider}
+            onClose={() => onOpenChange(false)}
+            onSuccess={onSuccess}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

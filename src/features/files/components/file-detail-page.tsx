@@ -28,7 +28,6 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslate } from "@/hooks";
 import { cn } from "@/lib/utils";
-import type { FilesRow } from "../model/types";
 
 function formatBytes(bytes: number): string {
   if (bytes === 0) return "0 بایت";
@@ -329,7 +328,15 @@ export function FileDetailPage() {
       <FileEditDialog
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
-        file={file as unknown as FilesRow}
+        file={
+          file
+            ? {
+                uuid: file.uuid,
+                file_name: file.file_name,
+                meta: file.meta as Record<string, unknown> | undefined,
+              }
+            : null
+        }
         onSuccess={refetch}
       />
 

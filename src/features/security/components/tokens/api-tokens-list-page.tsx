@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router";
 import {
   KeyRound,
@@ -72,10 +72,10 @@ export function ApiTokensListPage() {
 
   const { revokeToken, isRevokingToken } = useSecurityActions();
 
-  const handleRevokeClick = (token: TokensRowItem) => {
+  const handleRevokeClick = useCallback((token: TokensRowItem) => {
     setTokenToRevoke(token);
     setIsRevokeOpen(true);
-  };
+  }, []);
 
   const handleConfirmRevoke = async () => {
     if (!tokenToRevoke) return;
@@ -221,7 +221,7 @@ export function ApiTokensListPage() {
         ),
       },
     ],
-    [t],
+    [handleRevokeClick, t],
   );
 
   const hasActiveFilters = Boolean(
