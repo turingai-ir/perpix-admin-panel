@@ -2175,11 +2175,8 @@ export interface components {
      * @description Structured, actionable error details for client applications.
      */
     readonly AiTaskMessageError: {
-      /**
-       * Reason
-       * @description High-level category code of the generation failure.
-       */
-      readonly reason: string;
+      /** @description High-level category of the generation failure. */
+      readonly reason: components["schemas"]["GenerationFailureReasonEnum"];
       /**
        * Message
        * @description Persian localized user-facing explanation.
@@ -2190,11 +2187,8 @@ export interface components {
        * @description Translation key for client-side localization.
        */
       readonly message_key?: string | null;
-      /**
-       * Action
-       * @description Prescribed client action (e.g. MODIFY_INPUT, RETRY_LATER, RETRY_NOW, CONTACT_SUPPORT).
-       */
-      readonly action: string;
+      /** @description Prescribed client action after this failure. */
+      readonly action: components["schemas"]["GenerationFailureActionEnum"];
       /**
        * Retryable
        * @description Whether the client should allow resubmitting the request.
@@ -2245,6 +2239,12 @@ export interface components {
       readonly ai_model_config?: {
         readonly [key: string]: unknown;
       };
+      /**
+       * Under Review
+       * @description The generation stopped for a support review while still PENDING or IN_PROGRESS. It is not generating; support will finish or fail it, and nothing is charged before that. Keep polling: the status moves on once support acts.
+       * @default false
+       */
+      readonly under_review: boolean;
       /** @description Structured error details when the message failed, parsed from internal config. */
       readonly error: components["schemas"]["AiTaskMessageError"] | null;
       /**
@@ -2689,6 +2689,28 @@ export interface components {
       /** External Task Id */
       readonly external_task_id: string;
     };
+    /**
+     * GenerationFailureActionEnum
+     * @description What the client should offer the user after a failure.
+     * @enum {string}
+     */
+    readonly GenerationFailureActionEnum:
+      "MODIFY_INPUT" | "RETRY_LATER" | "RETRY_NOW" | "CONTACT_SUPPORT";
+    /**
+     * GenerationFailureReasonEnum
+     * @description Why a generation failed, as far as the user can act on it; the provider's own code is kept apart.
+     * @enum {string}
+     */
+    readonly GenerationFailureReasonEnum:
+      | "CONTENT_POLICY"
+      | "INVALID_INPUT"
+      | "RATE_LIMITED"
+      | "PROVIDER_UNAVAILABLE"
+      | "PROVIDER_TIMEOUT"
+      | "PLATFORM_CONFIGURATION"
+      | "PROVIDER_FAILED"
+      | "INTERNAL"
+      | "OPERATOR";
     /**
      * GenerationReviewReasonEnum
      * @enum {string}
@@ -3789,6 +3811,10 @@ export type SchemaGenerationActionRequest =
 export type SchemaGenerationDetail = components["schemas"]["GenerationDetail"];
 export type SchemaGenerationExternalTaskRequest =
   components["schemas"]["GenerationExternalTaskRequest"];
+export type SchemaGenerationFailureActionEnum =
+  components["schemas"]["GenerationFailureActionEnum"];
+export type SchemaGenerationFailureReasonEnum =
+  components["schemas"]["GenerationFailureReasonEnum"];
 export type SchemaGenerationReviewReasonEnum =
   components["schemas"]["GenerationReviewReasonEnum"];
 export type SchemaGenerationReviewResponse =
@@ -8552,6 +8578,22 @@ export const applicationErrorCodeValues: ReadonlyArray<
 export const currencyUnitEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CurrencyUnitEnum"]
 > = ["USD", "IRR", "USDMICRO"];
+export const generationFailureActionEnumValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["GenerationFailureActionEnum"]
+> = ["MODIFY_INPUT", "RETRY_LATER", "RETRY_NOW", "CONTACT_SUPPORT"];
+export const generationFailureReasonEnumValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["GenerationFailureReasonEnum"]
+> = [
+  "CONTENT_POLICY",
+  "INVALID_INPUT",
+  "RATE_LIMITED",
+  "PROVIDER_UNAVAILABLE",
+  "PROVIDER_TIMEOUT",
+  "PLATFORM_CONFIGURATION",
+  "PROVIDER_FAILED",
+  "INTERNAL",
+  "OPERATOR",
+];
 export const generationReviewReasonEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["GenerationReviewReasonEnum"]
 > = ["COST_UNRESOLVED", "RESULT_UNREADABLE"];
@@ -8761,6 +8803,33 @@ export const CurrencyUnitEnumMap = {
 export type CurrencyUnitEnumKey = keyof typeof CurrencyUnitEnumMap;
 export type CurrencyUnitEnumValue =
   (typeof CurrencyUnitEnumMap)[CurrencyUnitEnumKey];
+
+export const GenerationFailureActionEnumMap = {
+  MODIFY_INPUT: "MODIFY_INPUT",
+  RETRY_LATER: "RETRY_LATER",
+  RETRY_NOW: "RETRY_NOW",
+  CONTACT_SUPPORT: "CONTACT_SUPPORT",
+} as const;
+export type GenerationFailureActionEnumKey =
+  keyof typeof GenerationFailureActionEnumMap;
+export type GenerationFailureActionEnumValue =
+  (typeof GenerationFailureActionEnumMap)[GenerationFailureActionEnumKey];
+
+export const GenerationFailureReasonEnumMap = {
+  CONTENT_POLICY: "CONTENT_POLICY",
+  INVALID_INPUT: "INVALID_INPUT",
+  RATE_LIMITED: "RATE_LIMITED",
+  PROVIDER_UNAVAILABLE: "PROVIDER_UNAVAILABLE",
+  PROVIDER_TIMEOUT: "PROVIDER_TIMEOUT",
+  PLATFORM_CONFIGURATION: "PLATFORM_CONFIGURATION",
+  PROVIDER_FAILED: "PROVIDER_FAILED",
+  INTERNAL: "INTERNAL",
+  OPERATOR: "OPERATOR",
+} as const;
+export type GenerationFailureReasonEnumKey =
+  keyof typeof GenerationFailureReasonEnumMap;
+export type GenerationFailureReasonEnumValue =
+  (typeof GenerationFailureReasonEnumMap)[GenerationFailureReasonEnumKey];
 
 export const GenerationReviewReasonEnumMap = {
   COST_UNRESOLVED: "COST_UNRESOLVED",
