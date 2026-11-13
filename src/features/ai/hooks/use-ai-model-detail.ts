@@ -14,6 +14,8 @@ export function useAiModelDetail(modelUuid: string) {
     },
     {
       enabled: Boolean(modelUuid),
+      // Forms edit from this record, so never show a stale copy.
+      refetchOnMount: "always",
     },
   );
 

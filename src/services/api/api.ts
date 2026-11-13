@@ -2097,6 +2097,11 @@ export interface components {
       readonly rate_limit_per_min: number | null;
       /** Cost To Usdmicro */
       readonly cost_to_usdmicro?: number | null;
+      /**
+       * Has Api Key
+       * @default false
+       */
+      readonly has_api_key: boolean;
       /** Meta */
       readonly meta: {
         readonly [key: string]: unknown;
@@ -3231,6 +3236,11 @@ export interface components {
     };
     /** UsersRow */
     readonly UsersRow: {
+      /**
+       * Uuid
+       * Format: uuid
+       */
+      readonly uuid: string;
       /**
        * User Uuid
        * Format: uuid

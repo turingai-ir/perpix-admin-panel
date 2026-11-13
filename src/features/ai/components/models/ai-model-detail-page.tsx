@@ -7,10 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslate } from "@/hooks";
 import { APP_ROUTES_KEY } from "@/router/routes";
-import type {
-  AiRegistryModelProviderLinkDetail,
-  ModelsRow,
-} from "../../model/types";
+import type { AiRegistryModelProviderLinkDetail } from "../../model/types";
 import { useAiModelDetail } from "../../hooks/use-ai-model-detail";
 import { useAiProvidersList } from "../../hooks/use-ai-providers-list";
 import { AiModelFormDialog } from "./ai-model-form-dialog";
@@ -131,8 +128,7 @@ export function AiModelDetailPage() {
             key={model.updated_at}
             open={isEditOpen}
             onOpenChange={setIsEditOpen}
-            // The detail response carries every field the form reads.
-            initialModel={model as unknown as ModelsRow}
+            initialModel={model}
             onSuccess={() => void refetch()}
           />
         </div>

@@ -14,6 +14,8 @@ import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
 import { useAiModelActions } from "../../hooks/use-ai-model-actions";
 import { servedModes } from "../../model/link-modes";
+import { parseJsonObject, stringifyJsonObject } from "../../model/json-object";
+import { JsonObjectField } from "../json-object-field";
 import type {
   AiRegistryModelProviderLinkDetail,
   ProvidersRow,
@@ -64,13 +66,21 @@ export function AiModelProviderLinkDialog({
   const [workflowModes, setWorkflowModes] = useState(
     (link?.workflow_modes ?? []).join(", "),
   );
+  const initialModesText = stringifyJsonObject(link?.modes);
+  const [modesText, setModesText] = useState(initialModesText);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const canSubmit = isEditing || providerUuid !== "";
+  const modesConfig = parseJsonObject(modesText);
+  // Checkboxes follow the config being edited, so a mode added below can be switched on at once.
+  const editedServedModes = modesConfig.ok
+    ? servedModes({ modes: modesConfig.value })
+    : [];
+
+  const canSubmit = (isEditing || providerUuid !== "") && modesConfig.ok;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!canSubmit || isSubmitting) return;
+    if (!canSubmit || isSubmitting || !modesConfig.ok) return;
 
     setIsSubmitting(true);
     try {
@@ -80,12 +90,17 @@ export function AiModelProviderLinkDialog({
         await updateProviderLink(modelUuid, link.provider_uuid, {
           is_active: isActive,
           workflow_modes: modes,
+          // Unchanged text is not resent: the stored config can be large.
+          ...(modesText !== initialModesText
+            ? { modes: modesConfig.value }
+            : {}),
         });
       } else {
         await addProvider(modelUuid, {
           ai_provider_uuid: providerUuid,
           is_active: isActive,
           workflow_modes: modes,
+          modes: modesConfig.value,
           priority: 10,
         });
         // New providers go to the end of the list (lowest priority).
@@ -164,9 +179,9 @@ export function AiModelProviderLinkDialog({
                 defaultValue: "حالت‌های Workflow",
               })}
             </label>
-            {isEditing && servedModes(link).length > 0 ? (
+            {editedServedModes.length > 0 ? (
               <div className="flex flex-wrap gap-2">
-                {servedModes(link).map((mode) => {
+                {editedServedModes.map((mode) => {
                   const on = parseModes(workflowModes).includes(mode);
                   return (
                     <label
@@ -206,6 +221,22 @@ export function AiModelProviderLinkDialog({
               خاموش‌اند و هر درخواست برای این اتصال رد می‌شود.
             </span>
           </div>
+
+          <details className="rounded-lg border p-3">
+            <summary className="cursor-pointer text-xs font-semibold">
+              تنظیمات هر حالت (modes)
+            </summary>
+            <div className="pt-3">
+              <JsonObjectField
+                id="link-modes"
+                label="modes (JSON)"
+                hint="schema، نگاشت فیلدها، قرارداد خروجی و قیمت هر حالت. مقدار حالت‌های روشن را با دقت عوض کنید."
+                value={modesText}
+                onChange={setModesText}
+                rows={16}
+              />
+            </div>
+          </details>
 
           <div className="flex items-center gap-2 pt-1">
             <input

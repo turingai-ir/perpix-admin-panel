@@ -11,8 +11,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { useAiProviderActions } from "../../hooks/use-ai-provider-actions";
+import { useAiProviderDetail } from "../../hooks/use-ai-provider-detail";
+import { parseJsonObject, stringifyJsonObject } from "../../model/json-object";
+import { JsonObjectField } from "../json-object-field";
 import { useAppTranslate } from "@/hooks";
 import type {
+  AiRegistryProviderDetail,
   AiRegistryProviderNameEnum,
   ProvidersRow,
 } from "../../model/types";
@@ -38,7 +42,7 @@ function AiProviderFormContent({
   onClose,
   onSuccess,
 }: {
-  initialProvider?: ProvidersRow | null;
+  initialProvider?: AiRegistryProviderDetail | null;
   onClose: () => void;
   onSuccess?: () => void;
 }) {
@@ -61,47 +65,53 @@ function AiProviderFormContent({
     initialProvider?.display_name || "",
   );
   const [baseApiUrl, setBaseApiUrl] = useState(
-    (initialProvider as unknown as { base_api_url?: string })?.base_api_url ||
-      "",
+    initialProvider?.base_api_url ?? "",
   );
   const [apiKey, setApiKey] = useState("");
+  const [metaText, setMetaText] = useState(
+    stringifyJsonObject(initialProvider?.meta),
+  );
   const [rateLimitPerMin, setRateLimitPerMin] = useState(
-    String(
-      (initialProvider as unknown as { rate_limit_per_min?: number })
-        ?.rate_limit_per_min ?? 60,
-    ),
+    String(initialProvider?.rate_limit_per_min ?? 60),
   );
   const [costToUsdmicro, setCostToUsdmicro] = useState(
-    String(
-      (initialProvider as unknown as { cost_to_usdmicro?: number })
-        ?.cost_to_usdmicro ?? 0,
-    ),
+    String(initialProvider?.cost_to_usdmicro ?? 0),
   );
+
+  const meta = parseJsonObject(metaText);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!meta.ok) return;
+
+    const displayNameValue = displayName.trim();
+    const baseApiUrlValue = baseApiUrl.trim();
+    const rateLimitValue = rateLimitPerMin.trim();
+    const costValue = costToUsdmicro.trim();
 
     try {
       if (isEditing && initialProvider) {
+        // Edit sends every field, so a cleared one is cleared (null), not left as it was.
+        // The key is the exception: blank keeps the stored one.
         await updateProvider(initialProvider.uuid, {
-          display_name: displayName || undefined,
-          base_api_url: baseApiUrl || undefined,
-          api_key: apiKey || undefined,
-          rate_limit_per_min: rateLimitPerMin
-            ? Number(rateLimitPerMin)
-            : undefined,
-          cost_to_usdmicro: costToUsdmicro ? Number(costToUsdmicro) : undefined,
+          display_name: displayNameValue || null,
+          base_api_url: baseApiUrlValue || null,
+          ...(apiKey ? { api_key: apiKey } : {}),
+          rate_limit_per_min: rateLimitValue ? Number(rateLimitValue) : null,
+          cost_to_usdmicro: costValue ? Number(costValue) : null,
+          meta: meta.value,
         });
       } else {
         await createProvider({
           name,
-          display_name: displayName || undefined,
-          base_api_url: baseApiUrl || undefined,
+          display_name: displayNameValue || undefined,
+          base_api_url: baseApiUrlValue || undefined,
           api_key: apiKey || undefined,
-          rate_limit_per_min: rateLimitPerMin
-            ? Number(rateLimitPerMin)
+          rate_limit_per_min: rateLimitValue
+            ? Number(rateLimitValue)
             : undefined,
-          cost_to_usdmicro: costToUsdmicro ? Number(costToUsdmicro) : undefined,
+          cost_to_usdmicro: costValue ? Number(costValue) : undefined,
+          meta: meta.value,
         });
       }
       onClose();
@@ -171,6 +181,19 @@ function AiProviderFormContent({
               : "کلید دسترسی (API Key)",
           })}
         </label>
+        {isEditing && (
+          <span
+            className={
+              initialProvider?.has_api_key
+                ? "mb-1 block text-[11px] text-emerald-600"
+                : "text-destructive mb-1 block text-[11px]"
+            }
+          >
+            {initialProvider?.has_api_key
+              ? "یک کلید ثبت شده است (مقدارش نمایش داده نمی‌شود)."
+              : "هیچ کلیدی ثبت نشده است؛ درخواست به این ارائه‌دهنده کار نمی‌کند."}
+          </span>
+        )}
         <Input
           type="password"
           value={apiKey}
@@ -212,11 +235,27 @@ function AiProviderFormContent({
         </div>
       </div>
 
+      <details className="rounded-lg border p-3">
+        <summary className="cursor-pointer text-xs font-semibold">
+          تنظیمات پیشرفته (meta)
+        </summary>
+        <div className="pt-3">
+          <JsonObjectField
+            id="provider-meta"
+            label="meta (JSON)"
+            hint="داده‌های اضافی ارائه‌دهنده؛ خالی یعنی {}."
+            value={metaText}
+            onChange={setMetaText}
+            rows={6}
+          />
+        </div>
+      </details>
+
       <DialogFooter className="gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onClose}>
           {t("common.cancel", { defaultValue: "انصراف" })}
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || !meta.ok}>
           {isSubmitting
             ? t("common.submitting", { defaultValue: "در حال ثبت..." })
             : isEditing
@@ -236,6 +275,10 @@ export function AiProviderFormDialog({
 }: AiProviderFormDialogProps) {
   const { t } = useAppTranslate();
   const isEditing = Boolean(initialProvider);
+  // Edit from the full record, never from the list's summary row.
+  const { provider, error } = useAiProviderDetail(
+    open && initialProvider ? initialProvider.uuid : "",
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -258,13 +301,30 @@ export function AiProviderFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {open && (
+        {open && !isEditing && (
           <AiProviderFormContent
-            key={initialProvider ? initialProvider.uuid : "create"}
-            initialProvider={initialProvider}
+            key="create"
             onClose={() => onOpenChange(false)}
             onSuccess={onSuccess}
           />
+        )}
+        {open && isEditing && provider && (
+          <AiProviderFormContent
+            key={`${provider.uuid}:${provider.updated_at}`}
+            initialProvider={provider}
+            onClose={() => onOpenChange(false)}
+            onSuccess={onSuccess}
+          />
+        )}
+        {open && isEditing && !provider && (
+          <p className="text-muted-foreground py-6 text-center text-sm">
+            {error
+              ? t("features.ai.providers.loadError", {
+                  defaultValue:
+                    "بارگذاری اطلاعات ارائه‌دهنده ناموفق بود. پنجره را ببندید و دوباره باز کنید.",
+                })
+              : t("common.loading", { defaultValue: "در حال بارگذاری..." })}
+          </p>
         )}
       </DialogContent>
     </Dialog>

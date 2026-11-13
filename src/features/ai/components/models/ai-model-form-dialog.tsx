@@ -11,17 +11,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { useAiModelActions } from "../../hooks/use-ai-model-actions";
+import { useAiModelDetail } from "../../hooks/use-ai-model-detail";
+import { parseJsonObject, stringifyJsonObject } from "../../model/json-object";
+import { JsonObjectField } from "../json-object-field";
 import { useAppTranslate } from "@/hooks";
 import type {
+  AiRegistryModelDetail,
   AiRegistryModelOwnerEnum,
   AiRegistryModelSupportedTypesEnum,
-  ModelsRow,
 } from "../../model/types";
 
 interface AiModelFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  initialModel?: ModelsRow | null;
+  /** Only its uuid is used: the form loads the full record itself. */
+  initialModel?: { readonly uuid: string } | null;
   onSuccess?: () => void;
 }
 
@@ -58,7 +62,7 @@ function AiModelFormContent({
   onClose,
   onSuccess,
 }: {
-  initialModel?: ModelsRow | null;
+  initialModel?: AiRegistryModelDetail | null;
   onClose: () => void;
   onSuccess?: () => void;
 }) {
@@ -77,8 +81,7 @@ function AiModelFormContent({
     initialModel?.description ?? "",
   );
   const [modelOwner, setModelOwner] = useState<AiRegistryModelOwnerEnum>(
-    (initialModel as unknown as { model_owner?: AiRegistryModelOwnerEnum })
-      ?.model_owner ?? "OPEN_AI",
+    initialModel?.model_owner ?? "OPEN_AI",
   );
   const [iconUrl, setIconUrl] = useState(initialModel?.icon_url ?? "");
   const [selectedInputs, setSelectedInputs] = useState<
@@ -98,9 +101,20 @@ function AiModelFormContent({
   const [tagsStr, setTagsStr] = useState(
     initialModel?.tags ? Array.from(initialModel.tags).join(", ") : "",
   );
-  const [isActive, setIsActive] = useState(
-    (initialModel as unknown as { is_active?: boolean })?.is_active ?? true,
+  const [isActive, setIsActive] = useState(initialModel?.is_active ?? true);
+  const [modesText, setModesText] = useState(
+    stringifyJsonObject(initialModel?.modes_supported),
   );
+  const [uiSchemaText, setUiSchemaText] = useState(
+    stringifyJsonObject(initialModel?.canonical_ui_schema),
+  );
+  const [metaText, setMetaText] = useState(
+    stringifyJsonObject(initialModel?.meta),
+  );
+  const modes = parseJsonObject(modesText);
+  const uiSchema = parseJsonObject(uiSchemaText);
+  const meta = parseJsonObject(metaText);
+  const jsonValid = modes.ok && uiSchema.ok && meta.ok;
 
   const toggleInputType = (type: AiRegistryModelSupportedTypesEnum) => {
     setSelectedInputs((prev) =>
@@ -116,37 +130,46 @@ function AiModelFormContent({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!name.trim() || !modes.ok || !uiSchema.ok || !meta.ok) return;
 
     const tags = tagsStr
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean);
+    // The server validates each mode's shape ({ "value": "..." }) and refuses a bad one.
+    const modesSupported = modes.value as Record<string, { value: string }>;
 
     try {
       if (isEditing && initialModel) {
+        // Edit sends every field, so a cleared one is cleared (null / []), not left as it was.
         await updateModel(initialModel.uuid, {
-          name,
-          display_name: displayName || undefined,
-          description: description || undefined,
+          name: name.trim(),
+          display_name: displayName.trim() || null,
+          description: description.trim() || null,
           model_owner: modelOwner,
-          icon_url: iconUrl || undefined,
+          icon_url: iconUrl.trim() || null,
+          modes_supported: modesSupported,
+          canonical_ui_schema: uiSchema.value,
           supported_inputs: selectedInputs,
           supported_outputs: selectedOutputs,
-          tags: tags.length ? tags : undefined,
+          tags,
           is_active: isActive,
+          meta: meta.value,
         });
       } else {
         await createModel({
-          name,
-          display_name: displayName || undefined,
-          description: description || undefined,
+          name: name.trim(),
+          display_name: displayName.trim() || undefined,
+          description: description.trim() || undefined,
           model_owner: modelOwner,
-          icon_url: iconUrl || undefined,
+          icon_url: iconUrl.trim() || undefined,
+          modes_supported: modesSupported,
+          canonical_ui_schema: uiSchema.value,
           supported_inputs: selectedInputs,
           supported_outputs: selectedOutputs,
           tags: tags.length ? tags : undefined,
           is_active: isActive,
+          meta: meta.value,
         });
       }
       onClose();
@@ -322,11 +345,48 @@ function AiModelFormContent({
         </label>
       </div>
 
+      <details className="rounded-lg border p-3">
+        <summary className="cursor-pointer text-xs font-semibold">
+          تنظیمات پیشرفته (حالت‌ها، UI، meta)
+        </summary>
+        <div className="space-y-4 pt-3">
+          {isEditing && initialModel && (
+            <p className="text-muted-foreground text-[11px]" dir="ltr">
+              cost range: {initialModel.min_cost ?? "-"} –{" "}
+              {initialModel.max_cost ?? "-"} (read-only, from provider links)
+            </p>
+          )}
+          <JsonObjectField
+            id="model-modes"
+            label="modes_supported (JSON)"
+            hint='هر حالت: { "text_to_image": { "value": "..." } }'
+            value={modesText}
+            onChange={setModesText}
+            rows={6}
+          />
+          <JsonObjectField
+            id="model-ui-schema"
+            label="canonical_ui_schema (JSON)"
+            hint="ساختار فرم ساخت در اپ کاربر؛ ساختار عنصرها را نشکنید."
+            value={uiSchemaText}
+            onChange={setUiSchemaText}
+            rows={12}
+          />
+          <JsonObjectField
+            id="model-meta"
+            label="meta (JSON)"
+            value={metaText}
+            onChange={setMetaText}
+            rows={5}
+          />
+        </div>
+      </details>
+
       <DialogFooter className="gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onClose}>
           {t("common.cancel", { defaultValue: "انصراف" })}
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || !jsonValid}>
           {isSubmitting
             ? t("common.submitting", { defaultValue: "در حال ثبت..." })
             : isEditing
@@ -346,6 +406,10 @@ export function AiModelFormDialog({
 }: AiModelFormDialogProps) {
   const { t } = useAppTranslate();
   const isEditing = Boolean(initialModel);
+  // Edit from the full record, never from a list row (it lacks modes, UI schema and meta).
+  const { model, error } = useAiModelDetail(
+    open && initialModel ? initialModel.uuid : "",
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -368,13 +432,31 @@ export function AiModelFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        {open && (
+        {open && !isEditing && (
           <AiModelFormContent
-            key={initialModel ? initialModel.uuid : "create"}
-            initialModel={initialModel}
+            key="create"
             onClose={() => onOpenChange(false)}
             onSuccess={onSuccess}
           />
+        )}
+        {open && isEditing && model && (
+          <AiModelFormContent
+            key={`${model.uuid}:${model.updated_at}`}
+            // The query type mangles nested readonly arrays; the shape is the schema's.
+            initialModel={model as unknown as AiRegistryModelDetail}
+            onClose={() => onOpenChange(false)}
+            onSuccess={onSuccess}
+          />
+        )}
+        {open && isEditing && !model && (
+          <p className="text-muted-foreground py-6 text-center text-sm">
+            {error
+              ? t("features.ai.models.loadError", {
+                  defaultValue:
+                    "بارگذاری اطلاعات مدل ناموفق بود. پنجره را ببندید و دوباره باز کنید.",
+                })
+              : t("common.loading", { defaultValue: "در حال بارگذاری..." })}
+          </p>
         )}
       </DialogContent>
     </Dialog>
