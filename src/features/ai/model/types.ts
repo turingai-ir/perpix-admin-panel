@@ -13,12 +13,13 @@ export type AiTaskMessageResponse =
   components["schemas"]["AiTaskMessageResponse"];
 
 // AI Gateway
-export type RequestsRow = components["schemas"]["RequestsRow"];
-export type AdminPageRequestsRow =
-  components["schemas"]["AdminPage_RequestsRow_"];
-export type AiGatewayStatusEnum = components["schemas"]["AiGatewayStatusEnum"];
-export type AiGatewayRequestAdminResponse =
-  components["schemas"]["AiGatewayRequestAdminResponse"];
+export type GenerationDetail = components["schemas"]["GenerationDetail"];
+export type AdminPageGenerationDetail =
+  components["schemas"]["AdminPage_GenerationDetail_"];
+export type GenerationStatusEnum =
+  components["schemas"]["GenerationStatusEnum"];
+export type GenerationReviewReasonEnum =
+  components["schemas"]["GenerationReviewReasonEnum"];
 
 // AI Registry Models
 export type ModelsRow = components["schemas"]["ModelsRow"];

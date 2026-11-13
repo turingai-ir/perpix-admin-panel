@@ -6,7 +6,7 @@ import openapiTS, { astToString } from "openapi-typescript";
 import prettier from "prettier";
 
 import { adminApiSchema } from "./admin-schema";
-import { makeBinaryTransform } from "./transform";
+import { makeBinaryTransform, makeJsonCycleTransform } from "./transform";
 
 type EnumDef = {
   name: string;
@@ -200,6 +200,9 @@ const renderEnumMaps = (enums: EnumDef[]) =>
     })
     .join("\n\n");
 
+const binaryTransform = makeBinaryTransform("File");
+const jsonCycleTransform = makeJsonCycleTransform();
+
 const generateClient = async (
   generatedJsonFileFullPath: string,
   outputFilePath: string,
@@ -211,7 +214,8 @@ const generateClient = async (
     makePathsEnum: false,
     generatePathParams: true,
     rootTypes: true,
-    transform: makeBinaryTransform("File"),
+    transform: (schema, options) =>
+      jsonCycleTransform(schema, options) ?? binaryTransform(schema),
   });
 
   const enumMaps = renderEnumMaps(

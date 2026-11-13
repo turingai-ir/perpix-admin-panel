@@ -302,9 +302,6 @@ export function AiTasksListPage() {
                 <option value="created_at">
                   {t("common.sortOldest", { defaultValue: "قدیمی‌ترین" })}
                 </option>
-                <option value="-updated_at">
-                  {t("common.sortUpdated", { defaultValue: "آخرین بروزرسانی" })}
-                </option>
               </Select>
             </div>
 

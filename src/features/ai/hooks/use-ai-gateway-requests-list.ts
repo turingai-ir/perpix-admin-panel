@@ -1,8 +1,9 @@
 import { useReactQueryApi } from "@/hooks";
 import type {
   AdminSort,
-  AiGatewayStatusEnum,
-  RequestsRow,
+  GenerationDetail,
+  GenerationReviewReasonEnum,
+  GenerationStatusEnum,
 } from "../model/types";
 
 export interface UseAiGatewayRequestsListParams {
@@ -14,12 +15,14 @@ export interface UseAiGatewayRequestsListParams {
   resourceUuid?: string;
   userUuid?: string;
   search?: string;
-  taskStatus?: AiGatewayStatusEnum | "ALL";
+  status?: GenerationStatusEnum | "ALL";
+  reviewReason?: GenerationReviewReasonEnum;
+  openOnly?: boolean;
   modelUuid?: string;
   providerUuid?: string;
 }
 
-export type AiGatewayRequestsRowItem = RequestsRow;
+export type AiGatewayRequestsRowItem = GenerationDetail;
 
 export function useAiGatewayRequestsList({
   page = 1,
@@ -30,7 +33,9 @@ export function useAiGatewayRequestsList({
   resourceUuid,
   userUuid,
   search,
-  taskStatus,
+  status,
+  reviewReason,
+  openOnly,
   modelUuid,
   providerUuid,
 }: UseAiGatewayRequestsListParams = {}) {
@@ -46,17 +51,17 @@ export function useAiGatewayRequestsList({
     resource_uuid: resourceUuid || undefined,
     user_uuid: userUuid || undefined,
     search: search || undefined,
-    task_status:
-      taskStatus && taskStatus !== "ALL"
-        ? (taskStatus as AiGatewayStatusEnum)
-        : undefined,
+    status:
+      status && status !== "ALL" ? (status as GenerationStatusEnum) : undefined,
+    review_reason: reviewReason,
+    open_only: openOnly || undefined,
     model_uuid: modelUuid || undefined,
     provider_uuid: providerUuid || undefined,
   };
 
   const { data, isLoading, error, refetch } = api.useQuery(
     "get",
-    "/api/admin/v1/ai-gateway/requests",
+    "/api/admin/v1/ai-gateway/generations",
     {
       params: {
         query: queryParams,

@@ -6,11 +6,6 @@ import {
   RotateCcw,
   BarChart3,
   ListFilter,
-  CheckCircle2,
-  Clock,
-  AlertTriangle,
-  XCircle,
-  RefreshCw,
 } from "lucide-react";
 import {
   useAiGatewayRequestsList,
@@ -29,7 +24,11 @@ import { Select } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslate } from "@/hooks";
 import { cn } from "@/lib/utils";
-import type { AdminSort, AiGatewayStatusEnum } from "../../model/types";
+import type { AdminSort, GenerationStatusEnum } from "../../model/types";
+import {
+  GENERATION_STATUS_LABELS,
+  GenerationStatusBadge,
+} from "./generation-status-badge";
 
 export function AiGatewayRequestsListPage() {
   const { t } = useAppTranslate();
@@ -59,7 +58,8 @@ export function AiGatewayRequestsListPage() {
       sort: (sort as AdminSort) || "-created_at",
       search,
       userUuid: (filters.user_uuid as string) || undefined,
-      taskStatus: (filters.task_status as AiGatewayStatusEnum | "ALL") || "ALL",
+      status: (filters.status as GenerationStatusEnum | "ALL") || "ALL",
+      openOnly: filters.open_only === "true",
     });
 
   const {
@@ -71,58 +71,6 @@ export function AiGatewayRequestsListPage() {
   } = useAiGatewayReports({
     userUuid: (filters.user_uuid as string) || undefined,
   });
-
-  const renderStatusBadge = (status: string) => {
-    switch (status?.toUpperCase()) {
-      case "COMPLETED":
-        return (
-          <Badge
-            variant="default"
-            className="gap-1 bg-emerald-600 text-white hover:bg-emerald-700"
-          >
-            <CheckCircle2 className="size-3" />
-            تکمیل شده
-          </Badge>
-        );
-      case "PROCESSING":
-        return (
-          <Badge
-            variant="secondary"
-            className="gap-1 bg-blue-500 text-white hover:bg-blue-600"
-          >
-            <RefreshCw className="size-3 animate-spin" />
-            در حال پردازش
-          </Badge>
-        );
-      case "CREATED":
-        return (
-          <Badge
-            variant="secondary"
-            className="gap-1 bg-amber-500 text-white hover:bg-amber-600"
-          >
-            <Clock className="size-3" />
-            ایجاد شده
-          </Badge>
-        );
-      case "FAILED":
-        return (
-          <Badge variant="destructive" className="gap-1">
-            <XCircle className="size-3" />
-            ناموفق
-          </Badge>
-        );
-      case "EXPIRED":
-      case "CANCELLED":
-        return (
-          <Badge variant="outline" className="text-muted-foreground gap-1">
-            <AlertTriangle className="size-3" />
-            {status}
-          </Badge>
-        );
-      default:
-        return <Badge variant="secondary">{status || "نامشخص"}</Badge>;
-    }
-  };
 
   const columns: DataTableColumn<AiGatewayRequestsRowItem>[] = useMemo(
     () => [
@@ -141,11 +89,11 @@ export function AiGatewayRequestsListPage() {
         ),
       },
       {
-        id: "task_status",
+        id: "status",
         header: t("features.ai.gateway.columns.status", {
           defaultValue: "وضعیت",
         }),
-        cell: (item) => renderStatusBadge(item.task_status),
+        cell: (item) => <GenerationStatusBadge status={item.status} />,
       },
       {
         id: "model_name",
@@ -187,15 +135,15 @@ export function AiGatewayRequestsListPage() {
         },
       },
       {
-        id: "retry_count",
+        id: "attempts",
         header: t("features.ai.gateway.columns.retries", {
-          defaultValue: "تلاش مجدد",
+          defaultValue: "تلاش‌ها",
         }),
         cell: (item) => (
           <span className="font-mono text-xs">
-            {item.retry_count > 0 ? (
+            {item.attempts > 1 ? (
               <Badge variant="outline" className="text-amber-600">
-                {item.retry_count}
+                {item.attempts}
               </Badge>
             ) : (
               "۰"
@@ -239,7 +187,8 @@ export function AiGatewayRequestsListPage() {
   const hasActiveFilters = Boolean(
     search ||
     filters.user_uuid ||
-    (filters.task_status && filters.task_status !== "ALL") ||
+    (filters.status && filters.status !== "ALL") ||
+    filters.open_only === "true" ||
     sort !== "-created_at",
   );
 
@@ -316,20 +265,31 @@ export function AiGatewayRequestsListPage() {
 
             <div className="w-full sm:w-44">
               <Select
-                value={(filters.task_status as string) || "ALL"}
-                onChange={(e) => setFilter("task_status", e.target.value)}
+                value={(filters.status as string) || "ALL"}
+                onChange={(e) => setFilter("status", e.target.value)}
               >
                 <option value="ALL">
                   {t("features.ai.gateway.statuses.all", {
                     defaultValue: "همه وضعیت‌ها",
                   })}
                 </option>
-                <option value="CREATED">ایجاد شده</option>
-                <option value="PROCESSING">در حال پردازش</option>
-                <option value="COMPLETED">تکمیل شده</option>
-                <option value="FAILED">ناموفق</option>
-                <option value="EXPIRED">منقضی شده</option>
-                <option value="CANCELLED">لغو شده</option>
+                {Object.entries(GENERATION_STATUS_LABELS).map(
+                  ([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ),
+                )}
+              </Select>
+            </div>
+
+            <div className="w-full sm:w-44">
+              <Select
+                value={(filters.open_only as string) || "false"}
+                onChange={(e) => setFilter("open_only", e.target.value)}
+              >
+                <option value="false">همه درخواست‌ها</option>
+                <option value="true">فقط باز (در جریان)</option>
               </Select>
             </div>
 
@@ -406,7 +366,15 @@ export function AiGatewayRequestsListPage() {
                       key={idx}
                       className="flex items-center justify-between text-xs"
                     >
-                      <span>{renderStatusBadge(b.key || "")}</span>
+                      <span>
+                        {b.key && b.key in GENERATION_STATUS_LABELS ? (
+                          <GenerationStatusBadge
+                            status={b.key as GenerationStatusEnum}
+                          />
+                        ) : (
+                          b.key || "-"
+                        )}
+                      </span>
                       <span className="font-mono font-bold">
                         {b.count.toLocaleString("fa-IR")}
                       </span>

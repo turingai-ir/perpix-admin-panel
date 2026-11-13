@@ -3,7 +3,6 @@ dist
 dev-dist
 .git
 .gitignore
-.env
 .env.*
 !.env.example
 .vscode

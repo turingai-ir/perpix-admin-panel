@@ -53,13 +53,13 @@ export function AiModelsListPage() {
     resetFilters,
   } = useTableQuery({
     defaultLimit: 10,
-    defaultSort: "-updated_at",
+    defaultSort: "-created_at",
   });
 
   const { models, totalCount, isLoading, error, refetch } = useAiModelsList({
     page,
     limit,
-    sort: (sort as AdminSort) || "-updated_at",
+    sort: (sort as AdminSort) || "-created_at",
     search,
     modelOwner:
       (filters.model_owner as AiRegistryModelOwnerEnum | "ALL") || "ALL",
@@ -242,7 +242,7 @@ export function AiModelsListPage() {
   const hasActiveFilters = Boolean(
     search ||
     (filters.model_owner && filters.model_owner !== "ALL") ||
-    sort !== "-updated_at",
+    sort !== "-created_at",
   );
 
   return (
@@ -316,14 +316,14 @@ export function AiModelsListPage() {
 
         <div className="w-full sm:w-48">
           <Select
-            value={sort || "-updated_at"}
+            value={sort || "-created_at"}
             onChange={(e) => setSort(e.target.value)}
           >
-            <option value="-updated_at">
-              {t("common.sortUpdated", { defaultValue: "آخرین بروزرسانی" })}
-            </option>
             <option value="-created_at">
               {t("common.sortNewest", { defaultValue: "جدیدترین" })}
+            </option>
+            <option value="created_at">
+              {t("common.sortOldest", { defaultValue: "قدیمی‌ترین" })}
             </option>
           </Select>
         </div>

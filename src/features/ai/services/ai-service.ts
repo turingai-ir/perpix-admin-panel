@@ -5,7 +5,6 @@ import {
   FetchTimeoutError,
 } from "@/utils/custom-fetch/fetch-errors";
 import type {
-  AiGatewayRequestAdminResponse,
   AiRegistryModelCreateRequest,
   AiRegistryModelDetail,
   AiRegistryModelUpdateRequest,
@@ -56,30 +55,6 @@ function handleFetchError(error: unknown): never {
     );
   }
   throw new AiActionError("server", "خطای غیرمنتظره در سرور رخ داده است.");
-}
-
-// 1. AI Gateway
-export async function refreshGatewayRequest(
-  requestUuid: string,
-): Promise<AiGatewayRequestAdminResponse> {
-  try {
-    const res = await apiClient.POST(
-      "/api/admin/v1/ai-gateway/requests/{request_uuid}/refresh",
-      {
-        params: {
-          path: {
-            request_uuid: requestUuid,
-          },
-        },
-      },
-    );
-    if (res.error) {
-      throw new AiActionError("server");
-    }
-    return res.data as AiGatewayRequestAdminResponse;
-  } catch (error) {
-    return handleFetchError(error);
-  }
 }
 
 // 2. AI Models

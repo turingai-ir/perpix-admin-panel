@@ -1,60 +1,27 @@
-import { useState } from "react";
-import { useReactQueryApi, useAppTranslate } from "@/hooks";
-import { refreshGatewayRequest, AiActionError } from "../services/ai-service";
-import { toast } from "sonner";
+import { useReactQueryApi } from "@/hooks";
 
-export function useAiGatewayRequestDetail(requestUuid: string) {
-  const { t } = useAppTranslate();
+export function useAiGatewayRequestDetail(generationUuid: string) {
   const api = useReactQueryApi();
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const query = api.useQuery(
     "get",
-    "/api/admin/v1/ai-gateway/requests/{request_uuid}",
+    "/api/admin/v1/ai-gateway/generations/{generation_uuid}",
     {
       params: {
         path: {
-          request_uuid: requestUuid,
+          generation_uuid: generationUuid,
         },
       },
     },
     {
-      enabled: Boolean(requestUuid),
+      enabled: Boolean(generationUuid),
     },
   );
 
-  const handleRefresh = async () => {
-    if (!requestUuid) return;
-    setIsRefreshing(true);
-    try {
-      const updated = await refreshGatewayRequest(requestUuid);
-      toast.success(
-        t("features.ai.gateway.refreshSuccess", {
-          defaultValue: "وضعیت درخواست با موفقیت بروزرسانی شد.",
-        }),
-      );
-      void query.refetch();
-      return updated;
-    } catch (err) {
-      const msg =
-        err instanceof AiActionError
-          ? err.message
-          : t("features.ai.gateway.refreshError", {
-              defaultValue: "بروزرسانی وضعیت درخواست ناموفق بود.",
-            });
-      toast.error(msg);
-      throw err;
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-
   return {
-    request: query.data,
+    generation: query.data,
     isLoading: query.isLoading,
     error: query.error,
     refetch: query.refetch,
-    handleRefresh,
-    isRefreshing,
   };
 }

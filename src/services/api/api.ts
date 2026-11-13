@@ -455,15 +455,34 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
-  readonly "/api/admin/v1/ai-gateway/requests": {
+  readonly "/api/admin/v1/ai-gateway/generations": {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
       readonly path?: never;
       readonly cookie?: never;
     };
-    /** List Requests */
-    readonly get: operations["admin_ai_gateway_list_requests"];
+    /** List Generations */
+    readonly get: operations["admin_ai_gateway_list_generations"];
+    readonly put?: never;
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/admin/v1/ai-gateway/generations/{generation_uuid}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly generation_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    /** Get Generation */
+    readonly get: operations["admin_ai_gateway_get_generation"];
     readonly put?: never;
     readonly post?: never;
     readonly delete?: never;
@@ -479,7 +498,7 @@ export interface paths {
       readonly path?: never;
       readonly cookie?: never;
     };
-    /** Report Requests Daily */
+    /** Read Report */
     readonly get: operations["admin_ai_gateway_report_requests_daily"];
     readonly put?: never;
     readonly post?: never;
@@ -496,7 +515,7 @@ export interface paths {
       readonly path?: never;
       readonly cookie?: never;
     };
-    /** Report Requests Models */
+    /** Read Report */
     readonly get: operations["admin_ai_gateway_report_requests_models"];
     readonly put?: never;
     readonly post?: never;
@@ -513,7 +532,7 @@ export interface paths {
       readonly path?: never;
       readonly cookie?: never;
     };
-    /** Report Requests Providers */
+    /** Read Report */
     readonly get: operations["admin_ai_gateway_report_requests_providers"];
     readonly put?: never;
     readonly post?: never;
@@ -530,7 +549,7 @@ export interface paths {
       readonly path?: never;
       readonly cookie?: never;
     };
-    /** Report Requests Statuses */
+    /** Read Report */
     readonly get: operations["admin_ai_gateway_report_requests_statuses"];
     readonly put?: never;
     readonly post?: never;
@@ -1016,7 +1035,10 @@ export interface paths {
     readonly get: operations["get_file_api_admin_v1_file_manager_files__file_uuid__get"];
     readonly put?: never;
     readonly post?: never;
-    /** Delete File */
+    /**
+     * Delete File
+     * @description Delete an active file as administrator. Managed deletion commits a logical retirement before success and preserves held bytes for claimed cleanup. Legacy deletion retains existing storage behavior. Failed or unknown commits return an error; inspect state before retrying.
+     */
     readonly delete: operations["delete_file_api_admin_v1_file_manager_files__file_uuid__delete"];
     readonly options?: never;
     readonly head?: never;
@@ -1033,7 +1055,10 @@ export interface paths {
     };
     readonly get?: never;
     readonly put?: never;
-    /** Delete Bulk Files */
+    /**
+     * Delete Bulk Files
+     * @description Delete active files as administrator. Managed-only batches retire atomically before success and deduplicate UUIDs in first-occurrence order. Missing/expired/deleted targets return 404 before mutation. Mixed managed/legacy batches return 409 without mutation; submit separate batches. Legacy-only batches retain existing storage deletion behavior. Failed or unknown commits require reading current state before retrying.
+     */
     readonly post: operations["delete_bulk_files_api_admin_v1_file_manager_files_delete_bulk_post"];
     readonly delete?: never;
     readonly options?: never;
@@ -1080,38 +1105,57 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
-  readonly "/api/admin/v1/ai-gateway/requests/{request_uuid}": {
+  readonly "/api/admin/v1/ai-gateway/generations/{generation_uuid}/external-task": {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
       readonly path: {
-        readonly request_uuid: string;
+        readonly generation_uuid: string;
       };
       readonly cookie?: never;
     };
-    /** Read Request */
-    readonly get: operations["admin_ai_gateway_get_request"];
+    readonly get?: never;
     readonly put?: never;
-    readonly post?: never;
+    /** Record External Task */
+    readonly post: operations["admin_ai_gateway_generation_external_task"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
     readonly patch?: never;
     readonly trace?: never;
   };
-  readonly "/api/admin/v1/ai-gateway/requests/{request_uuid}/refresh": {
+  readonly "/api/admin/v1/ai-gateway/generations/{generation_uuid}/cost": {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
       readonly path: {
-        readonly request_uuid: string;
+        readonly generation_uuid: string;
       };
       readonly cookie?: never;
     };
     readonly get?: never;
     readonly put?: never;
-    /** Refresh Request */
-    readonly post: operations["refresh_request_api_admin_v1_ai_gateway_requests__request_uuid__refresh_post"];
+    /** Set Cost */
+    readonly post: operations["admin_ai_gateway_generation_set_cost"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/admin/v1/ai-gateway/generations/{generation_uuid}/fail": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly generation_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    readonly put?: never;
+    /** Fail Generation */
+    readonly post: operations["admin_ai_gateway_generation_fail"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -1171,6 +1215,25 @@ export interface paths {
     readonly put?: never;
     /** Add Provider To Model */
     readonly post: operations["add_provider_to_model_api_admin_v1_ai_registry_models__ai_model_uuid__providers_post"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/admin/v1/ai-registry/models/{ai_model_uuid}/providers/order": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly ai_model_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    /** Reorder Model Providers */
+    readonly put: operations["reorder_model_providers_api_admin_v1_ai_registry_models__ai_model_uuid__providers_order_put"];
+    readonly post?: never;
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -1531,6 +1594,19 @@ export interface components {
       readonly has_next: boolean;
     };
     /** AdminPage */
+    readonly AdminPage_GenerationDetail_: {
+      /** Items */
+      readonly items: readonly components["schemas"]["GenerationDetail"][];
+      /** Total Count */
+      readonly total_count: number;
+      /** Offset */
+      readonly offset: number;
+      /** Limit */
+      readonly limit: number;
+      /** Has Next */
+      readonly has_next: boolean;
+    };
+    /** AdminPage */
     readonly AdminPage_MessageRow_: {
       /** Items */
       readonly items: readonly components["schemas"]["MessageRow"][];
@@ -1586,19 +1662,6 @@ export interface components {
     readonly AdminPage_ProvidersRow_: {
       /** Items */
       readonly items: readonly components["schemas"]["ProvidersRow"][];
-      /** Total Count */
-      readonly total_count: number;
-      /** Offset */
-      readonly offset: number;
-      /** Limit */
-      readonly limit: number;
-      /** Has Next */
-      readonly has_next: boolean;
-    };
-    /** AdminPage */
-    readonly AdminPage_RequestsRow_: {
-      /** Items */
-      readonly items: readonly components["schemas"]["RequestsRow"][];
       /** Total Count */
       readonly total_count: number;
       /** Offset */
@@ -1772,92 +1835,13 @@ export interface components {
      */
     readonly AdminSort: "-created_at" | "created_at";
     /**
-     * AiGatewayConsumerTypeEnum
-     * @enum {string}
+     * AiRegistryModeDefinition
+     * @description A mode a model offers.
      */
-    readonly AiGatewayConsumerTypeEnum: "AI_TASK";
-    /** AiGatewayRequestAdminResponse */
-    readonly AiGatewayRequestAdminResponse: {
-      /**
-       * Uuid
-       * Format: uuid
-       */
-      readonly uuid: string;
-      /**
-       * User Uuid
-       * Format: uuid
-       */
-      readonly user_uuid: string;
-      /** Wallet Id */
-      readonly wallet_id: number | null;
-      /** Ai Model Id */
-      readonly ai_model_id: number | null;
-      /** Ai Provider Id */
-      readonly ai_provider_id: number | null;
-      /** Consumer Id */
-      readonly consumer_id: number | null;
-      readonly consumer_type:
-        components["schemas"]["AiGatewayConsumerTypeEnum"] | null;
-      readonly task_status: components["schemas"]["AiGatewayStatusEnum"];
-      /** Ai External Provider Task Id */
-      readonly ai_external_provider_task_id: string | null;
-      /** Status Code */
-      readonly status_code: number | null;
-      /** Retry Count */
-      readonly retry_count: number;
-      /** Estimated Cost Usdmicro */
-      readonly estimated_cost_usdmicro: number | null;
-      /** Actual Cost Usdmicro */
-      readonly actual_cost_usdmicro: number | null;
-      /** Ai Model Config */
-      readonly ai_model_config: {
-        readonly [key: string]: unknown;
-      };
-      /** Raw Request */
-      readonly raw_request: {
-        readonly [key: string]: unknown;
-      } | null;
-      /** Raw Response */
-      readonly raw_response:
-        | {
-            readonly [key: string]: unknown;
-          }
-        | readonly unknown[]
-        | null;
-      /** Data */
-      readonly data: {
-        readonly [key: string]: unknown;
-      };
-      /** Error */
-      readonly error: {
-        readonly [key: string]: unknown;
-      } | null;
-      /** Expire Date */
-      readonly expire_date: string | null;
-      /** Last Provider Occurred At */
-      readonly last_provider_occurred_at: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      readonly created_at: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      readonly updated_at: string;
+    readonly AiRegistryModeDefinition: {
+      /** Value */
+      readonly value: string;
     };
-    /**
-     * AiGatewayStatusEnum
-     * @enum {string}
-     */
-    readonly AiGatewayStatusEnum:
-      | "CREATED"
-      | "PROCESSING"
-      | "COMPLETED"
-      | "FAILED"
-      | "EXPIRED"
-      | "CANCELLED";
     /** AiRegistryModelCreateRequest */
     readonly AiRegistryModelCreateRequest: {
       readonly model_owner: components["schemas"]["AiRegistryModelOwnerEnum"];
@@ -1871,7 +1855,9 @@ export interface components {
       readonly icon_url?: string | null;
       /** Modes Supported */
       readonly modes_supported?: {
-        readonly [key: string]: unknown;
+        readonly [
+          key: string
+        ]: components["schemas"]["AiRegistryModeDefinition"];
       };
       /** Canonical Ui Schema */
       readonly canonical_ui_schema?: {
@@ -1911,7 +1897,9 @@ export interface components {
       readonly icon_url: string | null;
       /** Modes Supported */
       readonly modes_supported: {
-        readonly [key: string]: unknown;
+        readonly [
+          key: string
+        ]: components["schemas"]["AiRegistryModeDefinition"];
       };
       /** Canonical Ui Schema */
       readonly canonical_ui_schema: {
@@ -1990,6 +1978,8 @@ export interface components {
       readonly modes?: {
         readonly [key: string]: unknown;
       };
+      /** Workflow Modes */
+      readonly workflow_modes?: readonly string[];
     };
     /** AiRegistryModelProviderLinkDetail */
     readonly AiRegistryModelProviderLinkDetail: {
@@ -2007,6 +1997,8 @@ export interface components {
       readonly modes: {
         readonly [key: string]: unknown;
       };
+      /** Workflow Modes */
+      readonly workflow_modes?: readonly string[];
     };
     /** AiRegistryModelProviderLinkUpdateRequest */
     readonly AiRegistryModelProviderLinkUpdateRequest: {
@@ -2018,6 +2010,13 @@ export interface components {
       readonly modes?: {
         readonly [key: string]: unknown;
       } | null;
+      /** Workflow Modes */
+      readonly workflow_modes?: readonly string[] | null;
+    };
+    /** AiRegistryModelProviderOrderRequest */
+    readonly AiRegistryModelProviderOrderRequest: {
+      /** Ai Provider Uuids */
+      readonly ai_provider_uuids: readonly string[];
     };
     /**
      * AiRegistryModelSupportedTypesEnum
@@ -2039,7 +2038,9 @@ export interface components {
       readonly icon_url?: string | null;
       /** Modes Supported */
       readonly modes_supported?: {
-        readonly [key: string]: unknown;
+        readonly [
+          key: string
+        ]: components["schemas"]["AiRegistryModeDefinition"];
       } | null;
       /** Canonical Ui Schema */
       readonly canonical_ui_schema?: {
@@ -2134,24 +2135,95 @@ export interface components {
         readonly [key: string]: unknown;
       } | null;
     };
-    /** AiTaskMessageResponse */
+    /**
+     * AiTaskMessageError
+     * @description Structured, actionable error details for client applications.
+     */
+    readonly AiTaskMessageError: {
+      /**
+       * Reason
+       * @description High-level category code of the generation failure.
+       */
+      readonly reason: string;
+      /**
+       * Message
+       * @description Persian localized user-facing explanation.
+       */
+      readonly message: string;
+      /**
+       * Message Key
+       * @description Translation key for client-side localization.
+       */
+      readonly message_key?: string | null;
+      /**
+       * Action
+       * @description Prescribed client action (e.g. MODIFY_INPUT, RETRY_LATER, RETRY_NOW, CONTACT_SUPPORT).
+       */
+      readonly action: string;
+      /**
+       * Retryable
+       * @description Whether the client should allow resubmitting the request.
+       */
+      readonly retryable: boolean;
+      /**
+       * Target
+       * @description Specific target component of the failure if known (prompt, reference_image).
+       */
+      readonly target?: string | null;
+    };
+    /**
+     * AiTaskMessageResponse
+     * @description Standardized representation of a single message within an AI task conversation.
+     */
     readonly AiTaskMessageResponse: {
-      /** Ai Model Config */
-      readonly ai_model_config: {
-        readonly [key: string]: unknown;
-      };
-      /** Ai Model Uuid */
-      readonly ai_model_uuid: string | null;
-      readonly task_status:
-        components["schemas"]["AiTaskMessageStatusEnum"] | null;
-      /** Message */
-      readonly message: string | null;
-      readonly role: components["schemas"]["AiTaskRuleEnum"];
       /**
        * Uuid
        * Format: uuid
+       * @description Unique identifier of this task message.
        */
       readonly uuid: string;
+      /**
+       * @description Role of the message creator: USER for user requests, ASSISTANT for AI outputs.
+       * @example ASSISTANT
+       */
+      readonly role: components["schemas"]["AiTaskRuleEnum"];
+      /**
+       * @description Current processing status of this message (e.g. SUCCESS, FAILED, IN_PROGRESS).
+       * @example SUCCESS
+       */
+      readonly task_status?:
+        components["schemas"]["AiTaskMessageStatusEnum"] | null;
+      /**
+       * Message
+       * @description Text content, normalized prompt, or error explanation associated with this message.
+       */
+      readonly message?: string | null;
+      /**
+       * Ai Model Uuid
+       * @description UUID of the AI model executed for this message, if applicable.
+       */
+      readonly ai_model_uuid?: string | null;
+      /**
+       * Ai Model Config
+       * @description Model parameters used and internal output registry.
+       */
+      readonly ai_model_config?: {
+        readonly [key: string]: unknown;
+      };
+      /** @description Structured error details when the message failed, parsed from internal config. */
+      readonly error: components["schemas"]["AiTaskMessageError"] | null;
+      /**
+       * Metadata
+       * @description Non-sensitive generation metadata (seed, dimensions) if returned by the provider.
+       */
+      readonly metadata: {
+        readonly [key: string]: unknown;
+      };
+      /**
+       * Output File Uuids
+       * @description Strongly-typed list of generated output file UUIDs extracted from generation results.
+       */
+      readonly output_file_uuids: readonly string[];
     };
     /**
      * AiTaskMessageStatusEnum
@@ -2170,6 +2242,98 @@ export interface components {
      * @enum {string}
      */
     readonly AiTaskTypeEnum: "TEXT" | "IMAGE" | "AUDIO" | "VIDEO";
+    /**
+     * ApplicationErrorCode
+     * @enum {integer}
+     */
+    readonly ApplicationErrorCode:
+      | 900
+      | 901
+      | 902
+      | 999
+      | 1000
+      | 1100
+      | 1103
+      | 1104
+      | 1106
+      | 1107
+      | 1108
+      | 1200
+      | 1201
+      | 1202
+      | 1203
+      | 1204
+      | 1205
+      | 1206
+      | 1300
+      | 1301
+      | 1302
+      | 1303
+      | 1304
+      | 1305
+      | 1306
+      | 1307
+      | 1308
+      | 1309
+      | 1310
+      | 1400
+      | 1401
+      | 1500
+      | 1501
+      | 1502
+      | 1503
+      | 1504
+      | 1505
+      | 1600
+      | 1601
+      | 1602
+      | 1603
+      | 1604
+      | 1605
+      | 1700
+      | 1701
+      | 1702
+      | 1800
+      | 1801
+      | 1802
+      | 1803
+      | 1804
+      | 1805
+      | 1806
+      | 1807
+      | 1808
+      | 1810
+      | 1811
+      | 1812
+      | 1813
+      | 1814
+      | 1815
+      | 1816;
+    /** ApplicationErrorResponse */
+    readonly ApplicationErrorResponse: {
+      /**
+       * Detail
+       * @description Translated error message or validation details.
+       */
+      readonly detail: unknown;
+      /** @description Stable application status code for frontend handling. */
+      readonly status_code: components["schemas"]["ApplicationErrorCode"];
+      /**
+       * Request Id
+       * @description Correlation id for tracing the request.
+       */
+      readonly request_id?: string | null;
+      /**
+       * Retry After
+       * @description Seconds until a rate-limited request can retry.
+       */
+      readonly retry_after?: number | null;
+      /**
+       * Required Scopes
+       * @description Subscription scopes required to perform the operation.
+       */
+      readonly required_scopes?: readonly string[] | null;
+    };
     /** AuditRow */
     readonly AuditRow: {
       /**
@@ -2351,7 +2515,7 @@ export interface components {
       readonly is_public: boolean;
       /** Meta */
       readonly meta?: {
-        readonly [key: string]: components["schemas"]["JsonValue"];
+        readonly [key: string]: unknown;
       };
       /** Created At */
       readonly created_at?: string | null;
@@ -2371,7 +2535,7 @@ export interface components {
       readonly file_name: string;
       /** Meta */
       readonly meta?: {
-        readonly [key: string]: components["schemas"]["JsonValue"];
+        readonly [key: string]: unknown;
       };
     };
     /** FileManagerPresignedUrlsResponse */
@@ -2423,6 +2587,108 @@ export interface components {
        */
       readonly created_at: string;
     };
+    /** GenerationActionRequest */
+    readonly GenerationActionRequest: {
+      /** Reason */
+      readonly reason: string;
+    };
+    /** GenerationDetail */
+    readonly GenerationDetail: {
+      /**
+       * Uuid
+       * Format: uuid
+       */
+      readonly uuid: string;
+      /**
+       * User Uuid
+       * Format: uuid
+       */
+      readonly user_uuid: string;
+      /** Model Uuid */
+      readonly model_uuid: string | null;
+      /** Model Name */
+      readonly model_name: string | null;
+      /** Provider Uuid */
+      readonly provider_uuid: string | null;
+      /** Provider Name */
+      readonly provider_name: string | null;
+      readonly status: components["schemas"]["GenerationStatusEnum"];
+      readonly review_reason:
+        components["schemas"]["GenerationReviewReasonEnum"] | null;
+      /** Last Error */
+      readonly last_error: string | null;
+      /** Attempts */
+      readonly attempts: number;
+      /** Unreadable Polls */
+      readonly unreadable_polls: number;
+      /** Next Run At */
+      readonly next_run_at: string | null;
+      /** Has External Task */
+      readonly has_external_task: boolean;
+      /** Estimated Cost Usdmicro */
+      readonly estimated_cost_usdmicro: number | null;
+      /** Actual Cost Usdmicro */
+      readonly actual_cost_usdmicro: number | null;
+      /** Reservation Status */
+      readonly reservation_status: string | null;
+      /** Reserved Usdmicro */
+      readonly reserved_usdmicro: number | null;
+      /** Release Reason */
+      readonly release_reason: string | null;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      readonly created_at: string;
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      readonly updated_at: string;
+    };
+    /** GenerationExternalTaskRequest */
+    readonly GenerationExternalTaskRequest: {
+      /** Reason */
+      readonly reason: string;
+      /** External Task Id */
+      readonly external_task_id: string;
+    };
+    /**
+     * GenerationReviewReasonEnum
+     * @enum {string}
+     */
+    readonly GenerationReviewReasonEnum:
+      "COST_UNRESOLVED" | "RESULT_UNREADABLE";
+    /** GenerationReviewResponse */
+    readonly GenerationReviewResponse: {
+      /**
+       * Uuid
+       * Format: uuid
+       */
+      readonly uuid: string;
+      readonly status: components["schemas"]["GenerationStatusEnum"];
+      readonly review_reason:
+        components["schemas"]["GenerationReviewReasonEnum"] | null;
+    };
+    /** GenerationSetCostRequest */
+    readonly GenerationSetCostRequest: {
+      /** Reason */
+      readonly reason: string;
+      /** Actual Cost Usdmicro */
+      readonly actual_cost_usdmicro: number;
+    };
+    /**
+     * GenerationStatusEnum
+     * @enum {string}
+     */
+    readonly GenerationStatusEnum:
+      | "PENDING"
+      | "SUBMITTING"
+      | "WAITING_RESULT"
+      | "PROCESSING_OUTPUT"
+      | "COMPLETED"
+      | "FAILED"
+      | "NEEDS_REVIEW";
     /** GetWalletTransactionsResponse */
     readonly GetWalletTransactionsResponse: {
       /**
@@ -2455,7 +2721,17 @@ export interface components {
       /** Detail */
       readonly detail?: readonly components["schemas"]["ValidationError"][];
     };
-    readonly JsonValue: unknown;
+    readonly JsonArray: readonly unknown[];
+    readonly JsonObject: {
+      readonly [key: string]: unknown;
+    };
+    readonly JsonValue:
+      | components["schemas"]["JsonObject"]
+      | components["schemas"]["JsonArray"]
+      | string
+      | number
+      | boolean
+      | null;
     /** MessageRow */
     readonly MessageRow: {
       /**
@@ -2583,10 +2859,7 @@ export interface components {
       readonly allowed_models: readonly string[];
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro: number | null;
-      /** Meta */
-      readonly meta: {
-        readonly [key: string]: components["schemas"]["JsonValue"];
-      } | null;
+      readonly meta: components["schemas"]["JsonObject"] | null;
       /** Is Recommended */
       readonly is_recommended: boolean;
       /**
@@ -2641,45 +2914,6 @@ export interface components {
        * Format: date-time
        */
       readonly created_at: string;
-    };
-    /** RequestsRow */
-    readonly RequestsRow: {
-      /**
-       * Uuid
-       * Format: uuid
-       */
-      readonly uuid: string;
-      /**
-       * User Uuid
-       * Format: uuid
-       */
-      readonly user_uuid: string;
-      /** Model Uuid */
-      readonly model_uuid: string | null;
-      /** Model Name */
-      readonly model_name: string | null;
-      /** Provider Uuid */
-      readonly provider_uuid: string | null;
-      /** Provider Name */
-      readonly provider_name: string | null;
-      /** Task Status */
-      readonly task_status: string;
-      /** Retry Count */
-      readonly retry_count: number;
-      /** Estimated Cost Usdmicro */
-      readonly estimated_cost_usdmicro: number | null;
-      /** Actual Cost Usdmicro */
-      readonly actual_cost_usdmicro: number | null;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      readonly created_at: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      readonly updated_at: string;
     };
     /** SessionsRow */
     readonly SessionsRow: {
@@ -3413,6 +3647,8 @@ export type SchemaAdminPageAuditRow =
   components["schemas"]["AdminPage_AuditRow_"];
 export type SchemaAdminPageFilesRow =
   components["schemas"]["AdminPage_FilesRow_"];
+export type SchemaAdminPageGenerationDetail =
+  components["schemas"]["AdminPage_GenerationDetail_"];
 export type SchemaAdminPageMessageRow =
   components["schemas"]["AdminPage_MessageRow_"];
 export type SchemaAdminPageModelsRow =
@@ -3423,8 +3659,6 @@ export type SchemaAdminPagePlansRow =
   components["schemas"]["AdminPage_PlansRow_"];
 export type SchemaAdminPageProvidersRow =
   components["schemas"]["AdminPage_ProvidersRow_"];
-export type SchemaAdminPageRequestsRow =
-  components["schemas"]["AdminPage_RequestsRow_"];
 export type SchemaAdminPageSessionsRow =
   components["schemas"]["AdminPage_SessionsRow_"];
 export type SchemaAdminPageSubscriptionOperationRow =
@@ -3450,12 +3684,8 @@ export type SchemaAdminSessionListResponse =
 export type SchemaAdminSessionResponse =
   components["schemas"]["AdminSessionResponse"];
 export type SchemaAdminSort = components["schemas"]["AdminSort"];
-export type SchemaAiGatewayConsumerTypeEnum =
-  components["schemas"]["AiGatewayConsumerTypeEnum"];
-export type SchemaAiGatewayRequestAdminResponse =
-  components["schemas"]["AiGatewayRequestAdminResponse"];
-export type SchemaAiGatewayStatusEnum =
-  components["schemas"]["AiGatewayStatusEnum"];
+export type SchemaAiRegistryModeDefinition =
+  components["schemas"]["AiRegistryModeDefinition"];
 export type SchemaAiRegistryModelCreateRequest =
   components["schemas"]["AiRegistryModelCreateRequest"];
 export type SchemaAiRegistryModelDetail =
@@ -3468,6 +3698,8 @@ export type SchemaAiRegistryModelProviderLinkDetail =
   components["schemas"]["AiRegistryModelProviderLinkDetail"];
 export type SchemaAiRegistryModelProviderLinkUpdateRequest =
   components["schemas"]["AiRegistryModelProviderLinkUpdateRequest"];
+export type SchemaAiRegistryModelProviderOrderRequest =
+  components["schemas"]["AiRegistryModelProviderOrderRequest"];
 export type SchemaAiRegistryModelSupportedTypesEnum =
   components["schemas"]["AiRegistryModelSupportedTypesEnum"];
 export type SchemaAiRegistryModelUpdateRequest =
@@ -3480,12 +3712,18 @@ export type SchemaAiRegistryProviderNameEnum =
   components["schemas"]["AiRegistryProviderNameEnum"];
 export type SchemaAiRegistryProviderUpdateRequest =
   components["schemas"]["AiRegistryProviderUpdateRequest"];
+export type SchemaAiTaskMessageError =
+  components["schemas"]["AiTaskMessageError"];
 export type SchemaAiTaskMessageResponse =
   components["schemas"]["AiTaskMessageResponse"];
 export type SchemaAiTaskMessageStatusEnum =
   components["schemas"]["AiTaskMessageStatusEnum"];
 export type SchemaAiTaskRuleEnum = components["schemas"]["AiTaskRuleEnum"];
 export type SchemaAiTaskTypeEnum = components["schemas"]["AiTaskTypeEnum"];
+export type SchemaApplicationErrorCode =
+  components["schemas"]["ApplicationErrorCode"];
+export type SchemaApplicationErrorResponse =
+  components["schemas"]["ApplicationErrorResponse"];
 export type SchemaAuditRow = components["schemas"]["AuditRow"];
 export type SchemaChargeWalletRequest =
   components["schemas"]["ChargeWalletRequest"];
@@ -3509,10 +3747,25 @@ export type SchemaFileManagerAdminUpdateFileRequest =
 export type SchemaFileManagerPresignedUrlsResponse =
   components["schemas"]["FileManagerPresignedUrlsResponse"];
 export type SchemaFilesRow = components["schemas"]["FilesRow"];
+export type SchemaGenerationActionRequest =
+  components["schemas"]["GenerationActionRequest"];
+export type SchemaGenerationDetail = components["schemas"]["GenerationDetail"];
+export type SchemaGenerationExternalTaskRequest =
+  components["schemas"]["GenerationExternalTaskRequest"];
+export type SchemaGenerationReviewReasonEnum =
+  components["schemas"]["GenerationReviewReasonEnum"];
+export type SchemaGenerationReviewResponse =
+  components["schemas"]["GenerationReviewResponse"];
+export type SchemaGenerationSetCostRequest =
+  components["schemas"]["GenerationSetCostRequest"];
+export type SchemaGenerationStatusEnum =
+  components["schemas"]["GenerationStatusEnum"];
 export type SchemaGetWalletTransactionsResponse =
   components["schemas"]["GetWalletTransactionsResponse"];
 export type SchemaHttpValidationError =
   components["schemas"]["HTTPValidationError"];
+export type SchemaJsonArray = components["schemas"]["JsonArray"];
+export type SchemaJsonObject = components["schemas"]["JsonObject"];
 export type SchemaJsonValue = components["schemas"]["JsonValue"];
 export type SchemaMessageRow = components["schemas"]["MessageRow"];
 export type SchemaModelsRow = components["schemas"]["ModelsRow"];
@@ -3523,7 +3776,6 @@ export type SchemaPaymentFulfillmentStatus =
 export type SchemaPaymentsRow = components["schemas"]["PaymentsRow"];
 export type SchemaPlansRow = components["schemas"]["PlansRow"];
 export type SchemaProvidersRow = components["schemas"]["ProvidersRow"];
-export type SchemaRequestsRow = components["schemas"]["RequestsRow"];
 export type SchemaSessionsRow = components["schemas"]["SessionsRow"];
 export type SchemaSmsTestRequest = components["schemas"]["SmsTestRequest"];
 export type SchemaSmsTestResponse = components["schemas"]["SmsTestResponse"];
@@ -5098,7 +5350,7 @@ export interface operations {
       };
     };
   };
-  readonly admin_ai_gateway_list_requests: {
+  readonly admin_ai_gateway_list_generations: {
     readonly parameters: {
       readonly query?: {
         readonly offset?: number;
@@ -5109,8 +5361,10 @@ export interface operations {
         readonly resource_uuid?: string | null;
         readonly user_uuid?: string | null;
         readonly search?: string | null;
-        readonly task_status?:
-          components["schemas"]["AiGatewayStatusEnum"] | null;
+        readonly status?: components["schemas"]["GenerationStatusEnum"] | null;
+        readonly review_reason?:
+          components["schemas"]["GenerationReviewReasonEnum"] | null;
+        readonly open_only?: boolean;
         readonly model_uuid?: string | null;
         readonly provider_uuid?: string | null;
       };
@@ -5126,7 +5380,52 @@ export interface operations {
           readonly [name: string]: unknown;
         };
         content: {
-          readonly "application/json": components["schemas"]["AdminPage_RequestsRow_"];
+          readonly "application/json": components["schemas"]["AdminPage_GenerationDetail_"];
+        };
+      };
+      /** @description Live browser session required */
+      readonly 401: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Administrator role required */
+      readonly 403: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly admin_ai_gateway_get_generation: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly generation_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["GenerationDetail"];
         };
       };
       /** @description Live browser session required */
@@ -5165,8 +5464,10 @@ export interface operations {
         readonly resource_uuid?: string | null;
         readonly user_uuid?: string | null;
         readonly search?: string | null;
-        readonly task_status?:
-          components["schemas"]["AiGatewayStatusEnum"] | null;
+        readonly status?: components["schemas"]["GenerationStatusEnum"] | null;
+        readonly review_reason?:
+          components["schemas"]["GenerationReviewReasonEnum"] | null;
+        readonly open_only?: boolean;
         readonly model_uuid?: string | null;
         readonly provider_uuid?: string | null;
       };
@@ -5221,8 +5522,10 @@ export interface operations {
         readonly resource_uuid?: string | null;
         readonly user_uuid?: string | null;
         readonly search?: string | null;
-        readonly task_status?:
-          components["schemas"]["AiGatewayStatusEnum"] | null;
+        readonly status?: components["schemas"]["GenerationStatusEnum"] | null;
+        readonly review_reason?:
+          components["schemas"]["GenerationReviewReasonEnum"] | null;
+        readonly open_only?: boolean;
         readonly model_uuid?: string | null;
         readonly provider_uuid?: string | null;
       };
@@ -5277,8 +5580,10 @@ export interface operations {
         readonly resource_uuid?: string | null;
         readonly user_uuid?: string | null;
         readonly search?: string | null;
-        readonly task_status?:
-          components["schemas"]["AiGatewayStatusEnum"] | null;
+        readonly status?: components["schemas"]["GenerationStatusEnum"] | null;
+        readonly review_reason?:
+          components["schemas"]["GenerationReviewReasonEnum"] | null;
+        readonly open_only?: boolean;
         readonly model_uuid?: string | null;
         readonly provider_uuid?: string | null;
       };
@@ -5333,8 +5638,10 @@ export interface operations {
         readonly resource_uuid?: string | null;
         readonly user_uuid?: string | null;
         readonly search?: string | null;
-        readonly task_status?:
-          components["schemas"]["AiGatewayStatusEnum"] | null;
+        readonly status?: components["schemas"]["GenerationStatusEnum"] | null;
+        readonly review_reason?:
+          components["schemas"]["GenerationReviewReasonEnum"] | null;
+        readonly open_only?: boolean;
         readonly model_uuid?: string | null;
         readonly provider_uuid?: string | null;
       };
@@ -6842,6 +7149,24 @@ export interface operations {
           readonly "application/json": components["schemas"]["FileManagerAdminFileResponse"];
         };
       };
+      /** @description Not Found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+      /** @description Conflict */
+      readonly 409: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
       /** @description Validation Error */
       readonly 422: {
         headers: {
@@ -6849,6 +7174,15 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Internal Server Error */
+      readonly 500: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
         };
       };
     };
@@ -6910,6 +7244,24 @@ export interface operations {
           readonly "application/json": components["schemas"]["FileManagerAdminDeleteBulkResponse"];
         };
       };
+      /** @description Not Found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+      /** @description Conflict */
+      readonly 409: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
       /** @description Validation Error */
       readonly 422: {
         headers: {
@@ -6917,6 +7269,15 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+      /** @description Internal Server Error */
+      readonly 500: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
         };
       };
     };
@@ -6984,16 +7345,20 @@ export interface operations {
       };
     };
   };
-  readonly admin_ai_gateway_get_request: {
+  readonly admin_ai_gateway_generation_external_task: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
       readonly path: {
-        readonly request_uuid: string;
+        readonly generation_uuid: string;
       };
       readonly cookie?: never;
     };
-    readonly requestBody?: never;
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["GenerationExternalTaskRequest"];
+      };
+    };
     readonly responses: {
       /** @description Successful Response */
       readonly 200: {
@@ -7001,7 +7366,7 @@ export interface operations {
           readonly [name: string]: unknown;
         };
         content: {
-          readonly "application/json": components["schemas"]["AiGatewayRequestAdminResponse"];
+          readonly "application/json": components["schemas"]["GenerationReviewResponse"];
         };
       };
       /** @description Validation Error */
@@ -7015,16 +7380,20 @@ export interface operations {
       };
     };
   };
-  readonly refresh_request_api_admin_v1_ai_gateway_requests__request_uuid__refresh_post: {
+  readonly admin_ai_gateway_generation_set_cost: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
       readonly path: {
-        readonly request_uuid: string;
+        readonly generation_uuid: string;
       };
       readonly cookie?: never;
     };
-    readonly requestBody?: never;
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["GenerationSetCostRequest"];
+      };
+    };
     readonly responses: {
       /** @description Successful Response */
       readonly 200: {
@@ -7032,7 +7401,42 @@ export interface operations {
           readonly [name: string]: unknown;
         };
         content: {
-          readonly "application/json": components["schemas"]["AiGatewayRequestAdminResponse"];
+          readonly "application/json": components["schemas"]["GenerationReviewResponse"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly admin_ai_gateway_generation_fail: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly generation_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["GenerationActionRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["GenerationReviewResponse"];
         };
       };
       /** @description Validation Error */
@@ -7209,6 +7613,50 @@ export interface operations {
         };
         content: {
           readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  readonly reorder_model_providers_api_admin_v1_ai_registry_models__ai_model_uuid__providers_order_put: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly ai_model_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["AiRegistryModelProviderOrderRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AiRegistryModelDetail"];
+        };
+      };
+      /** @description Not Found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+      /** @description Unprocessable Content */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
         };
       };
     };
@@ -7990,12 +8438,6 @@ export const pathsApiAdminV1AuthReportsSessionsGetParametersQueryStatusAnyOf0Val
 export const adminSortValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AdminSort"]
 > = ["-created_at", "created_at"];
-export const aiGatewayConsumerTypeEnumValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AiGatewayConsumerTypeEnum"]
-> = ["AI_TASK"];
-export const aiGatewayStatusEnumValues: ReadonlyArray<
-  FlattenedDeepRequired<components>["schemas"]["AiGatewayStatusEnum"]
-> = ["CREATED", "PROCESSING", "COMPLETED", "FAILED", "EXPIRED", "CANCELLED"];
 export const aiRegistryModelOwnerEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AiRegistryModelOwnerEnum"]
 > = [
@@ -8033,9 +8475,32 @@ export const aiTaskRuleEnumValues: ReadonlyArray<
 export const aiTaskTypeEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AiTaskTypeEnum"]
 > = ["TEXT", "IMAGE", "AUDIO", "VIDEO"];
+export const applicationErrorCodeValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["ApplicationErrorCode"]
+> = [
+  900, 901, 902, 999, 1000, 1100, 1103, 1104, 1106, 1107, 1108, 1200, 1201,
+  1202, 1203, 1204, 1205, 1206, 1300, 1301, 1302, 1303, 1304, 1305, 1306, 1307,
+  1308, 1309, 1310, 1400, 1401, 1500, 1501, 1502, 1503, 1504, 1505, 1600, 1601,
+  1602, 1603, 1604, 1605, 1700, 1701, 1702, 1800, 1801, 1802, 1803, 1804, 1805,
+  1806, 1807, 1808, 1810, 1811, 1812, 1813, 1814, 1815, 1816,
+];
 export const currencyUnitEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CurrencyUnitEnum"]
 > = ["USD", "IRR", "USDMICRO"];
+export const generationReviewReasonEnumValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["GenerationReviewReasonEnum"]
+> = ["COST_UNRESOLVED", "RESULT_UNREADABLE"];
+export const generationStatusEnumValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["GenerationStatusEnum"]
+> = [
+  "PENDING",
+  "SUBMITTING",
+  "WAITING_RESULT",
+  "PROCESSING_OUTPUT",
+  "COMPLETED",
+  "FAILED",
+  "NEEDS_REVIEW",
+];
 export const paymentFinancialStatusValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["PaymentFinancialStatus"]
 > = ["PENDING", "SUCCEEDED", "CLOSED"];
@@ -8073,26 +8538,6 @@ export const AdminSortMap = {
 } as const;
 export type AdminSortKey = keyof typeof AdminSortMap;
 export type AdminSortValue = (typeof AdminSortMap)[AdminSortKey];
-
-export const AiGatewayConsumerTypeEnumMap = {
-  AI_TASK: "AI_TASK",
-} as const;
-export type AiGatewayConsumerTypeEnumKey =
-  keyof typeof AiGatewayConsumerTypeEnumMap;
-export type AiGatewayConsumerTypeEnumValue =
-  (typeof AiGatewayConsumerTypeEnumMap)[AiGatewayConsumerTypeEnumKey];
-
-export const AiGatewayStatusEnumMap = {
-  CREATED: "CREATED",
-  PROCESSING: "PROCESSING",
-  COMPLETED: "COMPLETED",
-  FAILED: "FAILED",
-  EXPIRED: "EXPIRED",
-  CANCELLED: "CANCELLED",
-} as const;
-export type AiGatewayStatusEnumKey = keyof typeof AiGatewayStatusEnumMap;
-export type AiGatewayStatusEnumValue =
-  (typeof AiGatewayStatusEnumMap)[AiGatewayStatusEnumKey];
 
 export const AiRegistryModelOwnerEnumMap = {
   ALIBABA: "ALIBABA",
@@ -8174,6 +8619,74 @@ export const AiTaskTypeEnumMap = {
 export type AiTaskTypeEnumKey = keyof typeof AiTaskTypeEnumMap;
 export type AiTaskTypeEnumValue = (typeof AiTaskTypeEnumMap)[AiTaskTypeEnumKey];
 
+export const ApplicationErrorCodeMap = {
+  900: 900,
+  901: 901,
+  902: 902,
+  999: 999,
+  1000: 1000,
+  1100: 1100,
+  1103: 1103,
+  1104: 1104,
+  1106: 1106,
+  1107: 1107,
+  1108: 1108,
+  1200: 1200,
+  1201: 1201,
+  1202: 1202,
+  1203: 1203,
+  1204: 1204,
+  1205: 1205,
+  1206: 1206,
+  1300: 1300,
+  1301: 1301,
+  1302: 1302,
+  1303: 1303,
+  1304: 1304,
+  1305: 1305,
+  1306: 1306,
+  1307: 1307,
+  1308: 1308,
+  1309: 1309,
+  1310: 1310,
+  1400: 1400,
+  1401: 1401,
+  1500: 1500,
+  1501: 1501,
+  1502: 1502,
+  1503: 1503,
+  1504: 1504,
+  1505: 1505,
+  1600: 1600,
+  1601: 1601,
+  1602: 1602,
+  1603: 1603,
+  1604: 1604,
+  1605: 1605,
+  1700: 1700,
+  1701: 1701,
+  1702: 1702,
+  1800: 1800,
+  1801: 1801,
+  1802: 1802,
+  1803: 1803,
+  1804: 1804,
+  1805: 1805,
+  1806: 1806,
+  1807: 1807,
+  1808: 1808,
+  1810: 1810,
+  1811: 1811,
+  1812: 1812,
+  1813: 1813,
+  1814: 1814,
+  1815: 1815,
+  1816: 1816,
+} as const;
+export type ApplicationErrorCodeKey = keyof typeof ApplicationErrorCodeMap;
+export type ApplicationErrorCodeValue =
+  (typeof ApplicationErrorCodeMap)[ApplicationErrorCodeKey];
+
 export const CurrencyUnitEnumMap = {
   USD: "USD",
   IRR: "IRR",
@@ -8182,6 +8695,28 @@ export const CurrencyUnitEnumMap = {
 export type CurrencyUnitEnumKey = keyof typeof CurrencyUnitEnumMap;
 export type CurrencyUnitEnumValue =
   (typeof CurrencyUnitEnumMap)[CurrencyUnitEnumKey];
+
+export const GenerationReviewReasonEnumMap = {
+  COST_UNRESOLVED: "COST_UNRESOLVED",
+  RESULT_UNREADABLE: "RESULT_UNREADABLE",
+} as const;
+export type GenerationReviewReasonEnumKey =
+  keyof typeof GenerationReviewReasonEnumMap;
+export type GenerationReviewReasonEnumValue =
+  (typeof GenerationReviewReasonEnumMap)[GenerationReviewReasonEnumKey];
+
+export const GenerationStatusEnumMap = {
+  PENDING: "PENDING",
+  SUBMITTING: "SUBMITTING",
+  WAITING_RESULT: "WAITING_RESULT",
+  PROCESSING_OUTPUT: "PROCESSING_OUTPUT",
+  COMPLETED: "COMPLETED",
+  FAILED: "FAILED",
+  NEEDS_REVIEW: "NEEDS_REVIEW",
+} as const;
+export type GenerationStatusEnumKey = keyof typeof GenerationStatusEnumMap;
+export type GenerationStatusEnumValue =
+  (typeof GenerationStatusEnumMap)[GenerationStatusEnumKey];
 
 export const PaymentFinancialStatusMap = {
   PENDING: "PENDING",

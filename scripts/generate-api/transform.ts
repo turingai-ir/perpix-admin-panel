@@ -38,3 +38,45 @@ export function makeBinaryTransform(target: "File" | "Blob" = "File") {
     // else → untouched
   };
 }
+
+/**
+ * Recursive JSON schemas (JsonValue -> JsonArray -> JsonValue) are emitted as
+ * interface properties, which TypeScript rejects as circular (TS2502).
+ * Break the cycle by typing the container elements as `unknown`; JsonValue
+ * stays the precise union of the (now non-circular) members.
+ */
+export function makeJsonCycleTransform() {
+  const UNKNOWN = ts.factory.createKeywordTypeNode(ts.SyntaxKind.UnknownKeyword);
+
+  return function transform(
+    _schema: unknown,
+    options?: { path?: string },
+  ): ts.TypeNode | undefined {
+    const name = options?.path?.split("/").pop();
+    if (options?.path?.startsWith("#/components/schemas/") !== true) return;
+
+    if (name === "JsonArray") {
+      return ts.factory.createTypeOperatorNode(
+        ts.SyntaxKind.ReadonlyKeyword,
+        ts.factory.createArrayTypeNode(UNKNOWN),
+      );
+    }
+    if (name === "JsonObject") {
+      return ts.factory.createTypeLiteralNode([
+        ts.factory.createIndexSignature(
+          [ts.factory.createModifier(ts.SyntaxKind.ReadonlyKeyword)],
+          [
+            ts.factory.createParameterDeclaration(
+              undefined,
+              undefined,
+              "key",
+              undefined,
+              ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
+            ),
+          ],
+          UNKNOWN,
+        ),
+      ]);
+    }
+  };
+}
