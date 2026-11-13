@@ -179,6 +179,25 @@ export async function reorderModelProviders(
   }
 }
 
+/**
+ * Show these models to users in this order. They move only within the places
+ * they already hold, so reordering one type (say video) leaves the rest alone.
+ */
+export async function reorderAiModels(
+  modelUuids: readonly string[],
+): Promise<void> {
+  try {
+    const res = await apiClient.PUT("/api/admin/v1/ai-registry/models/order", {
+      body: { ai_model_uuids: modelUuids },
+    });
+    if (res.error) {
+      throw new AiActionError("server");
+    }
+  } catch (error) {
+    return handleFetchError(error);
+  }
+}
+
 // 3. AI Providers
 export async function createAiProvider(
   body: AiRegistryProviderCreateRequest,

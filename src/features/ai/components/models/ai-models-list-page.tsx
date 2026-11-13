@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   XCircle,
   Link2,
+  ListOrdered,
 } from "lucide-react";
 import {
   useAiModelsList,
@@ -16,6 +17,7 @@ import {
 import { useAiRegistryReports } from "../../hooks/use-ai-registry-reports";
 import { useAiModelActions } from "../../hooks/use-ai-model-actions";
 import { AiModelFormDialog } from "./ai-model-form-dialog";
+import { AiModelsOrderDialog } from "./ai-models-order-dialog";
 import { APP_ROUTES_KEY } from "@/router/routes";
 import { useTableQuery } from "@/hooks/use-table-query";
 import {
@@ -39,6 +41,7 @@ export function AiModelsListPage() {
     null,
   );
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false);
 
   const {
     page,
@@ -274,15 +277,22 @@ export function AiModelsListPage() {
               })}
             </p>
           </div>
-          <Button
-            onClick={handleCreateClick}
-            className="gap-2 self-start sm:self-auto"
-          >
-            <PlusCircle className="size-4" />
-            {t("features.ai.models.newModel", {
-              defaultValue: "مدل جدید",
-            })}
-          </Button>
+          <div className="flex gap-2 self-start sm:self-auto">
+            <Button
+              variant="outline"
+              onClick={() => setIsOrderDialogOpen(true)}
+              className="gap-2"
+            >
+              <ListOrdered className="size-4" />
+              ترتیب نمایش
+            </Button>
+            <Button onClick={handleCreateClick} className="gap-2">
+              <PlusCircle className="size-4" />
+              {t("features.ai.models.newModel", {
+                defaultValue: "مدل جدید",
+              })}
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -373,6 +383,12 @@ export function AiModelsListPage() {
         emptyMessage={t("features.ai.models.empty", {
           defaultValue: "مدلی یافت نشد.",
         })}
+      />
+
+      <AiModelsOrderDialog
+        open={isOrderDialogOpen}
+        onOpenChange={setIsOrderDialogOpen}
+        onSaved={() => void refetch()}
       />
 
       {/* Model Form Dialog */}

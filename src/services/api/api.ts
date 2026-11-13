@@ -1221,6 +1221,26 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/admin/v1/ai-registry/models/order": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    /**
+     * Reorder Models
+     * @description Show these models to users in this order, within the places they already hold in the catalog.
+     */
+    readonly put: operations["admin_ai_registry_reorder_models"];
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/admin/v1/ai-registry/models/{ai_model_uuid}/providers/order": {
     readonly parameters: {
       readonly query?: never;
@@ -1917,6 +1937,11 @@ export interface components {
       readonly max_cost?: number | null;
       /** Is Active */
       readonly is_active: boolean;
+      /**
+       * Display Order
+       * @default 0
+       */
+      readonly display_order: number;
       /** Meta */
       readonly meta: {
         readonly [key: string]: unknown;
@@ -1933,6 +1958,11 @@ export interface components {
       readonly updated_at: string;
       /** Provider Links */
       readonly provider_links?: readonly components["schemas"]["AiRegistryModelProviderLinkDetail"][];
+    };
+    /** AiRegistryModelOrderRequest */
+    readonly AiRegistryModelOrderRequest: {
+      /** Ai Model Uuids */
+      readonly ai_model_uuids: readonly string[];
     };
     /**
      * AiRegistryModelOwnerEnum
@@ -2289,6 +2319,7 @@ export interface components {
       | 1503
       | 1504
       | 1505
+      | 1506
       | 1600
       | 1601
       | 1602
@@ -2791,6 +2822,8 @@ export interface components {
       readonly tags: readonly string[];
       /** Is Active */
       readonly is_active: boolean;
+      /** Display Order */
+      readonly display_order: number;
       /**
        * Created At
        * Format: date-time
@@ -3692,6 +3725,8 @@ export type SchemaAiRegistryModelCreateRequest =
   components["schemas"]["AiRegistryModelCreateRequest"];
 export type SchemaAiRegistryModelDetail =
   components["schemas"]["AiRegistryModelDetail"];
+export type SchemaAiRegistryModelOrderRequest =
+  components["schemas"]["AiRegistryModelOrderRequest"];
 export type SchemaAiRegistryModelOwnerEnum =
   components["schemas"]["AiRegistryModelOwnerEnum"];
 export type SchemaAiRegistryModelProviderLinkCreateRequest =
@@ -7616,6 +7651,37 @@ export interface operations {
       };
     };
   };
+  readonly admin_ai_registry_reorder_models: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["AiRegistryModelOrderRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 204: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Unprocessable Content */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+    };
+  };
   readonly admin_ai_registry_reorder_model_providers: {
     readonly parameters: {
       readonly query?: never;
@@ -8479,9 +8545,9 @@ export const applicationErrorCodeValues: ReadonlyArray<
 > = [
   900, 901, 902, 999, 1000, 1100, 1103, 1104, 1106, 1107, 1108, 1200, 1201,
   1202, 1203, 1204, 1205, 1206, 1300, 1301, 1302, 1303, 1304, 1305, 1306, 1307,
-  1308, 1309, 1310, 1400, 1401, 1500, 1501, 1502, 1503, 1504, 1505, 1600, 1601,
-  1602, 1603, 1604, 1605, 1700, 1701, 1702, 1800, 1801, 1802, 1803, 1804, 1805,
-  1806, 1807, 1808, 1810, 1811, 1812, 1813, 1814, 1815, 1816,
+  1308, 1309, 1310, 1400, 1401, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1600,
+  1601, 1602, 1603, 1604, 1605, 1700, 1701, 1702, 1800, 1801, 1802, 1803, 1804,
+  1805, 1806, 1807, 1808, 1810, 1811, 1812, 1813, 1814, 1815, 1816,
 ];
 export const currencyUnitEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CurrencyUnitEnum"]
@@ -8656,6 +8722,7 @@ export const ApplicationErrorCodeMap = {
   1503: 1503,
   1504: 1504,
   1505: 1505,
+  1506: 1506,
   1600: 1600,
   1601: 1601,
   1602: 1602,

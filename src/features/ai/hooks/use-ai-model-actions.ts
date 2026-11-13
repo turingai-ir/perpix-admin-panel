@@ -6,6 +6,7 @@ import {
   addProviderToModel,
   updateModelProviderLink,
   reorderModelProviders,
+  reorderAiModels,
   AiActionError,
 } from "../services/ai-service";
 import type {
@@ -55,6 +56,7 @@ export function useAiModelActions() {
   const add = useAction();
   const updateLink = useAction();
   const reorder = useAction();
+  const reorderCatalog = useAction();
 
   return {
     createModel: (body: AiRegistryModelCreateRequest) =>
@@ -124,10 +126,22 @@ export function useAiModelActions() {
         }),
       }),
 
+    /** Models of one kind, shown first first; they swap only among their own places. */
+    reorderModels: (modelUuids: readonly string[]) =>
+      reorderCatalog.run(() => reorderAiModels(modelUuids), {
+        success: t("features.ai.models.reorderModelsSuccess", {
+          defaultValue: "ترتیب نمایش مدل‌ها ذخیره شد.",
+        }),
+        error: t("features.ai.models.reorderModelsError", {
+          defaultValue: "ذخیرهٔ ترتیب نمایش مدل‌ها ناموفق بود.",
+        }),
+      }),
+
     isCreatingModel: create.pending,
     isUpdatingModel: update.pending,
     isAddingProvider: add.pending,
     isUpdatingProviderLink: updateLink.pending,
     isReorderingProviders: reorder.pending,
+    isReorderingModels: reorderCatalog.pending,
   };
 }
