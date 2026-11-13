@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
 import { useAiModelActions } from "../../hooks/use-ai-model-actions";
+import { servedModes } from "../../model/link-modes";
 import type {
   AiRegistryModelProviderLinkDetail,
   ProvidersRow,
@@ -163,14 +164,46 @@ export function AiModelProviderLinkDialog({
                 defaultValue: "حالت‌های Workflow",
               })}
             </label>
-            <Input
-              dir="ltr"
-              value={workflowModes}
-              onChange={(e) => setWorkflowModes(e.target.value)}
-              placeholder="text_to_image, image_to_image"
-            />
+            {isEditing && servedModes(link).length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {servedModes(link).map((mode) => {
+                  const on = parseModes(workflowModes).includes(mode);
+                  return (
+                    <label
+                      key={mode}
+                      dir="ltr"
+                      className="flex cursor-pointer items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-xs"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={on}
+                        onChange={() =>
+                          setWorkflowModes(
+                            (on
+                              ? parseModes(workflowModes).filter(
+                                  (m) => m !== mode,
+                                )
+                              : [...parseModes(workflowModes), mode]
+                            ).join(", "),
+                          )
+                        }
+                      />
+                      {mode}
+                    </label>
+                  );
+                })}
+              </div>
+            ) : (
+              <Input
+                dir="ltr"
+                value={workflowModes}
+                onChange={(e) => setWorkflowModes(e.target.value)}
+                placeholder="text_to_image, image_to_image"
+              />
+            )}
             <span className="text-muted-foreground mt-1 block text-[11px]">
-              با کاما جدا کنید. خالی یعنی بدون محدودیت.
+              فقط حالت‌های روشن درخواست می‌گیرند. خالی یعنی همهٔ حالت‌ها
+              خاموش‌اند و هر درخواست برای این اتصال رد می‌شود.
             </span>
           </div>
 

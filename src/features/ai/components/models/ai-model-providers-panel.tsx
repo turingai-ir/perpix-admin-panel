@@ -17,6 +17,7 @@ import type {
   AiRegistryModelProviderLinkDetail,
   ProvidersRow,
 } from "../../model/types";
+import { switchedOffModes } from "../../model/link-modes";
 import { AiModelProviderLinkDialog } from "./ai-model-provider-link-dialog";
 
 interface AiModelProvidersPanelProps {
@@ -118,8 +119,10 @@ export function AiModelProvidersPanel({
             <Badge variant="muted">{orderedLinks.length}</Badge>
           </CardTitle>
           <p className="text-muted-foreground mt-1 text-xs">
-            درخواست‌ها به ترتیب از بالا به پایین به ارائه‌دهنده‌های فعال ارسال
-            می‌شوند؛ ردیف اول بالاترین اولویت را دارد.
+            برای هر حالت، درخواست به بالاترین ردیفی می‌رود که هم فعال باشد و هم
+            آن حالت در «حالت‌های Workflow»ش روشن باشد. اتصالی که حالتش خاموش است
+            در اولویت‌بندی نادیده گرفته می‌شود و اگر هیچ اتصالی روشن نباشد،
+            درخواست رد می‌شود.
           </p>
         </div>
         <Button
@@ -167,9 +170,11 @@ export function AiModelProvidersPanel({
                       <Badge variant={link.is_active ? "success" : "muted"}>
                         {link.is_active ? "فعال" : "غیرفعال"}
                       </Badge>
-                      {index === 0 && link.is_active && (
-                        <Badge variant="default">اولویت اول</Badge>
-                      )}
+                      {index === 0 &&
+                        link.is_active &&
+                        (link.workflow_modes ?? []).length > 0 && (
+                          <Badge variant="default">اولویت اول</Badge>
+                        )}
                     </div>
                     <div className="text-muted-foreground flex flex-wrap items-center gap-1.5 text-[11px]">
                       <span dir="ltr">priority: {link.priority}</span>
@@ -182,6 +187,17 @@ export function AiModelProvidersPanel({
                           {mode}
                         </Badge>
                       ))}
+                      {link.is_active &&
+                        switchedOffModes(link).map((mode) => (
+                          <Badge
+                            key={`off-${mode}`}
+                            variant="warning"
+                            className="px-1.5 py-0 text-[10px]"
+                            title="این حالت روشن نیست؛ درخواست برای آن به این اتصال نمی‌رسد."
+                          >
+                            خاموش: {mode}
+                          </Badge>
+                        ))}
                     </div>
                   </div>
 
