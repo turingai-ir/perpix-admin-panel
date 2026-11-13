@@ -18,6 +18,12 @@ export type AdminPageGenerationDetail =
   components["schemas"]["AdminPage_GenerationDetail_"];
 export type GenerationStatusEnum =
   components["schemas"]["GenerationStatusEnum"];
+export type GenerationReviewResponse =
+  components["schemas"]["GenerationReviewResponse"];
+export type GenerationSetCostRequest =
+  components["schemas"]["GenerationSetCostRequest"];
+export type GenerationExternalTaskRequest =
+  components["schemas"]["GenerationExternalTaskRequest"];
 export type GenerationReviewReasonEnum =
   components["schemas"]["GenerationReviewReasonEnum"];
 

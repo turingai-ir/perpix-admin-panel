@@ -13,6 +13,9 @@ import type {
   AiRegistryProviderCreateRequest,
   AiRegistryProviderDetail,
   AiRegistryProviderUpdateRequest,
+  GenerationExternalTaskRequest,
+  GenerationReviewResponse,
+  GenerationSetCostRequest,
 } from "../model/types";
 
 export class AiActionError extends Error {
@@ -217,3 +220,52 @@ export async function updateAiProvider(
     return handleFetchError(error);
   }
 }
+
+// 4. AI Gateway operator actions (generations in NEEDS_REVIEW)
+async function unwrapReview(
+  request: Promise<{ data?: unknown; error?: unknown }>,
+): Promise<GenerationReviewResponse> {
+  try {
+    const res = await request;
+    if (res.error) {
+      throw new AiActionError("server");
+    }
+    return res.data as GenerationReviewResponse;
+  } catch (error) {
+    return handleFetchError(error);
+  }
+}
+
+const generationParams = (generationUuid: string) => ({
+  path: { generation_uuid: generationUuid },
+});
+
+export const failGeneration = (generationUuid: string, reason: string) =>
+  unwrapReview(
+    apiClient.POST(
+      "/api/admin/v1/ai-gateway/generations/{generation_uuid}/fail",
+      { params: generationParams(generationUuid), body: { reason } },
+    ),
+  );
+
+export const setGenerationCost = (
+  generationUuid: string,
+  body: GenerationSetCostRequest,
+) =>
+  unwrapReview(
+    apiClient.POST(
+      "/api/admin/v1/ai-gateway/generations/{generation_uuid}/cost",
+      { params: generationParams(generationUuid), body },
+    ),
+  );
+
+export const setGenerationExternalTask = (
+  generationUuid: string,
+  body: GenerationExternalTaskRequest,
+) =>
+  unwrapReview(
+    apiClient.POST(
+      "/api/admin/v1/ai-gateway/generations/{generation_uuid}/external-task",
+      { params: generationParams(generationUuid), body },
+    ),
+  );

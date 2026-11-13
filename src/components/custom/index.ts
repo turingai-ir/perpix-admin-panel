@@ -4,3 +4,4 @@ export * from "./loading-section";
 export * from "./data-table";
 export * from "./search-input";
 export * from "./detail-page-layout";
+export * from "./report-bucket-list";

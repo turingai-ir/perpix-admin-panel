@@ -10,8 +10,11 @@ import {
   UserCheck,
   UserX,
   RotateCcw,
+  BarChart3,
 } from "lucide-react";
 import { useUsersList, type UsersRowItem } from "../hooks/use-users-list";
+import { useUsersReports } from "../hooks/use-users-reports";
+import { ReportBucketList } from "@/components/custom/report-bucket-list";
 import { useTableQuery } from "@/hooks/use-table-query";
 import {
   DataTable,
@@ -40,6 +43,8 @@ const formatDate = (isoString: string) => {
 export function UsersListPage() {
   const { t } = useAppTranslate();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showStats, setShowStats] = useState(false);
+  const reports = useUsersReports();
 
   const {
     page,
@@ -285,7 +290,49 @@ export function UsersListPage() {
             })}
           </p>
         </div>
+        <Button
+          variant={showStats ? "default" : "outline"}
+          size="sm"
+          className="gap-1.5"
+          aria-expanded={showStats}
+          onClick={() => setShowStats((v) => !v)}
+        >
+          <BarChart3 className="size-4" />
+          {t("features.users.stats", { defaultValue: "آمار کاربران" })}
+        </Button>
       </div>
+
+      {showStats && (
+        <div className="grid gap-4 md:grid-cols-3">
+          <ReportBucketList
+            title="ثبت‌نام روزانه"
+            buckets={reports.daily}
+            isLoading={reports.isLoading}
+            unit="کاربر"
+            maxItems={14}
+          />
+          <ReportBucketList
+            title="وضعیت حساب"
+            buckets={reports.statuses}
+            isLoading={reports.isLoading}
+            labelFor={(key) =>
+              key === "active" ? "فعال" : key === "banned" ? "مسدود" : key
+            }
+          />
+          <ReportBucketList
+            title="وضعیت تأیید"
+            buckets={reports.verification}
+            isLoading={reports.isLoading}
+            labelFor={(key) =>
+              key === "verified"
+                ? "تأیید شده"
+                : key === "unverified"
+                  ? "تأیید نشده"
+                  : key
+            }
+          />
+        </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="border-border bg-card space-y-3 rounded-2xl border p-4 shadow-xs">

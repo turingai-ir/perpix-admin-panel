@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslate } from "@/hooks";
 import { GenerationStatusBadge } from "./generation-status-badge";
+import { GenerationManualActions } from "./generation-manual-actions";
 
 const REVIEW_REASON_LABELS = {
   COST_UNRESOLVED: "هزینهٔ واقعی مشخص نیست",
@@ -188,6 +189,13 @@ export function AiGatewayRequestDetailPage() {
           </Card>
 
           <div className="space-y-6">
+            {generation?.status === "NEEDS_REVIEW" && (
+              <GenerationManualActions
+                generationUuid={generation.uuid}
+                reviewReason={generation.review_reason}
+                onDone={() => void refetch()}
+              />
+            )}
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base font-bold">

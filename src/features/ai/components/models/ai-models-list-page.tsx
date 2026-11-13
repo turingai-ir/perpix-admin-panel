@@ -13,6 +13,7 @@ import {
   useAiModelsList,
   type AiModelsRowItem,
 } from "../../hooks/use-ai-models-list";
+import { useAiRegistryReports } from "../../hooks/use-ai-registry-reports";
 import { useAiModelActions } from "../../hooks/use-ai-model-actions";
 import { AiModelFormDialog } from "./ai-model-form-dialog";
 import { APP_ROUTES_KEY } from "@/router/routes";
@@ -66,6 +67,9 @@ export function AiModelsListPage() {
   });
 
   const { updateModel, isUpdatingModel } = useAiModelActions();
+  const { statuses } = useAiRegistryReports();
+  const countOf = (key: string) =>
+    statuses.find((b) => b.key === key)?.count ?? 0;
 
   const handleCreateClick = () => {
     setEditingModel(null);
@@ -280,6 +284,16 @@ export function AiModelsListPage() {
             })}
           </Button>
         </div>
+      </div>
+
+      {/* Status summary */}
+      <div className="flex flex-wrap gap-2 text-xs">
+        <Badge variant="success">
+          فعال: {countOf("active").toLocaleString("fa-IR")}
+        </Badge>
+        <Badge variant="muted">
+          غیرفعال: {countOf("inactive").toLocaleString("fa-IR")}
+        </Badge>
       </div>
 
       {/* Filters Bar */}
