@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams } from "react-router";
 import { Edit } from "lucide-react";
 import { DetailPageLayout } from "@/components/custom/detail-page-layout";
+import { CopyableUuid } from "@/components/custom/copyable-uuid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,9 +46,12 @@ export function AiModelDetailPage() {
       title={title}
       subtitle={
         model && (
-          <code className="font-mono text-xs" dir="ltr">
-            {model.name}
-          </code>
+          <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <code className="font-mono text-xs" dir="ltr">
+              {model.name}
+            </code>
+            <CopyableUuid value={model.uuid} full className="text-xs" />
+          </span>
         )
       }
       badges={

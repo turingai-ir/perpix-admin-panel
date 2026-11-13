@@ -279,7 +279,9 @@ function PlanFormContent({
             defaultValue: "مدل‌های مجاز (با کاما جدا کنید)",
           })}
         </label>
-        <Input
+        <textarea
+          className="border-border bg-background text-foreground placeholder:text-muted-foreground focus:ring-ring w-full rounded border px-3 py-2 text-sm focus:ring-2 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+          rows={3}
           value={allowedModelsStr}
           onChange={(e) => setAllowedModelsStr(e.target.value)}
           placeholder="gpt-4o, claude-3-5-sonnet"

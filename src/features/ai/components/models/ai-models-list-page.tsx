@@ -25,6 +25,7 @@ import {
   type DataTableColumn,
 } from "@/components/custom/data-table";
 import { SearchInput } from "@/components/custom/search-input";
+import { CopyableUuid } from "@/components/custom/copyable-uuid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
@@ -123,9 +124,10 @@ export function AiModelsListPage() {
               >
                 {item.display_name || item.name}
               </Link>
-              <code className="text-muted-foreground font-mono text-[11px]">
+              <code className="text-muted-foreground block font-mono text-[11px]">
                 {item.name}
               </code>
+              <CopyableUuid value={item.uuid} />
             </div>
           </div>
         ),
