@@ -28,6 +28,7 @@ import {
   AiGatewayRequestsListPage,
   AiGatewayRequestDetailPage,
   AiModelsListPage,
+  AiModelDetailPage,
   AiProvidersListPage,
 } from "@/features/ai";
 import { FilesListPage, FileDetailPage } from "@/features/files";
@@ -146,6 +147,11 @@ export const router = createBrowserRouter([
             path: APP_ROUTES_KEY.ai.models.path,
             element: <AiModelsListPage />,
             handle: { title: APP_ROUTES_KEY.ai.models.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.ai.modelDetail.path,
+            element: <AiModelDetailPage />,
+            handle: { title: APP_ROUTES_KEY.ai.modelDetail.meta.title },
           },
           {
             path: APP_ROUTES_KEY.ai.providers.path,

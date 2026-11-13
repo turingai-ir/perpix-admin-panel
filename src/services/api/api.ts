@@ -303,7 +303,7 @@ export interface paths {
     readonly get: operations["admin_subscription_list_plans"];
     readonly put?: never;
     /** Create Subscription Plan */
-    readonly post: operations["create_subscription_plan_api_admin_v1_subscription_plans_post"];
+    readonly post: operations["admin_subscription_create_subscription_plan"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -346,7 +346,7 @@ export interface paths {
     readonly options?: never;
     readonly head?: never;
     /** Update Subscription Plan */
-    readonly patch: operations["update_subscription_plan_api_admin_v1_subscription_plans__plan_uuid__patch"];
+    readonly patch: operations["admin_subscription_update_subscription_plan"];
     readonly trace?: never;
   };
   readonly "/api/admin/v1/subscription/operations": {
@@ -570,7 +570,7 @@ export interface paths {
     readonly get: operations["admin_ai_registry_list_models"];
     readonly put?: never;
     /** Create Model */
-    readonly post: operations["create_model_api_admin_v1_ai_registry_models_post"];
+    readonly post: operations["admin_ai_registry_create_model"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -605,7 +605,7 @@ export interface paths {
     readonly get: operations["admin_ai_registry_list_providers"];
     readonly put?: never;
     /** Create Provider */
-    readonly post: operations["create_provider_api_admin_v1_ai_registry_providers_post"];
+    readonly post: operations["admin_ai_registry_create_provider"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -624,7 +624,7 @@ export interface paths {
     readonly put?: never;
     readonly post?: never;
     /** Hard Delete User */
-    readonly delete: operations["hard_delete_user_api_admin_v1_users_delete"];
+    readonly delete: operations["admin_users_hard_delete_user"];
     readonly options?: never;
     readonly head?: never;
     readonly patch?: never;
@@ -926,7 +926,7 @@ export interface paths {
     readonly get?: never;
     readonly put?: never;
     /** Activate User Subscription */
-    readonly post: operations["activate_user_subscription_api_admin_v1_subscription_activate_post"];
+    readonly post: operations["admin_subscription_activate_user_subscription"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -943,7 +943,7 @@ export interface paths {
     readonly get?: never;
     readonly put?: never;
     /** Deactivate User Subscription */
-    readonly post: operations["deactivate_user_subscription_api_admin_v1_subscription_deactivate_post"];
+    readonly post: operations["admin_subscription_deactivate_user_subscription"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -960,7 +960,7 @@ export interface paths {
       readonly cookie?: never;
     };
     /** Get Wallet Transactions */
-    readonly get: operations["get_wallet_transactions_api_admin_v1_wallets__wallet_uuid__transactions_get"];
+    readonly get: operations["admin_wallets_get_wallet_transactions"];
     readonly put?: never;
     readonly post?: never;
     readonly delete?: never;
@@ -981,7 +981,7 @@ export interface paths {
     readonly get?: never;
     readonly put?: never;
     /** Charge Wallet */
-    readonly post: operations["charge_wallet_api_admin_v1_wallets__wallet_uuid__charge_post"];
+    readonly post: operations["admin_wallets_charge_wallet"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -1032,18 +1032,18 @@ export interface paths {
       readonly cookie?: never;
     };
     /** Get File */
-    readonly get: operations["get_file_api_admin_v1_file_manager_files__file_uuid__get"];
+    readonly get: operations["admin_file_manager_get_file"];
     readonly put?: never;
     readonly post?: never;
     /**
      * Delete File
      * @description Delete an active file as administrator. Managed deletion commits a logical retirement before success and preserves held bytes for claimed cleanup. Legacy deletion retains existing storage behavior. Failed or unknown commits return an error; inspect state before retrying.
      */
-    readonly delete: operations["delete_file_api_admin_v1_file_manager_files__file_uuid__delete"];
+    readonly delete: operations["admin_file_manager_delete_file"];
     readonly options?: never;
     readonly head?: never;
     /** Update File */
-    readonly patch: operations["update_file_api_admin_v1_file_manager_files__file_uuid__patch"];
+    readonly patch: operations["admin_file_manager_update_file"];
     readonly trace?: never;
   };
   readonly "/api/admin/v1/file-manager/files/delete-bulk": {
@@ -1059,7 +1059,7 @@ export interface paths {
      * Delete Bulk Files
      * @description Delete active files as administrator. Managed-only batches retire atomically before success and deduplicate UUIDs in first-occurrence order. Missing/expired/deleted targets return 404 before mutation. Mixed managed/legacy batches return 409 without mutation; submit separate batches. Legacy-only batches retain existing storage deletion behavior. Failed or unknown commits require reading current state before retrying.
      */
-    readonly post: operations["delete_bulk_files_api_admin_v1_file_manager_files_delete_bulk_post"];
+    readonly post: operations["admin_file_manager_delete_bulk_files"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -1096,7 +1096,7 @@ export interface paths {
       readonly cookie?: never;
     };
     /** Check User Task Result */
-    readonly get: operations["check_user_task_result_api_admin_v1_ai_task_users__user_uuid__messages__task_message_uuid__get"];
+    readonly get: operations["admin_ai_task_check_user_task_result"];
     readonly put?: never;
     readonly post?: never;
     readonly delete?: never;
@@ -1172,14 +1172,14 @@ export interface paths {
       readonly cookie?: never;
     };
     /** Get Provider */
-    readonly get: operations["get_provider_api_admin_v1_ai_registry_providers__ai_provider_uuid__get"];
+    readonly get: operations["admin_ai_registry_get_provider"];
     readonly put?: never;
     readonly post?: never;
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
     /** Update Provider */
-    readonly patch: operations["update_provider_api_admin_v1_ai_registry_providers__ai_provider_uuid__patch"];
+    readonly patch: operations["admin_ai_registry_update_provider"];
     readonly trace?: never;
   };
   readonly "/api/admin/v1/ai-registry/models/{ai_model_uuid}": {
@@ -1192,14 +1192,14 @@ export interface paths {
       readonly cookie?: never;
     };
     /** Get Model */
-    readonly get: operations["get_model_api_admin_v1_ai_registry_models__ai_model_uuid__get"];
+    readonly get: operations["admin_ai_registry_get_model"];
     readonly put?: never;
     readonly post?: never;
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
     /** Update Model */
-    readonly patch: operations["update_model_api_admin_v1_ai_registry_models__ai_model_uuid__patch"];
+    readonly patch: operations["admin_ai_registry_update_model"];
     readonly trace?: never;
   };
   readonly "/api/admin/v1/ai-registry/models/{ai_model_uuid}/providers": {
@@ -1214,7 +1214,7 @@ export interface paths {
     readonly get?: never;
     readonly put?: never;
     /** Add Provider To Model */
-    readonly post: operations["add_provider_to_model_api_admin_v1_ai_registry_models__ai_model_uuid__providers_post"];
+    readonly post: operations["admin_ai_registry_add_provider_to_model"];
     readonly delete?: never;
     readonly options?: never;
     readonly head?: never;
@@ -1232,7 +1232,7 @@ export interface paths {
     };
     readonly get?: never;
     /** Reorder Model Providers */
-    readonly put: operations["reorder_model_providers_api_admin_v1_ai_registry_models__ai_model_uuid__providers_order_put"];
+    readonly put: operations["admin_ai_registry_reorder_model_providers"];
     readonly post?: never;
     readonly delete?: never;
     readonly options?: never;
@@ -1257,7 +1257,7 @@ export interface paths {
     readonly options?: never;
     readonly head?: never;
     /** Update Provider Link */
-    readonly patch: operations["update_provider_link_api_admin_v1_ai_registry_models__ai_model_uuid__providers__ai_provider_uuid__patch"];
+    readonly patch: operations["admin_ai_registry_update_provider_link"];
     readonly trace?: never;
   };
   readonly "/api/v1/auth/login": {
@@ -2721,17 +2721,6 @@ export interface components {
       /** Detail */
       readonly detail?: readonly components["schemas"]["ValidationError"][];
     };
-    readonly JsonArray: readonly unknown[];
-    readonly JsonObject: {
-      readonly [key: string]: unknown;
-    };
-    readonly JsonValue:
-      | components["schemas"]["JsonObject"]
-      | components["schemas"]["JsonArray"]
-      | string
-      | number
-      | boolean
-      | null;
     /** MessageRow */
     readonly MessageRow: {
       /**
@@ -2859,7 +2848,10 @@ export interface components {
       readonly allowed_models: readonly string[];
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro: number | null;
-      readonly meta: components["schemas"]["JsonObject"] | null;
+      /** Meta */
+      readonly meta: {
+        readonly [key: string]: unknown;
+      } | null;
       /** Is Recommended */
       readonly is_recommended: boolean;
       /**
@@ -3764,9 +3756,6 @@ export type SchemaGetWalletTransactionsResponse =
   components["schemas"]["GetWalletTransactionsResponse"];
 export type SchemaHttpValidationError =
   components["schemas"]["HTTPValidationError"];
-export type SchemaJsonArray = components["schemas"]["JsonArray"];
-export type SchemaJsonObject = components["schemas"]["JsonObject"];
-export type SchemaJsonValue = components["schemas"]["JsonValue"];
 export type SchemaMessageRow = components["schemas"]["MessageRow"];
 export type SchemaModelsRow = components["schemas"]["ModelsRow"];
 export type SchemaPaymentFinancialStatus =
@@ -4865,7 +4854,7 @@ export interface operations {
       };
     };
   };
-  readonly create_subscription_plan_api_admin_v1_subscription_plans_post: {
+  readonly admin_subscription_create_subscription_plan: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -5002,7 +4991,7 @@ export interface operations {
       };
     };
   };
-  readonly update_subscription_plan_api_admin_v1_subscription_plans__plan_uuid__patch: {
+  readonly admin_subscription_update_subscription_plan: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -5745,7 +5734,7 @@ export interface operations {
       };
     };
   };
-  readonly create_model_api_admin_v1_ai_registry_models_post: {
+  readonly admin_ai_registry_create_model: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -5889,7 +5878,7 @@ export interface operations {
       };
     };
   };
-  readonly create_provider_api_admin_v1_ai_registry_providers_post: {
+  readonly admin_ai_registry_create_provider: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -5978,7 +5967,7 @@ export interface operations {
       };
     };
   };
-  readonly hard_delete_user_api_admin_v1_users_delete: {
+  readonly admin_users_hard_delete_user: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -6912,7 +6901,7 @@ export interface operations {
       };
     };
   };
-  readonly activate_user_subscription_api_admin_v1_subscription_activate_post: {
+  readonly admin_subscription_activate_user_subscription: {
     readonly parameters: {
       readonly query?: never;
       readonly header: {
@@ -6947,7 +6936,7 @@ export interface operations {
       };
     };
   };
-  readonly deactivate_user_subscription_api_admin_v1_subscription_deactivate_post: {
+  readonly admin_subscription_deactivate_user_subscription: {
     readonly parameters: {
       readonly query?: never;
       readonly header: {
@@ -6982,7 +6971,7 @@ export interface operations {
       };
     };
   };
-  readonly get_wallet_transactions_api_admin_v1_wallets__wallet_uuid__transactions_get: {
+  readonly admin_wallets_get_wallet_transactions: {
     readonly parameters: {
       readonly query: {
         readonly user_uuid: string;
@@ -7021,7 +7010,7 @@ export interface operations {
       };
     };
   };
-  readonly charge_wallet_api_admin_v1_wallets__wallet_uuid__charge_post: {
+  readonly admin_wallets_charge_wallet: {
     readonly parameters: {
       readonly query?: never;
       readonly header: {
@@ -7098,7 +7087,7 @@ export interface operations {
       };
     };
   };
-  readonly get_file_api_admin_v1_file_manager_files__file_uuid__get: {
+  readonly admin_file_manager_get_file: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7129,7 +7118,7 @@ export interface operations {
       };
     };
   };
-  readonly delete_file_api_admin_v1_file_manager_files__file_uuid__delete: {
+  readonly admin_file_manager_delete_file: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7187,7 +7176,7 @@ export interface operations {
       };
     };
   };
-  readonly update_file_api_admin_v1_file_manager_files__file_uuid__patch: {
+  readonly admin_file_manager_update_file: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7222,7 +7211,7 @@ export interface operations {
       };
     };
   };
-  readonly delete_bulk_files_api_admin_v1_file_manager_files_delete_bulk_post: {
+  readonly admin_file_manager_delete_bulk_files: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7313,7 +7302,7 @@ export interface operations {
       };
     };
   };
-  readonly check_user_task_result_api_admin_v1_ai_task_users__user_uuid__messages__task_message_uuid__get: {
+  readonly admin_ai_task_check_user_task_result: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7450,7 +7439,7 @@ export interface operations {
       };
     };
   };
-  readonly get_provider_api_admin_v1_ai_registry_providers__ai_provider_uuid__get: {
+  readonly admin_ai_registry_get_provider: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7481,7 +7470,7 @@ export interface operations {
       };
     };
   };
-  readonly update_provider_api_admin_v1_ai_registry_providers__ai_provider_uuid__patch: {
+  readonly admin_ai_registry_update_provider: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7516,7 +7505,7 @@ export interface operations {
       };
     };
   };
-  readonly get_model_api_admin_v1_ai_registry_models__ai_model_uuid__get: {
+  readonly admin_ai_registry_get_model: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7547,7 +7536,7 @@ export interface operations {
       };
     };
   };
-  readonly update_model_api_admin_v1_ai_registry_models__ai_model_uuid__patch: {
+  readonly admin_ai_registry_update_model: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7582,7 +7571,7 @@ export interface operations {
       };
     };
   };
-  readonly add_provider_to_model_api_admin_v1_ai_registry_models__ai_model_uuid__providers_post: {
+  readonly admin_ai_registry_add_provider_to_model: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7617,7 +7606,7 @@ export interface operations {
       };
     };
   };
-  readonly reorder_model_providers_api_admin_v1_ai_registry_models__ai_model_uuid__providers_order_put: {
+  readonly admin_ai_registry_reorder_model_providers: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;
@@ -7661,7 +7650,7 @@ export interface operations {
       };
     };
   };
-  readonly update_provider_link_api_admin_v1_ai_registry_models__ai_model_uuid__providers__ai_provider_uuid__patch: {
+  readonly admin_ai_registry_update_provider_link: {
     readonly parameters: {
       readonly query?: never;
       readonly header?: never;

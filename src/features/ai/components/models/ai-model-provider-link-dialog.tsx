@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link2, Settings2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -10,122 +11,166 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { useAiModelActions } from "../../hooks/use-ai-model-actions";
-import { useAiProvidersList } from "../../hooks/use-ai-providers-list";
 import { useAppTranslate } from "@/hooks";
-import type { ModelsRow } from "../../model/types";
-import { Link2 } from "lucide-react";
+import { useAiModelActions } from "../../hooks/use-ai-model-actions";
+import type {
+  AiRegistryModelProviderLinkDetail,
+  ProvidersRow,
+} from "../../model/types";
 
 interface AiModelProviderLinkDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  model: ModelsRow | null;
+  modelUuid: string;
+  modelName: string;
+  /** Link being edited; `null` opens the dialog in "add provider" mode. */
+  link: AiRegistryModelProviderLinkDetail | null;
+  /** Providers that can still be linked (add mode only). */
+  availableProviders: readonly ProvidersRow[];
+  /** Current provider order (highest priority first); a new link is appended. */
+  orderedProviderUuids: readonly string[];
   onSuccess?: () => void;
 }
 
+const parseModes = (value: string) =>
+  value
+    .split(",")
+    .map((mode) => mode.trim())
+    .filter(Boolean);
+
+/**
+ * Add a provider to a model, or edit an existing link. Priority is managed by
+ * ordering the list in the panel, not by typing a number here. Mount with a
+ * `key` per target so the form state resets between uses.
+ */
 export function AiModelProviderLinkDialog({
   open,
   onOpenChange,
-  model,
+  modelUuid,
+  modelName,
+  link,
+  availableProviders,
+  orderedProviderUuids,
   onSuccess,
 }: AiModelProviderLinkDialogProps) {
   const { t } = useAppTranslate();
-  const { addProvider, isAddingProvider } = useAiModelActions();
-  const { providers, isLoading: isProvidersLoading } = useAiProvidersList({
-    limit: 50,
-  });
+  const { addProvider, updateProviderLink, reorderProviders } =
+    useAiModelActions();
+  const isEditing = link !== null;
 
-  const [selectedProviderUuid, setSelectedProviderUuid] = useState("");
-  const [priority, setPriority] = useState("10");
-  const [isActive, setIsActive] = useState(true);
+  const [providerUuid, setProviderUuid] = useState("");
+  const [isActive, setIsActive] = useState(link?.is_active ?? true);
+  const [workflowModes, setWorkflowModes] = useState(
+    (link?.workflow_modes ?? []).join(", "),
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const canSubmit = isEditing || providerUuid !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!model || !selectedProviderUuid) return;
+    if (!canSubmit || isSubmitting) return;
 
+    setIsSubmitting(true);
     try {
-      await addProvider(model.uuid, {
-        ai_provider_uuid: selectedProviderUuid,
-        priority: Number(priority) || 10,
-        is_active: isActive,
-      });
+      const modes = parseModes(workflowModes);
+      if (isEditing) {
+        if (!link.provider_uuid) return;
+        await updateProviderLink(modelUuid, link.provider_uuid, {
+          is_active: isActive,
+          workflow_modes: modes,
+        });
+      } else {
+        await addProvider(modelUuid, {
+          ai_provider_uuid: providerUuid,
+          is_active: isActive,
+          workflow_modes: modes,
+          priority: 10,
+        });
+        // New providers go to the end of the list (lowest priority).
+        await reorderProviders(
+          modelUuid,
+          [...orderedProviderUuids, providerUuid],
+          { silent: true },
+        );
+      }
       onOpenChange(false);
       onSuccess?.();
     } catch {
       // toast handled in hook
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const providerOptions = (providers ? Array.from(providers) : []).map(
-    (p: { uuid: string; name: string; display_name?: string | null }) => ({
-      value: p.uuid,
-      label: `${p.name} (${p.display_name || p.uuid.slice(0, 8)})`,
-    }),
-  );
+  const Icon = isEditing ? Settings2 : Link2;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Link2 className="text-primary size-5" />
-            {t("features.ai.models.linkProviderTitle", {
-              defaultValue: "اتصال ارائه‌دهنده به مدل",
-            })}
+            <Icon className="text-primary size-5" />
+            {isEditing
+              ? t("features.ai.models.editProviderTitle", {
+                  defaultValue: "ویرایش اتصال ارائه‌دهنده",
+                })
+              : t("features.ai.models.linkProviderTitle", {
+                  defaultValue: "افزودن ارائه‌دهنده به مدل",
+                })}
           </DialogTitle>
           <DialogDescription>
             مدل{" "}
-            <strong className="text-foreground font-mono">{model?.name}</strong>{" "}
-            به کدام ارائه‌دهنده متصل شود؟
+            <strong className="text-foreground font-mono">{modelName}</strong>
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 py-2 text-sm">
-          <div>
-            <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.models.selectProvider", {
-                defaultValue: "انتخاب ارائه‌دهنده (AI Provider)",
-              })}{" "}
-              *
-            </label>
-            {isProvidersLoading ? (
-              <p className="text-muted-foreground text-xs">
-                در حال بارگذاری ارائه‌دهندگان...
-              </p>
-            ) : (
-              <Select
-                value={selectedProviderUuid}
-                onChange={(e) => setSelectedProviderUuid(e.target.value)}
-                required
-              >
-                <option value="">انتخاب کنید...</option>
-                {providerOptions.map(
-                  (opt: { value: string; label: string }) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
+          {!isEditing && (
+            <div>
+              <label className="text-foreground mb-1 block text-xs font-semibold">
+                {t("features.ai.models.selectProvider", {
+                  defaultValue: "ارائه‌دهنده (AI Provider)",
+                })}{" "}
+                *
+              </label>
+              {availableProviders.length === 0 ? (
+                <p className="text-muted-foreground text-xs">
+                  همهٔ ارائه‌دهندگان موجود قبلاً به این مدل متصل شده‌اند.
+                </p>
+              ) : (
+                <Select
+                  value={providerUuid}
+                  onChange={(e) => setProviderUuid(e.target.value)}
+                  required
+                >
+                  <option value="">انتخاب کنید...</option>
+                  {availableProviders.map((p) => (
+                    <option key={p.uuid} value={p.uuid}>
+                      {p.display_name
+                        ? `${p.display_name} (${p.name})`
+                        : p.name}
                     </option>
-                  ),
-                )}
-              </Select>
-            )}
-          </div>
+                  ))}
+                </Select>
+              )}
+            </div>
+          )}
 
           <div>
             <label className="text-foreground mb-1 block text-xs font-semibold">
-              {t("features.ai.models.priority", {
-                defaultValue: "اولویت فراخوانی (Priority)",
+              {t("features.ai.models.workflowModes", {
+                defaultValue: "حالت‌های Workflow",
               })}
             </label>
             <Input
-              type="number"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              placeholder="10"
-              min={1}
-              max={100}
+              dir="ltr"
+              value={workflowModes}
+              onChange={(e) => setWorkflowModes(e.target.value)}
+              placeholder="text_to_image, image_to_image"
             />
             <span className="text-muted-foreground mt-1 block text-[11px]">
-              اولویت بالاتر در اولویت اول ارسال درخواست Gateway قرار می‌گیرد.
+              با کاما جدا کنید. خالی یعنی بدون محدودیت.
             </span>
           </div>
 
@@ -153,15 +198,14 @@ export function AiModelProviderLinkDialog({
             >
               {t("common.cancel", { defaultValue: "انصراف" })}
             </Button>
-            <Button
-              type="submit"
-              disabled={isAddingProvider || !selectedProviderUuid}
-            >
-              {isAddingProvider
-                ? t("common.submitting", { defaultValue: "در حال اتصال..." })
-                : t("features.ai.models.linkConfirm", {
-                    defaultValue: "اتصال ارائه‌دهنده",
-                  })}
+            <Button type="submit" disabled={isSubmitting || !canSubmit}>
+              {isSubmitting
+                ? t("common.submitting", { defaultValue: "در حال ذخیره..." })
+                : isEditing
+                  ? t("common.save", { defaultValue: "ذخیره" })
+                  : t("features.ai.models.linkConfirm", {
+                      defaultValue: "افزودن ارائه‌دهنده",
+                    })}
             </Button>
           </DialogFooter>
         </form>

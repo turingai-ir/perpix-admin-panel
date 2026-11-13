@@ -17,4 +17,5 @@ export * from "./components/tasks/ai-task-detail-page";
 export * from "./components/gateway/ai-gateway-requests-list-page";
 export * from "./components/gateway/ai-gateway-request-detail-page";
 export * from "./components/models/ai-models-list-page";
+export * from "./components/models/ai-model-detail-page";
 export * from "./components/providers/ai-providers-list-page";

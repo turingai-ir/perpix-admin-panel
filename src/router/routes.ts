@@ -87,6 +87,10 @@ export const APP_ROUTES_KEY = {
       path: "/ai/models",
       meta: { title: "مدل‌های هوش مصنوعی | پرپیکس" },
     },
+    modelDetail: {
+      path: "/ai/models/:modelUuid",
+      meta: { title: "جزئیات مدل هوش مصنوعی | پرپیکس" },
+    },
     providers: {
       path: "/ai/providers",
       meta: { title: "ارائه‌دهندگان هوش مصنوعی | پرپیکس" },

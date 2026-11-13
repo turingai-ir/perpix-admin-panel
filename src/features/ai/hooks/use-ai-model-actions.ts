@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import {
   createAiModel,
   updateAiModel,
   addProviderToModel,
   updateModelProviderLink,
+  reorderModelProviders,
   AiActionError,
 } from "../services/ai-service";
 import type {
@@ -12,130 +14,120 @@ import type {
   AiRegistryModelProviderLinkCreateRequest,
   AiRegistryModelProviderLinkUpdateRequest,
 } from "../model/types";
-import { toast } from "sonner";
 import { useAppTranslate } from "@/hooks";
+
+/**
+ * Runs one mutation with a pending flag and success/error toasts. Errors are
+ * toasted and re-thrown so callers can keep dialogs open on failure.
+ */
+function useAction() {
+  const [pending, setPending] = useState(false);
+
+  const run = useCallback(
+    async <T>(
+      action: () => Promise<T>,
+      messages: { success?: string; error: string },
+    ): Promise<T> => {
+      setPending(true);
+      try {
+        const result = await action();
+        if (messages.success) toast.success(messages.success);
+        return result;
+      } catch (err) {
+        toast.error(
+          err instanceof AiActionError ? err.message : messages.error,
+        );
+        throw err;
+      } finally {
+        setPending(false);
+      }
+    },
+    [],
+  );
+
+  return { pending, run };
+}
 
 export function useAiModelActions() {
   const { t } = useAppTranslate();
-  const [isCreatingModel, setIsCreatingModel] = useState(false);
-  const [isUpdatingModel, setIsUpdatingModel] = useState(false);
-  const [isAddingProvider, setIsAddingProvider] = useState(false);
-  const [isUpdatingProviderLink, setIsUpdatingProviderLink] = useState(false);
-
-  const handleCreateModel = async (body: AiRegistryModelCreateRequest) => {
-    setIsCreatingModel(true);
-    try {
-      const res = await createAiModel(body);
-      toast.success(
-        t("features.ai.models.createSuccess", {
-          defaultValue: "مدل هوش مصنوعی با موفقیت ایجاد شد.",
-        }),
-      );
-      return res;
-    } catch (err) {
-      const msg =
-        err instanceof AiActionError
-          ? err.message
-          : t("features.ai.models.createError", {
-              defaultValue: "ایجاد مدل ناموفق بود.",
-            });
-      toast.error(msg);
-      throw err;
-    } finally {
-      setIsCreatingModel(false);
-    }
-  };
-
-  const handleUpdateModel = async (
-    modelUuid: string,
-    body: AiRegistryModelUpdateRequest,
-  ) => {
-    setIsUpdatingModel(true);
-    try {
-      const res = await updateAiModel(modelUuid, body);
-      toast.success(
-        t("features.ai.models.updateSuccess", {
-          defaultValue: "اطلاعات مدل با موفقیت بروزرسانی شد.",
-        }),
-      );
-      return res;
-    } catch (err) {
-      const msg =
-        err instanceof AiActionError
-          ? err.message
-          : t("features.ai.models.updateError", {
-              defaultValue: "بروزرسانی مدل ناموفق بود.",
-            });
-      toast.error(msg);
-      throw err;
-    } finally {
-      setIsUpdatingModel(false);
-    }
-  };
-
-  const handleAddProvider = async (
-    modelUuid: string,
-    body: AiRegistryModelProviderLinkCreateRequest,
-  ) => {
-    setIsAddingProvider(true);
-    try {
-      const res = await addProviderToModel(modelUuid, body);
-      toast.success(
-        t("features.ai.models.addProviderSuccess", {
-          defaultValue: "ارائه‌دهنده با موفقیت به مدل متصل شد.",
-        }),
-      );
-      return res;
-    } catch (err) {
-      const msg =
-        err instanceof AiActionError
-          ? err.message
-          : t("features.ai.models.addProviderError", {
-              defaultValue: "اتصال ارائه‌دهنده به مدل ناموفق بود.",
-            });
-      toast.error(msg);
-      throw err;
-    } finally {
-      setIsAddingProvider(false);
-    }
-  };
-
-  const handleUpdateProviderLink = async (
-    modelUuid: string,
-    providerUuid: string,
-    body: AiRegistryModelProviderLinkUpdateRequest,
-  ) => {
-    setIsUpdatingProviderLink(true);
-    try {
-      const res = await updateModelProviderLink(modelUuid, providerUuid, body);
-      toast.success(
-        t("features.ai.models.updateProviderLinkSuccess", {
-          defaultValue: "تنظیمات اتصال ارائه‌دهنده بروزرسانی شد.",
-        }),
-      );
-      return res;
-    } catch (err) {
-      const msg =
-        err instanceof AiActionError
-          ? err.message
-          : t("features.ai.models.updateProviderLinkError", {
-              defaultValue: "بروزرسانی اتصال ارائه‌دهنده ناموفق بود.",
-            });
-      toast.error(msg);
-      throw err;
-    } finally {
-      setIsUpdatingProviderLink(false);
-    }
-  };
+  const create = useAction();
+  const update = useAction();
+  const add = useAction();
+  const updateLink = useAction();
+  const reorder = useAction();
 
   return {
-    createModel: handleCreateModel,
-    updateModel: handleUpdateModel,
-    addProvider: handleAddProvider,
-    updateProviderLink: handleUpdateProviderLink,
-    isCreatingModel,
-    isUpdatingModel,
-    isAddingProvider,
-    isUpdatingProviderLink,
+    createModel: (body: AiRegistryModelCreateRequest) =>
+      create.run(() => createAiModel(body), {
+        success: t("features.ai.models.createSuccess", {
+          defaultValue: "مدل هوش مصنوعی با موفقیت ایجاد شد.",
+        }),
+        error: t("features.ai.models.createError", {
+          defaultValue: "ایجاد مدل ناموفق بود.",
+        }),
+      }),
+
+    updateModel: (modelUuid: string, body: AiRegistryModelUpdateRequest) =>
+      update.run(() => updateAiModel(modelUuid, body), {
+        success: t("features.ai.models.updateSuccess", {
+          defaultValue: "اطلاعات مدل با موفقیت بروزرسانی شد.",
+        }),
+        error: t("features.ai.models.updateError", {
+          defaultValue: "بروزرسانی مدل ناموفق بود.",
+        }),
+      }),
+
+    addProvider: (
+      modelUuid: string,
+      body: AiRegistryModelProviderLinkCreateRequest,
+    ) =>
+      add.run(() => addProviderToModel(modelUuid, body), {
+        success: t("features.ai.models.addProviderSuccess", {
+          defaultValue: "ارائه‌دهنده با موفقیت به مدل متصل شد.",
+        }),
+        error: t("features.ai.models.addProviderError", {
+          defaultValue: "اتصال ارائه‌دهنده به مدل ناموفق بود.",
+        }),
+      }),
+
+    updateProviderLink: (
+      modelUuid: string,
+      providerUuid: string,
+      body: AiRegistryModelProviderLinkUpdateRequest,
+    ) =>
+      updateLink.run(
+        () => updateModelProviderLink(modelUuid, providerUuid, body),
+        {
+          success: t("features.ai.models.updateProviderLinkSuccess", {
+            defaultValue: "تنظیمات اتصال ارائه‌دهنده بروزرسانی شد.",
+          }),
+          error: t("features.ai.models.updateProviderLinkError", {
+            defaultValue: "بروزرسانی اتصال ارائه‌دهنده ناموفق بود.",
+          }),
+        },
+      ),
+
+    /** `providerUuids` must contain every linked provider; first = preferred. */
+    reorderProviders: (
+      modelUuid: string,
+      providerUuids: readonly string[],
+      options: { silent?: boolean } = {},
+    ) =>
+      reorder.run(() => reorderModelProviders(modelUuid, providerUuids), {
+        success: options.silent
+          ? undefined
+          : t("features.ai.models.reorderSuccess", {
+              defaultValue: "اولویت ارائه‌دهندگان ذخیره شد.",
+            }),
+        error: t("features.ai.models.reorderError", {
+          defaultValue: "ذخیرهٔ اولویت ارائه‌دهندگان ناموفق بود.",
+        }),
+      }),
+
+    isCreatingModel: create.pending,
+    isUpdatingModel: update.pending,
+    isAddingProvider: add.pending,
+    isUpdatingProviderLink: updateLink.pending,
+    isReorderingProviders: reorder.pending,
   };
 }

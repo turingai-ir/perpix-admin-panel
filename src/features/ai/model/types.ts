@@ -38,6 +38,10 @@ export type AiRegistryModelProviderLinkCreateRequest =
   components["schemas"]["AiRegistryModelProviderLinkCreateRequest"];
 export type AiRegistryModelProviderLinkUpdateRequest =
   components["schemas"]["AiRegistryModelProviderLinkUpdateRequest"];
+export type AiRegistryModelProviderLinkDetail =
+  components["schemas"]["AiRegistryModelProviderLinkDetail"];
+export type AiRegistryModelProviderOrderRequest =
+  components["schemas"]["AiRegistryModelProviderOrderRequest"];
 
 // AI Registry Providers
 export type ProvidersRow = components["schemas"]["ProvidersRow"];

@@ -151,6 +151,31 @@ export async function updateModelProviderLink(
   }
 }
 
+/**
+ * Order the providers of a model. `providerUuids` must list every linked
+ * provider exactly once; the first entry gets the highest priority.
+ */
+export async function reorderModelProviders(
+  modelUuid: string,
+  providerUuids: readonly string[],
+): Promise<AiRegistryModelDetail> {
+  try {
+    const res = await apiClient.PUT(
+      "/api/admin/v1/ai-registry/models/{ai_model_uuid}/providers/order",
+      {
+        params: { path: { ai_model_uuid: modelUuid } },
+        body: { ai_provider_uuids: providerUuids },
+      },
+    );
+    if (res.error) {
+      throw new AiActionError("server");
+    }
+    return res.data as AiRegistryModelDetail;
+  } catch (error) {
+    return handleFetchError(error);
+  }
+}
+
 // 3. AI Providers
 export async function createAiProvider(
   body: AiRegistryProviderCreateRequest,

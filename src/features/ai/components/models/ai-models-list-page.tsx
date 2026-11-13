@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
+import { Link, generatePath } from "react-router";
 import {
   Cpu,
   PlusCircle,
@@ -14,7 +15,7 @@ import {
 } from "../../hooks/use-ai-models-list";
 import { useAiModelActions } from "../../hooks/use-ai-model-actions";
 import { AiModelFormDialog } from "./ai-model-form-dialog";
-import { AiModelProviderLinkDialog } from "./ai-model-provider-link-dialog";
+import { APP_ROUTES_KEY } from "@/router/routes";
 import { useTableQuery } from "@/hooks/use-table-query";
 import {
   DataTable,
@@ -27,6 +28,9 @@ import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
 import type { AdminSort, AiRegistryModelOwnerEnum } from "../../model/types";
 
+const modelDetailPath = (modelUuid: string) =>
+  generatePath(APP_ROUTES_KEY.ai.modelDetail.path, { modelUuid });
+
 export function AiModelsListPage() {
   const { t } = useAppTranslate();
 
@@ -34,10 +38,6 @@ export function AiModelsListPage() {
     null,
   );
   const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
-  const [linkingModel, setLinkingModel] = useState<AiModelsRowItem | null>(
-    null,
-  );
-  const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
 
   const {
     page,
@@ -77,11 +77,6 @@ export function AiModelsListPage() {
     setIsFormDialogOpen(true);
   };
 
-  const handleLinkClick = (model: AiModelsRowItem) => {
-    setLinkingModel(model);
-    setIsLinkDialogOpen(true);
-  };
-
   const handleToggleActive = useCallback(
     async (model: AiModelsRowItem) => {
       const currentActive =
@@ -115,9 +110,12 @@ export function AiModelsListPage() {
               />
             )}
             <div className="space-y-0.5">
-              <span className="text-foreground block text-xs font-bold">
+              <Link
+                to={modelDetailPath(item.uuid)}
+                className="text-foreground hover:text-primary block text-xs font-bold hover:underline"
+              >
                 {item.display_name || item.name}
-              </span>
+              </Link>
               <code className="text-muted-foreground font-mono text-[11px]">
                 {item.name}
               </code>
@@ -208,10 +206,11 @@ export function AiModelsListPage() {
                 variant="outline"
                 size="sm"
                 className="h-8 gap-1 text-xs"
-                onClick={() => handleLinkClick(item)}
+                nativeButton={false}
+                render={<Link to={modelDetailPath(item.uuid)} />}
               >
                 <Link2 className="size-3.5" />
-                اتصال ارائه‌دهنده
+                ارائه‌دهندگان
               </Button>
               <Button
                 variant="outline"
@@ -367,14 +366,6 @@ export function AiModelsListPage() {
         open={isFormDialogOpen}
         onOpenChange={setIsFormDialogOpen}
         initialModel={editingModel}
-        onSuccess={() => void refetch()}
-      />
-
-      {/* Provider Link Dialog */}
-      <AiModelProviderLinkDialog
-        open={isLinkDialogOpen}
-        onOpenChange={setIsLinkDialogOpen}
-        model={linkingModel}
         onSuccess={() => void refetch()}
       />
     </div>
