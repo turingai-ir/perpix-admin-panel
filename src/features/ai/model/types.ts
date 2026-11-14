@@ -57,6 +57,8 @@ export type AiRegistryProviderDetail =
   components["schemas"]["AiRegistryProviderDetail"];
 export type AiRegistryProviderNameEnum =
   components["schemas"]["AiRegistryProviderNameEnum"];
+export type AiRegistryProviderUnavailableReasonEnum =
+  components["schemas"]["AiRegistryProviderUnavailableReasonEnum"];
 export type AiRegistryProviderCreateRequest =
   components["schemas"]["AiRegistryProviderCreateRequest"];
 export type AiRegistryProviderUpdateRequest =

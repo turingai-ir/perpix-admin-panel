@@ -15,6 +15,8 @@ import { useAiProviderDetail } from "../../hooks/use-ai-provider-detail";
 import { parseJsonObject, stringifyJsonObject } from "../../model/json-object";
 import { JsonObjectField } from "../json-object-field";
 import { useAppTranslate } from "@/hooks";
+import { Badge } from "@/components/ui/badge";
+import { providerAvailability } from "../../model/provider-availability";
 import type {
   AiRegistryProviderDetail,
   AiRegistryProviderNameEnum,
@@ -50,12 +52,18 @@ function AiProviderFormContent({
   const {
     createProvider,
     updateProvider,
+    reenableProvider,
     isCreatingProvider,
     isUpdatingProvider,
+    isReenablingProvider,
   } = useAiProviderActions();
 
   const isEditing = Boolean(initialProvider);
-  const isSubmitting = isCreatingProvider || isUpdatingProvider;
+  const isSubmitting =
+    isCreatingProvider || isUpdatingProvider || isReenablingProvider;
+  const availability = providerAvailability(
+    initialProvider?.unavailable_reason,
+  );
 
   const [name, setName] = useState<AiRegistryProviderNameEnum>(() => {
     const pName = initialProvider?.name as AiRegistryProviderNameEnum;
@@ -74,20 +82,35 @@ function AiProviderFormContent({
   const [rateLimitPerMin, setRateLimitPerMin] = useState(
     String(initialProvider?.rate_limit_per_min ?? 60),
   );
+  // Empty, never 0: a rate of 0 would price every credit at nothing.
   const [costToUsdmicro, setCostToUsdmicro] = useState(
-    String(initialProvider?.cost_to_usdmicro ?? 0),
+    initialProvider?.cost_to_usdmicro != null
+      ? String(initialProvider.cost_to_usdmicro)
+      : "",
   );
 
   const meta = parseJsonObject(metaText);
+  const costValue = costToUsdmicro.trim();
+  const costIsValid = !costValue || Number(costValue) > 0;
+
+  const handleReenable = async () => {
+    if (!initialProvider) return;
+    try {
+      await reenableProvider(initialProvider.uuid);
+      onClose();
+      onSuccess?.();
+    } catch {
+      // toast handled in hook
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!meta.ok) return;
+    if (!meta.ok || !costIsValid) return;
 
     const displayNameValue = displayName.trim();
     const baseApiUrlValue = baseApiUrl.trim();
     const rateLimitValue = rateLimitPerMin.trim();
-    const costValue = costToUsdmicro.trim();
 
     try {
       if (isEditing && initialProvider) {
@@ -123,6 +146,42 @@ function AiProviderFormContent({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 py-2 text-sm">
+      {isEditing && (
+        <div
+          className={
+            initialProvider?.unavailable_reason
+              ? "space-y-2 rounded-lg border border-amber-500/40 bg-amber-500/5 p-3"
+              : "space-y-2 rounded-lg border p-3"
+          }
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-foreground text-xs font-semibold">
+              {t("features.ai.providers.columns.availability", {
+                defaultValue: "وضعیت مسیردهی",
+              })}
+            </span>
+            <Badge variant={availability.variant}>{availability.label}</Badge>
+          </div>
+          <p className="text-muted-foreground text-[11px] leading-5">
+            {availability.hint}
+          </p>
+          {initialProvider?.unavailable_reason && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 text-xs"
+              disabled={isSubmitting}
+              onClick={() => void handleReenable()}
+            >
+              {t("features.ai.providers.reenable", {
+                defaultValue: "فعال‌سازی دستی",
+              })}
+            </Button>
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="text-foreground mb-1 block text-xs font-semibold">
@@ -222,16 +281,35 @@ function AiProviderFormContent({
         <div>
           <label className="text-foreground mb-1 block text-xs font-semibold">
             {t("features.ai.providers.costMicro", {
-              defaultValue: "هزینه به میکرو دلار (USD Micro)",
+              defaultValue: "ارزش هر واحد به میکرودلار (usdmicro)",
             })}
           </label>
           <Input
             type="number"
             value={costToUsdmicro}
             onChange={(e) => setCostToUsdmicro(e.target.value)}
-            placeholder="0"
+            placeholder={name === "KIE" ? "5000" : "1000000"}
             min={0}
+            step="any"
+            dir="ltr"
+            aria-invalid={!costIsValid}
           />
+          <span
+            className={
+              costIsValid
+                ? "text-muted-foreground mt-1 block text-[11px] leading-5"
+                : "text-destructive mt-1 block text-[11px] leading-5"
+            }
+          >
+            {costIsValid
+              ? t("features.ai.providers.costMicroHint", {
+                  defaultValue:
+                    "قیمت هر credit در KIE (مثلاً 5000) یا هر دلار در Runware (1000000). تغییرش فقط روی درخواست‌های بعدی اثر دارد.",
+                })
+              : t("features.ai.providers.costMicroInvalid", {
+                  defaultValue: "باید بیشتر از صفر باشد؛ صفر یعنی ساخت رایگان.",
+                })}
+          </span>
         </div>
       </div>
 
@@ -255,7 +333,10 @@ function AiProviderFormContent({
         <Button type="button" variant="outline" onClick={onClose}>
           {t("common.cancel", { defaultValue: "انصراف" })}
         </Button>
-        <Button type="submit" disabled={isSubmitting || !meta.ok}>
+        <Button
+          type="submit"
+          disabled={isSubmitting || !meta.ok || !costIsValid}
+        >
           {isSubmitting
             ? t("common.submitting", { defaultValue: "در حال ثبت..." })
             : isEditing

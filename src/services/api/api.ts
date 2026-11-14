@@ -2127,6 +2127,8 @@ export interface components {
       readonly rate_limit_per_min: number | null;
       /** Cost To Usdmicro */
       readonly cost_to_usdmicro?: number | null;
+      readonly unavailable_reason?:
+        components["schemas"]["AiRegistryProviderUnavailableReasonEnum"] | null;
       /**
        * Has Api Key
        * @default false
@@ -2153,6 +2155,13 @@ export interface components {
      */
     readonly AiRegistryProviderNameEnum:
       "RUNWARE" | "AIMLAPI" | "KIE" | "OPENAI" | "GOOGLE" | "OPENROUTER";
+    /**
+     * AiRegistryProviderUnavailableReasonEnum
+     * @description Why routing skips a provider for new requests until it is cleared.
+     * @enum {string}
+     */
+    readonly AiRegistryProviderUnavailableReasonEnum:
+      "OUT_OF_CREDIT" | "AUTH_FAILED";
     /** AiRegistryProviderUpdateRequest */
     readonly AiRegistryProviderUpdateRequest: {
       /** Display Name */
@@ -2165,6 +2174,8 @@ export interface components {
       readonly rate_limit_per_min?: number | null;
       /** Cost To Usdmicro */
       readonly cost_to_usdmicro?: number | null;
+      readonly unavailable_reason?:
+        components["schemas"]["AiRegistryProviderUnavailableReasonEnum"] | null;
       /** Meta */
       readonly meta?: {
         readonly [key: string]: unknown;
@@ -2707,6 +2718,8 @@ export interface components {
       | "RATE_LIMITED"
       | "PROVIDER_UNAVAILABLE"
       | "PROVIDER_TIMEOUT"
+      | "PROVIDER_OUT_OF_CREDIT"
+      | "PROVIDER_AUTH_FAILED"
       | "PLATFORM_CONFIGURATION"
       | "PROVIDER_FAILED"
       | "INTERNAL"
@@ -2961,6 +2974,8 @@ export interface components {
       readonly display_name: string | null;
       /** Has Api Key */
       readonly has_api_key: boolean;
+      readonly unavailable_reason:
+        components["schemas"]["AiRegistryProviderUnavailableReasonEnum"] | null;
       /**
        * Created At
        * Format: date-time
@@ -3769,6 +3784,8 @@ export type SchemaAiRegistryProviderDetail =
   components["schemas"]["AiRegistryProviderDetail"];
 export type SchemaAiRegistryProviderNameEnum =
   components["schemas"]["AiRegistryProviderNameEnum"];
+export type SchemaAiRegistryProviderUnavailableReasonEnum =
+  components["schemas"]["AiRegistryProviderUnavailableReasonEnum"];
 export type SchemaAiRegistryProviderUpdateRequest =
   components["schemas"]["AiRegistryProviderUpdateRequest"];
 export type SchemaAiTaskMessageError =
@@ -8557,6 +8574,9 @@ export const aiRegistryModelSupportedTypesEnumValues: ReadonlyArray<
 export const aiRegistryProviderNameEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AiRegistryProviderNameEnum"]
 > = ["RUNWARE", "AIMLAPI", "KIE", "OPENAI", "GOOGLE", "OPENROUTER"];
+export const aiRegistryProviderUnavailableReasonEnumValues: ReadonlyArray<
+  FlattenedDeepRequired<components>["schemas"]["AiRegistryProviderUnavailableReasonEnum"]
+> = ["OUT_OF_CREDIT", "AUTH_FAILED"];
 export const aiTaskMessageStatusEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["AiTaskMessageStatusEnum"]
 > = ["PENDING", "IN_PROGRESS", "SUCCESS", "FAILED"];
@@ -8589,6 +8609,8 @@ export const generationFailureReasonEnumValues: ReadonlyArray<
   "RATE_LIMITED",
   "PROVIDER_UNAVAILABLE",
   "PROVIDER_TIMEOUT",
+  "PROVIDER_OUT_OF_CREDIT",
+  "PROVIDER_AUTH_FAILED",
   "PLATFORM_CONFIGURATION",
   "PROVIDER_FAILED",
   "INTERNAL",
@@ -8694,6 +8716,15 @@ export type AiRegistryProviderNameEnumKey =
   keyof typeof AiRegistryProviderNameEnumMap;
 export type AiRegistryProviderNameEnumValue =
   (typeof AiRegistryProviderNameEnumMap)[AiRegistryProviderNameEnumKey];
+
+export const AiRegistryProviderUnavailableReasonEnumMap = {
+  OUT_OF_CREDIT: "OUT_OF_CREDIT",
+  AUTH_FAILED: "AUTH_FAILED",
+} as const;
+export type AiRegistryProviderUnavailableReasonEnumKey =
+  keyof typeof AiRegistryProviderUnavailableReasonEnumMap;
+export type AiRegistryProviderUnavailableReasonEnumValue =
+  (typeof AiRegistryProviderUnavailableReasonEnumMap)[AiRegistryProviderUnavailableReasonEnumKey];
 
 export const AiTaskMessageStatusEnumMap = {
   PENDING: "PENDING",
@@ -8821,6 +8852,8 @@ export const GenerationFailureReasonEnumMap = {
   RATE_LIMITED: "RATE_LIMITED",
   PROVIDER_UNAVAILABLE: "PROVIDER_UNAVAILABLE",
   PROVIDER_TIMEOUT: "PROVIDER_TIMEOUT",
+  PROVIDER_OUT_OF_CREDIT: "PROVIDER_OUT_OF_CREDIT",
+  PROVIDER_AUTH_FAILED: "PROVIDER_AUTH_FAILED",
   PLATFORM_CONFIGURATION: "PLATFORM_CONFIGURATION",
   PROVIDER_FAILED: "PROVIDER_FAILED",
   INTERNAL: "INTERNAL",

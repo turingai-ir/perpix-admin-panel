@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Server,
   PlusCircle,
@@ -6,12 +6,15 @@ import {
   RotateCcw,
   XCircle,
   Key,
+  Power,
 } from "lucide-react";
 import {
   useAiProvidersList,
   type AiProvidersRowItem,
 } from "../../hooks/use-ai-providers-list";
 import { AiProviderFormDialog } from "./ai-provider-form-dialog";
+import { useAiProviderActions } from "../../hooks/use-ai-provider-actions";
+import { providerAvailability } from "../../model/provider-availability";
 import { useTableQuery } from "@/hooks/use-table-query";
 import {
   DataTable,
@@ -64,6 +67,19 @@ export function AiProvidersListPage() {
     setIsDialogOpen(true);
   };
 
+  const { reenableProvider, isReenablingProvider } = useAiProviderActions();
+  const handleReenableClick = useCallback(
+    async (provider: AiProvidersRowItem) => {
+      try {
+        await reenableProvider(provider.uuid);
+        void refetch();
+      } catch {
+        // toast handled in hook
+      }
+    },
+    [reenableProvider, refetch],
+  );
+
   const columns: DataTableColumn<AiProvidersRowItem>[] = useMemo(
     () => [
       {
@@ -104,6 +120,20 @@ export function AiProvidersListPage() {
           ),
       },
       {
+        id: "unavailable_reason",
+        header: t("features.ai.providers.columns.availability", {
+          defaultValue: "وضعیت مسیردهی",
+        }),
+        cell: (item) => {
+          const view = providerAvailability(item.unavailable_reason);
+          return (
+            <Badge variant={view.variant} title={view.hint}>
+              {view.label}
+            </Badge>
+          );
+        },
+      },
+      {
         id: "created_at",
         header: t("features.ai.providers.columns.createdAt", {
           defaultValue: "تاریخ ثبت",
@@ -118,7 +148,25 @@ export function AiProvidersListPage() {
         id: "actions",
         header: "",
         cell: (item) => (
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end gap-2">
+            {item.unavailable_reason && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1 text-xs"
+                disabled={isReenablingProvider}
+                title={t("features.ai.providers.reenableHint", {
+                  defaultValue:
+                    "معمولاً لازم نیست: با اولین درخواست موفق خودکار فعال می‌شود.",
+                })}
+                onClick={() => void handleReenableClick(item)}
+              >
+                <Power className="size-3.5" />
+                {t("features.ai.providers.reenable", {
+                  defaultValue: "فعال‌سازی دستی",
+                })}
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
@@ -132,7 +180,7 @@ export function AiProvidersListPage() {
         ),
       },
     ],
-    [t],
+    [t, isReenablingProvider, handleReenableClick],
   );
 
   const hasActiveFilters = Boolean(search || sort !== "-created_at");

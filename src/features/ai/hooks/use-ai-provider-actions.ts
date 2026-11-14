@@ -15,6 +15,7 @@ export function useAiProviderActions() {
   const { t } = useAppTranslate();
   const [isCreatingProvider, setIsCreatingProvider] = useState(false);
   const [isUpdatingProvider, setIsUpdatingProvider] = useState(false);
+  const [isReenablingProvider, setIsReenablingProvider] = useState(false);
 
   const handleCreateProvider = async (
     body: AiRegistryProviderCreateRequest,
@@ -69,10 +70,39 @@ export function useAiProviderActions() {
     }
   };
 
+  /** Clear the flag that makes routing skip the provider; only null is accepted. */
+  const handleReenableProvider = async (providerUuid: string) => {
+    setIsReenablingProvider(true);
+    try {
+      const res = await updateAiProvider(providerUuid, {
+        unavailable_reason: null,
+      });
+      toast.success(
+        t("features.ai.providers.reenableSuccess", {
+          defaultValue: "ارائه‌دهنده دوباره در مسیردهی قرار گرفت.",
+        }),
+      );
+      return res;
+    } catch (err) {
+      const msg =
+        err instanceof AiActionError
+          ? err.message
+          : t("features.ai.providers.reenableError", {
+              defaultValue: "فعال‌سازی دوباره ارائه‌دهنده ناموفق بود.",
+            });
+      toast.error(msg);
+      throw err;
+    } finally {
+      setIsReenablingProvider(false);
+    }
+  };
+
   return {
     createProvider: handleCreateProvider,
     updateProvider: handleUpdateProvider,
+    reenableProvider: handleReenableProvider,
     isCreatingProvider,
     isUpdatingProvider,
+    isReenablingProvider,
   };
 }
