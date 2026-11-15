@@ -60,6 +60,9 @@ function PlanFormContent({
   const [giftAmountUsd, setGiftAmountUsd] = useState(
     String((initialPlan?.balance_gift_amount_usdmicro ?? 0) / 1_000_000),
   );
+  const [topupDiscountPercent, setTopupDiscountPercent] = useState(
+    String(initialPlan?.wallet_topup_discount_percent ?? 0),
+  );
   const [scopesStr, setScopesStr] = useState(
     initialPlan?.scopes ? Array.from(initialPlan.scopes).join(", ") : "",
   );
@@ -92,6 +95,11 @@ function PlanFormContent({
       (parseFloat(giftAmountUsd) || 0) * 1_000_000,
     );
 
+    const parsedTopupDiscount = Math.min(
+      100,
+      Math.max(0, parseInt(topupDiscountPercent, 10) || 0),
+    );
+
     const scopes = scopesStr
       .split(",")
       .map((s) => s.trim())
@@ -115,6 +123,7 @@ function PlanFormContent({
             base_price_usdmicro: parsedBaseMicro,
             discounted_price_usdmicro: parsedDiscMicro,
             balance_gift_amount_usdmicro: parsedGiftMicro,
+            wallet_topup_discount_percent: parsedTopupDiscount,
             scopes,
             allowed_models: allowedModels,
           },
@@ -128,6 +137,7 @@ function PlanFormContent({
           base_price_usdmicro: parsedBaseMicro,
           discounted_price_usdmicro: parsedDiscMicro,
           balance_gift_amount_usdmicro: parsedGiftMicro,
+          wallet_topup_discount_percent: parsedTopupDiscount,
           scopes,
           allowed_models: allowedModels,
           is_active: isActive,
@@ -223,6 +233,29 @@ function PlanFormContent({
             dir="ltr"
           />
         </div>
+      </div>
+
+      <div className="space-y-1.5">
+        <label className="text-foreground text-xs font-semibold">
+          {t("features.subscriptions.plans.fields.topupDiscountPercent", {
+            defaultValue: "تخفیف روی شارژ کیف پول (درصد از سود)",
+          })}
+        </label>
+        <Input
+          type="number"
+          step="1"
+          min={0}
+          max={100}
+          value={topupDiscountPercent}
+          onChange={(e) => setTopupDiscountPercent(e.target.value)}
+          dir="ltr"
+        />
+        <p className="text-muted-foreground text-[11px]">
+          {t("features.subscriptions.plans.fields.topupDiscountHint", {
+            defaultValue:
+              "از سود تنظیم‌شده کم می‌شه و هیچ‌وقت قیمت رو زیر مبلغ اعتبار نمی‌بره.",
+          })}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

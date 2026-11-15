@@ -216,6 +216,27 @@ export function PaymentDetailPage() {
                   </p>
                 </div>
 
+                {/* Discount already taken off the price */}
+                <div className="space-y-1">
+                  <span className="text-muted-foreground text-xs">
+                    {t("features.finance.payments.discountUsdmicro", {
+                      defaultValue: "تخفیف اعمال‌شده (USDMicro)",
+                    })}
+                  </span>
+                  <p className="text-foreground text-base font-semibold tabular-nums">
+                    {payment.discount_usdmicro > 0 ? (
+                      <>
+                        {faNumber(payment.discount_usdmicro)}{" "}
+                        <span className="text-muted-foreground text-xs font-normal">
+                          ({faNumber(payment.discount_usdmicro / 1_000_000)} $)
+                        </span>
+                      </>
+                    ) : (
+                      "—"
+                    )}
+                  </p>
+                </div>
+
                 {/* User Link */}
                 <div className="space-y-1">
                   <span className="text-muted-foreground flex items-center gap-1 text-xs">
