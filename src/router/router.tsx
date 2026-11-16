@@ -15,6 +15,7 @@ import {
   WalletDetailPage,
   TransactionsListPage,
   ExchangeRatePage,
+  TopupPolicyPage,
 } from "@/features/finance";
 import {
   SubscriptionsListPage,
@@ -93,6 +94,11 @@ export const router = createBrowserRouter([
             path: APP_ROUTES_KEY.finance.transactions.path,
             element: <TransactionsListPage />,
             handle: { title: APP_ROUTES_KEY.finance.transactions.meta.title },
+          },
+          {
+            path: APP_ROUTES_KEY.finance.topupPolicy.path,
+            element: <TopupPolicyPage />,
+            handle: { title: APP_ROUTES_KEY.finance.topupPolicy.meta.title },
           },
           {
             path: APP_ROUTES_KEY.finance.exchangeRate.path,

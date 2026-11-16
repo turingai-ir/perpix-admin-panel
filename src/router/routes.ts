@@ -39,6 +39,10 @@ export const APP_ROUTES_KEY = {
       path: "/finance/transactions",
       meta: { title: "تراکنش‌های کیف پول | پرپیکس" },
     },
+    topupPolicy: {
+      path: "/finance/topup-policy",
+      meta: { title: "تنظیمات شارژ کیف پول | پرپیکس" },
+    },
     exchangeRate: {
       path: "/finance/exchange-rate",
       meta: { title: "نرخ ارز و گزارش‌ها | پرپیکس" },

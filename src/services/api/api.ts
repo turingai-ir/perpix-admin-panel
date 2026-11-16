@@ -950,6 +950,24 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/admin/v1/wallet/topup-policy": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /** Get how wallet top-ups are priced */
+    readonly get: operations["admin_wallet_get_topup_policy"];
+    /** Set our profit, the charge range and the discount tiers of wallet top-ups */
+    readonly put: operations["admin_wallet_update_topup_policy"];
+    readonly post?: never;
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/admin/v1/wallets/{wallet_uuid}/transactions": {
     readonly parameters: {
       readonly query?: never;
@@ -1854,6 +1872,17 @@ export interface components {
      * @enum {string}
      */
     readonly AdminSort: "-created_at" | "created_at";
+    /** AdminTopupPolicyResponse */
+    readonly AdminTopupPolicyResponse: {
+      /** Min Amount Usdmicro */
+      readonly min_amount_usdmicro: number;
+      /** Max Amount Usdmicro */
+      readonly max_amount_usdmicro: number;
+      /** Tiers */
+      readonly tiers: readonly components["schemas"]["TopupTierSchema"][];
+      /** Profit Percent */
+      readonly profit_percent: number;
+    };
     /**
      * AiRegistryModeDefinition
      * @description A mode a model offers.
@@ -2304,6 +2333,7 @@ export interface components {
       | 1106
       | 1107
       | 1108
+      | 1109
       | 1200
       | 1201
       | 1202
@@ -3219,6 +3249,13 @@ export interface components {
        */
       readonly created_at: string;
     };
+    /** TopupTierSchema */
+    readonly TopupTierSchema: {
+      /** From Amount Usdmicro */
+      readonly from_amount_usdmicro: number;
+      /** Discount Percent */
+      readonly discount_percent: number;
+    };
     /** TransactionsRow */
     readonly TransactionsRow: {
       /**
@@ -3284,6 +3321,17 @@ export interface components {
       readonly is_recommended?: boolean | null;
       /** Is Default */
       readonly is_default?: boolean | null;
+    };
+    /** UpdateTopupPolicyRequest */
+    readonly UpdateTopupPolicyRequest: {
+      /** Profit Percent */
+      readonly profit_percent: number;
+      /** Min Amount Usdmicro */
+      readonly min_amount_usdmicro: number;
+      /** Max Amount Usdmicro */
+      readonly max_amount_usdmicro: number;
+      /** Tiers */
+      readonly tiers: readonly components["schemas"]["TopupTierSchema"][];
     };
     /** UserSubscriptionResponse */
     readonly UserSubscriptionResponse: {
@@ -3756,6 +3804,8 @@ export type SchemaAdminSessionListResponse =
 export type SchemaAdminSessionResponse =
   components["schemas"]["AdminSessionResponse"];
 export type SchemaAdminSort = components["schemas"]["AdminSort"];
+export type SchemaAdminTopupPolicyResponse =
+  components["schemas"]["AdminTopupPolicyResponse"];
 export type SchemaAiRegistryModeDefinition =
   components["schemas"]["AiRegistryModeDefinition"];
 export type SchemaAiRegistryModelCreateRequest =
@@ -3867,9 +3917,12 @@ export type SchemaSupportedCurrency =
   components["schemas"]["SupportedCurrency"];
 export type SchemaTasksRow = components["schemas"]["TasksRow"];
 export type SchemaTokensRow = components["schemas"]["TokensRow"];
+export type SchemaTopupTierSchema = components["schemas"]["TopupTierSchema"];
 export type SchemaTransactionsRow = components["schemas"]["TransactionsRow"];
 export type SchemaUpdateSubscriptionPlanRequest =
   components["schemas"]["UpdateSubscriptionPlanRequest"];
+export type SchemaUpdateTopupPolicyRequest =
+  components["schemas"]["UpdateTopupPolicyRequest"];
 export type SchemaUserSubscriptionResponse =
   components["schemas"]["UserSubscriptionResponse"];
 export type SchemaUsersRow = components["schemas"]["UsersRow"];
@@ -7059,6 +7112,59 @@ export interface operations {
       };
     };
   };
+  readonly admin_wallet_get_topup_policy: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AdminTopupPolicyResponse"];
+        };
+      };
+    };
+  };
+  readonly admin_wallet_update_topup_policy: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["UpdateTopupPolicyRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["AdminTopupPolicyResponse"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   readonly admin_wallets_get_wallet_transactions: {
     readonly parameters: {
       readonly query: {
@@ -8589,11 +8695,11 @@ export const aiTaskTypeEnumValues: ReadonlyArray<
 export const applicationErrorCodeValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["ApplicationErrorCode"]
 > = [
-  900, 901, 902, 999, 1000, 1100, 1103, 1104, 1106, 1107, 1108, 1200, 1201,
-  1202, 1203, 1204, 1205, 1206, 1300, 1301, 1302, 1303, 1304, 1305, 1306, 1307,
-  1308, 1309, 1310, 1400, 1401, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1600,
-  1601, 1602, 1603, 1604, 1605, 1700, 1701, 1702, 1800, 1801, 1802, 1803, 1804,
-  1805, 1806, 1807, 1808, 1810, 1811, 1812, 1813, 1814, 1815, 1816,
+  900, 901, 902, 999, 1000, 1100, 1103, 1104, 1106, 1107, 1108, 1109, 1200,
+  1201, 1202, 1203, 1204, 1205, 1206, 1300, 1301, 1302, 1303, 1304, 1305, 1306,
+  1307, 1308, 1309, 1310, 1400, 1401, 1500, 1501, 1502, 1503, 1504, 1505, 1506,
+  1600, 1601, 1602, 1603, 1604, 1605, 1700, 1701, 1702, 1800, 1801, 1802, 1803,
+  1804, 1805, 1806, 1807, 1808, 1810, 1811, 1812, 1813, 1814, 1815, 1816,
 ];
 export const currencyUnitEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CurrencyUnitEnum"]
@@ -8769,6 +8875,7 @@ export const ApplicationErrorCodeMap = {
   1106: 1106,
   1107: 1107,
   1108: 1108,
+  1109: 1109,
   1200: 1200,
   1201: 1201,
   1202: 1202,

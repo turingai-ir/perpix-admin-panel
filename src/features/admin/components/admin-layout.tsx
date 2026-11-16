@@ -13,6 +13,7 @@ import {
   TrendingUp,
   Sparkles,
   Package,
+  Percent,
   History,
   Bot,
   Cpu,
@@ -72,6 +73,11 @@ const navGroups: readonly NavGroup[] = [
         path: APP_ROUTES_KEY.finance.transactions.path,
         label: "features.finance.transactions.menuTitle",
         icon: ArrowLeftRight,
+      },
+      {
+        path: APP_ROUTES_KEY.finance.topupPolicy.path,
+        label: "features.finance.topupPolicy.menuTitle",
+        icon: Percent,
       },
       {
         path: APP_ROUTES_KEY.finance.exchangeRate.path,

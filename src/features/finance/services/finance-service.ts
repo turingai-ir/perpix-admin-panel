@@ -1,4 +1,5 @@
 import { apiClient } from "@/services/api";
+import type { components } from "@/services/api/api";
 import {
   FetchHttpError,
   FetchNetworkError,
@@ -31,7 +32,7 @@ function handleFetchError(error: unknown): never {
         "کیف پول یا منبع مورد نظر یافت نشد.",
       );
     }
-    if (status === 422) {
+    if (status === 400 || status === 422) {
       throw new FinanceActionError("validation", "اطلاعات ارسالی معتبر نیست.");
     }
   }
@@ -92,6 +93,22 @@ export async function refreshExchangeRate() {
       "/api/admin/v1/currency-exchange-rate/refresh",
       {},
     );
+    if (result.error) {
+      throw new FinanceActionError("server");
+    }
+    return result.data;
+  } catch (error) {
+    handleFetchError(error);
+  }
+}
+
+export async function updateTopupPolicy(
+  body: components["schemas"]["UpdateTopupPolicyRequest"],
+) {
+  try {
+    const result = await apiClient.PUT("/api/admin/v1/wallet/topup-policy", {
+      body,
+    });
     if (result.error) {
       throw new FinanceActionError("server");
     }
