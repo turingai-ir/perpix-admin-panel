@@ -2005,6 +2005,7 @@ export interface components {
       | "K_LING_AI"
       | "BRIA"
       | "BYTE_DANCE"
+      | "HEYGEN"
       | "IMAGINE_ART"
       | "LIGHT_TICKS"
       | "MID_JOURNEY"
@@ -2864,9 +2865,9 @@ export interface components {
       /** Supported Outputs */
       readonly supported_outputs: readonly components["schemas"]["AiRegistryModelSupportedTypesEnum"][];
       /** Min Cost */
-      readonly min_cost: number | null;
+      readonly min_cost?: number | null;
       /** Max Cost */
-      readonly max_cost: number | null;
+      readonly max_cost?: number | null;
       /**
        * Updated At
        * Format: date-time
@@ -8662,6 +8663,7 @@ export const aiRegistryModelOwnerEnumValues: ReadonlyArray<
   "K_LING_AI",
   "BRIA",
   "BYTE_DANCE",
+  "HEYGEN",
   "IMAGINE_ART",
   "LIGHT_TICKS",
   "MID_JOURNEY",
@@ -8782,6 +8784,7 @@ export const AiRegistryModelOwnerEnumMap = {
   K_LING_AI: "K_LING_AI",
   BRIA: "BRIA",
   BYTE_DANCE: "BYTE_DANCE",
+  HEYGEN: "HEYGEN",
   IMAGINE_ART: "IMAGINE_ART",
   LIGHT_TICKS: "LIGHT_TICKS",
   MID_JOURNEY: "MID_JOURNEY",
