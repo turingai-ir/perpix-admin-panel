@@ -198,19 +198,6 @@ export function PlansListPage() {
         },
       },
       {
-        id: "topupDiscount",
-        header: t("features.subscriptions.plans.columns.topupDiscount", {
-          defaultValue: "تخفیف شارژ",
-        }),
-        cell: (item) => (
-          <span className="font-mono text-xs">
-            {item.wallet_topup_discount_percent > 0
-              ? `${faNumber(item.wallet_topup_discount_percent)}٪`
-              : "—"}
-          </span>
-        ),
-      },
-      {
         id: "status",
         header: t("features.subscriptions.plans.columns.status", {
           defaultValue: "وضعیت",

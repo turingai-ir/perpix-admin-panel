@@ -2450,11 +2450,6 @@ export interface components {
       readonly duration_days: number;
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro?: number | null;
-      /**
-       * Wallet Topup Discount Percent
-       * @default 0
-       */
-      readonly wallet_topup_discount_percent: number;
       /** Meta */
       readonly meta?: {
         readonly [key: string]: unknown;
@@ -2901,8 +2896,6 @@ export interface components {
       readonly financial_status: string;
       /** Fulfillment Status */
       readonly fulfillment_status: string;
-      /** Discount Usdmicro */
-      readonly discount_usdmicro: number;
       /** Total Usdmicro */
       readonly total_usdmicro: number;
       /** Total Irr */
@@ -2928,8 +2921,6 @@ export interface components {
       readonly allowed_models: readonly string[];
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro: number | null;
-      /** Wallet Topup Discount Percent */
-      readonly wallet_topup_discount_percent: number;
       /** Meta */
       readonly meta: {
         readonly [key: string]: unknown;
@@ -3101,8 +3092,6 @@ export interface components {
       readonly duration_days: number;
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro: number | null;
-      /** Wallet Topup Discount Percent */
-      readonly wallet_topup_discount_percent: number;
       /** Meta */
       readonly meta: {
         readonly [key: string]: unknown;
@@ -3285,8 +3274,6 @@ export interface components {
       readonly duration_days?: number | null;
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro?: number | null;
-      /** Wallet Topup Discount Percent */
-      readonly wallet_topup_discount_percent?: number | null;
       /** Meta */
       readonly meta?: {
         readonly [key: string]: unknown;
