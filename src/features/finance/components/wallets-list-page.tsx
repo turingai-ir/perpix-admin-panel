@@ -20,6 +20,11 @@ import {
   type DataTableColumn,
 } from "@/components/custom/data-table";
 import { SearchInput } from "@/components/custom/search-input";
+import {
+  UsdmicroAmount,
+  UsdmicroInputHint,
+} from "@/components/custom/usdmicro-amount";
+import { parseUsdmicro } from "@/utils/usdmicro";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
@@ -35,8 +40,7 @@ import {
 import { useAppTranslate } from "@/hooks";
 import { cn } from "@/lib/utils";
 import type { AdminSort } from "../model/types";
-
-const faNumber = (val: number) => new Intl.NumberFormat("fa-IR").format(val);
+import { UsdmicroInput } from "@/components/custom/usdmicro-input";
 
 const formatDate = (isoString?: string | null) => {
   if (!isoString) return "—";
@@ -59,7 +63,7 @@ export function WalletsListPage() {
   const [selectedWallet, setSelectedWallet] = useState<WalletsRowItem | null>(
     null,
   );
-  const [chargeAmountUsd, setChargeAmountUsd] = useState("1.00");
+  const [chargeAmountUsdmicro, setChargeAmountUsdmicro] = useState("1000000");
   const [chargeReason, setChargeReason] = useState("");
   const [isConfirmed, setIsConfirmed] = useState(false);
 
@@ -100,17 +104,16 @@ export function WalletsListPage() {
 
   const handleOpenCharge = (wallet: WalletsRowItem) => {
     setSelectedWallet(wallet);
-    setChargeAmountUsd("1.00");
+    setChargeAmountUsdmicro("1000000");
     setChargeReason("");
     setIsConfirmed(false);
   };
 
   const handleChargeSubmit = async () => {
     if (!selectedWallet) return;
-    const usd = Number.parseFloat(chargeAmountUsd);
-    if (!Number.isFinite(usd) || usd <= 0) return;
+    const amountUsdmicro = parseUsdmicro(chargeAmountUsdmicro);
+    if (amountUsdmicro === null || amountUsdmicro <= 0) return;
 
-    const amountUsdmicro = Math.round(usd * 1_000_000);
     try {
       await chargeWallet({
         walletUuid: selectedWallet.uuid,
@@ -186,19 +189,12 @@ export function WalletsListPage() {
         header: t("features.finance.wallets.columns.balance", {
           defaultValue: "موجودی",
         }),
-        cell: (item) => {
-          const usd = item.balance_usdmicro / 1_000_000;
-          return (
-            <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-semibold tabular-nums">
-                {faNumber(usd)} $
-              </span>
-              <span className="text-muted-foreground text-[11px] tabular-nums">
-                {faNumber(item.balance_usdmicro)} usdmicro
-              </span>
-            </div>
-          );
-        },
+        cell: (item) => (
+          <UsdmicroAmount
+            value={item.balance_usdmicro}
+            amountClassName="text-sm font-semibold"
+          />
+        ),
       },
       {
         id: "is_active",
@@ -397,7 +393,7 @@ export function WalletsListPage() {
             <DialogDescription className="mt-1.5">
               {t("features.finance.wallets.chargeModalDesc", {
                 defaultValue:
-                  "شارژ مستقیم حساب کاربر با ارز دلاری (USDMicro). این عملیات بلافاصله اعمال می‌شود.",
+                  "شارژ مستقیم کیف پول کاربر به میکرودلار. این عملیات بلافاصله اعمال می‌شود.",
               })}
             </DialogDescription>
           </DialogHeader>
@@ -419,9 +415,11 @@ export function WalletsListPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">موجودی فعلی:</span>
-                  <span className="text-foreground font-semibold">
-                    {faNumber(selectedWallet.balance_usdmicro / 1_000_000)} $
-                  </span>
+                  <UsdmicroAmount
+                    value={selectedWallet.balance_usdmicro}
+                    hint="inline"
+                    amountClassName="text-foreground font-semibold"
+                  />
                 </div>
               </div>
 
@@ -432,32 +430,16 @@ export function WalletsListPage() {
                   className="text-foreground text-xs font-medium"
                 >
                   {t("features.finance.wallets.amountLabel", {
-                    defaultValue: "مبلغ شارژ (دلار):",
+                    defaultValue: "مبلغ شارژ (میکرودلار):",
                   })}
                 </label>
-                <div className="relative">
-                  <Input
-                    id="charge-amount"
-                    dir="ltr"
-                    type="number"
-                    step="0.1"
-                    min="0.1"
-                    value={chargeAmountUsd}
-                    onChange={(e) => setChargeAmountUsd(e.target.value)}
-                    className="pl-8 text-left font-mono"
-                    disabled={isCharging}
-                  />
-                  <span className="text-muted-foreground absolute top-2.5 left-3 text-xs">
-                    $
-                  </span>
-                </div>
-                <p className="text-muted-foreground text-[11px]">
-                  معادل{" "}
-                  {faNumber(
-                    Math.round(Number(chargeAmountUsd || 0) * 1_000_000),
-                  )}{" "}
-                  usdmicro
-                </p>
+                <UsdmicroInput
+                  id="charge-amount"
+                  value={chargeAmountUsdmicro}
+                  onValueChange={(v) => setChargeAmountUsdmicro(v)}
+                  disabled={isCharging}
+                />
+                <UsdmicroInputHint value={chargeAmountUsdmicro} />
               </div>
 
               {/* Reason Input */}
@@ -505,7 +487,11 @@ export function WalletsListPage() {
           <DialogFooter>
             <Button
               type="button"
-              disabled={!isConfirmed || isCharging || !Number(chargeAmountUsd)}
+              disabled={
+                !isConfirmed ||
+                isCharging ||
+                !parseUsdmicro(chargeAmountUsdmicro)
+              }
               onClick={handleChargeSubmit}
               className="gap-1.5 bg-emerald-600 text-white hover:bg-emerald-700"
             >

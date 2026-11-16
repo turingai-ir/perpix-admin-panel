@@ -20,6 +20,7 @@ import { DetailPageLayout } from "@/components/custom/detail-page-layout";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAppTranslate } from "@/hooks";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 
 const faNumber = (val: number) => new Intl.NumberFormat("fa-IR").format(val);
 
@@ -205,14 +206,14 @@ export function PaymentDetailPage() {
                   <span className="text-muted-foreground flex items-center gap-1 text-xs">
                     <DollarSign className="size-3" />
                     {t("features.finance.payments.totalUsdmicro", {
-                      defaultValue: "معادل دلاری (USDMicro)",
+                      defaultValue: "معادل (میکرودلار)",
                     })}
                   </span>
-                  <p className="text-foreground text-base font-semibold tabular-nums">
-                    {faNumber(payment.total_usdmicro)}{" "}
-                    <span className="text-muted-foreground text-xs font-normal">
-                      ({faNumber(payment.total_usdmicro / 1_000_000)} $)
-                    </span>
+                  <p>
+                    <UsdmicroAmount
+                      value={payment.total_usdmicro}
+                      amountClassName="text-foreground text-lg font-bold"
+                    />
                   </p>
                 </div>
 

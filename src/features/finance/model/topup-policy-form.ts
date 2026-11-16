@@ -1,19 +1,19 @@
 import type { components } from "@/services/api/api";
+import { parseUsdmicro } from "@/utils/usdmicro";
 
 export type TopupPolicy = components["schemas"]["AdminTopupPolicyResponse"];
 type PolicyBody = components["schemas"]["UpdateTopupPolicyRequest"];
 
-/** One token is 1,000 micro-USD. */
-const TOKEN_USDMICRO = 1000;
 export const MAX_TIERS = 20;
 export const MAX_PROFIT_PERCENT = 1000;
 
-export type TierForm = { fromTokens: string; discountPercent: string };
+/** Amounts are typed in micro-dollars, exactly as the server stores them. */
+export type TierForm = { fromUsdmicro: string; discountPercent: string };
 
 export type TopupPolicyForm = {
   profitPercent: string;
-  minTokens: string;
-  maxTokens: string;
+  minUsdmicro: string;
+  maxUsdmicro: string;
   tiers: TierForm[];
 };
 
@@ -30,10 +30,10 @@ const whole = (value: string): number | null =>
 
 export const policyToForm = (policy: TopupPolicy): TopupPolicyForm => ({
   profitPercent: String(policy.profit_percent),
-  minTokens: String(policy.min_amount_usdmicro / TOKEN_USDMICRO),
-  maxTokens: String(policy.max_amount_usdmicro / TOKEN_USDMICRO),
+  minUsdmicro: String(policy.min_amount_usdmicro),
+  maxUsdmicro: String(policy.max_amount_usdmicro),
   tiers: policy.tiers.map((tier) => ({
-    fromTokens: String(tier.from_amount_usdmicro / TOKEN_USDMICRO),
+    fromUsdmicro: String(tier.from_amount_usdmicro),
     discountPercent: String(tier.discount_percent),
   })),
 });
@@ -44,13 +44,13 @@ export const validateTopupPolicyForm = (
 ): TopupPolicyError[] => {
   const errors: TopupPolicyError[] = [];
   const profit = whole(form.profitPercent);
-  const min = whole(form.minTokens);
-  const max = whole(form.maxTokens);
+  const min = parseUsdmicro(form.minUsdmicro);
+  const max = parseUsdmicro(form.maxUsdmicro);
   if (profit === null || profit > MAX_PROFIT_PERCENT) errors.push("profit");
   if (min === null || max === null || min < 1 || min > max) {
     errors.push("limits");
   }
-  const froms = form.tiers.map((tier) => whole(tier.fromTokens));
+  const froms = form.tiers.map((tier) => parseUsdmicro(tier.fromUsdmicro));
   const discounts = form.tiers.map((tier) => whole(tier.discountPercent));
   if (form.tiers.length === 0 || form.tiers.length > MAX_TIERS) {
     errors.push("tierCount");
@@ -73,10 +73,10 @@ export const validateTopupPolicyForm = (
 
 export const formToBody = (form: TopupPolicyForm): PolicyBody => ({
   profit_percent: Number(form.profitPercent),
-  min_amount_usdmicro: Number(form.minTokens) * TOKEN_USDMICRO,
-  max_amount_usdmicro: Number(form.maxTokens) * TOKEN_USDMICRO,
+  min_amount_usdmicro: parseUsdmicro(form.minUsdmicro) ?? 0,
+  max_amount_usdmicro: parseUsdmicro(form.maxUsdmicro) ?? 0,
   tiers: form.tiers.map((tier) => ({
-    from_amount_usdmicro: Number(tier.fromTokens) * TOKEN_USDMICRO,
+    from_amount_usdmicro: parseUsdmicro(tier.fromUsdmicro) ?? 0,
     discount_percent: Number(tier.discountPercent),
   })),
 });

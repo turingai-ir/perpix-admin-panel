@@ -12,7 +12,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppTranslate } from "@/hooks";
+import { UsdmicroInputHint } from "@/components/custom/usdmicro-amount";
+import { parseUsdmicro } from "@/utils/usdmicro";
 import type { PlansRowItem } from "../hooks/use-plans-list";
+import { UsdmicroInput } from "@/components/custom/usdmicro-input";
 
 interface PlanFormDialogProps {
   open: boolean;
@@ -51,14 +54,12 @@ function PlanFormContent({
     (initialPlan as unknown as { discounted_price_usdmicro?: number })
       ?.discounted_price_usdmicro ?? 0;
 
-  const [basePriceUsd, setBasePriceUsd] = useState(
-    String(baseMicro / 1_000_000),
+  const [basePriceUsdmicro, setBasePriceUsdmicro] = useState(String(baseMicro));
+  const [discountedPriceUsdmicro, setDiscountedPriceUsdmicro] = useState(
+    String(discMicro),
   );
-  const [discountedPriceUsd, setDiscountedPriceUsd] = useState(
-    String(discMicro / 1_000_000),
-  );
-  const [giftAmountUsd, setGiftAmountUsd] = useState(
-    String((initialPlan?.balance_gift_amount_usdmicro ?? 0) / 1_000_000),
+  const [giftAmountUsdmicro, setGiftAmountUsdmicro] = useState(
+    String(initialPlan?.balance_gift_amount_usdmicro ?? 0),
   );
   const [scopesStr, setScopesStr] = useState(
     initialPlan?.scopes ? Array.from(initialPlan.scopes).join(", ") : "",
@@ -82,15 +83,16 @@ function PlanFormContent({
     e.preventDefault();
     if (!name.trim()) return;
 
-    const parsedBaseMicro = Math.round(
-      (parseFloat(basePriceUsd) || 0) * 1_000_000,
-    );
-    const parsedDiscMicro = Math.round(
-      (parseFloat(discountedPriceUsd) || 0) * 1_000_000,
-    );
-    const parsedGiftMicro = Math.round(
-      (parseFloat(giftAmountUsd) || 0) * 1_000_000,
-    );
+    const parsedBaseMicro = parseUsdmicro(basePriceUsdmicro || "0");
+    const parsedDiscMicro = parseUsdmicro(discountedPriceUsdmicro || "0");
+    const parsedGiftMicro = parseUsdmicro(giftAmountUsdmicro || "0");
+    if (
+      parsedBaseMicro === null ||
+      parsedDiscMicro === null ||
+      parsedGiftMicro === null
+    ) {
+      return;
+    }
 
     const scopes = scopesStr
       .split(",")
@@ -211,17 +213,14 @@ function PlanFormContent({
         <div className="space-y-1.5">
           <label className="text-foreground text-xs font-semibold">
             {t("features.subscriptions.plans.fields.giftAmountUsd", {
-              defaultValue: "مبلغ هدیه کیف پول (دلار)",
+              defaultValue: "مبلغ هدیه کیف پول (میکرودلار)",
             })}
           </label>
-          <Input
-            type="number"
-            step="0.01"
-            min={0}
-            value={giftAmountUsd}
-            onChange={(e) => setGiftAmountUsd(e.target.value)}
-            dir="ltr"
+          <UsdmicroInput
+            value={giftAmountUsdmicro}
+            onValueChange={(v) => setGiftAmountUsdmicro(v)}
           />
+          <UsdmicroInputHint value={giftAmountUsdmicro} />
         </div>
       </div>
 
@@ -229,33 +228,27 @@ function PlanFormContent({
         <div className="space-y-1.5">
           <label className="text-foreground text-xs font-semibold">
             {t("features.subscriptions.plans.fields.basePriceUsd", {
-              defaultValue: "قیمت پایه (دلار)",
+              defaultValue: "قیمت پایه (میکرودلار)",
             })}
           </label>
-          <Input
-            type="number"
-            step="0.01"
-            min={0}
-            value={basePriceUsd}
-            onChange={(e) => setBasePriceUsd(e.target.value)}
-            dir="ltr"
+          <UsdmicroInput
+            value={basePriceUsdmicro}
+            onValueChange={(v) => setBasePriceUsdmicro(v)}
           />
+          <UsdmicroInputHint value={basePriceUsdmicro} />
         </div>
 
         <div className="space-y-1.5">
           <label className="text-foreground text-xs font-semibold">
             {t("features.subscriptions.plans.fields.discountedPriceUsd", {
-              defaultValue: "قیمت با تخفیف (دلار)",
+              defaultValue: "قیمت با تخفیف (میکرودلار)",
             })}
           </label>
-          <Input
-            type="number"
-            step="0.01"
-            min={0}
-            value={discountedPriceUsd}
-            onChange={(e) => setDiscountedPriceUsd(e.target.value)}
-            dir="ltr"
+          <UsdmicroInput
+            value={discountedPriceUsdmicro}
+            onValueChange={(v) => setDiscountedPriceUsdmicro(v)}
           />
+          <UsdmicroInputHint value={discountedPriceUsdmicro} />
         </div>
       </div>
 

@@ -11,11 +11,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { UsdmicroInputHint } from "@/components/custom/usdmicro-amount";
+import { parseUsdmicro } from "@/utils/usdmicro";
 import {
   useAiGenerationActions,
   type GenerationActionKind,
 } from "../../hooks/use-ai-generation-actions";
 import type { GenerationReviewReasonEnum } from "../../model/types";
+import { UsdmicroInput } from "@/components/custom/usdmicro-input";
 
 const ACTIONS: Record<
   GenerationActionKind,
@@ -128,7 +131,7 @@ interface ActionDialogProps {
   onClose: () => void;
   onSubmit: (values: {
     reason: string;
-    costUsd?: number;
+    costUsdmicro?: number;
     externalTaskId?: string;
   }) => Promise<void>;
 }
@@ -144,10 +147,10 @@ function ActionDialog({
   const [cost, setCost] = useState("");
   const [taskId, setTaskId] = useState("");
 
-  const costValue = Number(cost);
+  const costValue = parseUsdmicro(cost);
   const isValid =
     reason.trim() !== "" &&
-    (kind !== "cost" || (cost.trim() !== "" && costValue >= 0)) &&
+    (kind !== "cost" || costValue !== null) &&
     (kind !== "external-task" || taskId.trim() !== "");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -156,7 +159,7 @@ function ActionDialog({
     try {
       await onSubmit({
         reason: reason.trim(),
-        costUsd: kind === "cost" ? costValue : undefined,
+        costUsdmicro: kind === "cost" ? (costValue ?? 0) : undefined,
         externalTaskId: kind === "external-task" ? taskId.trim() : undefined,
       });
     } catch {
@@ -178,18 +181,15 @@ function ActionDialog({
                 htmlFor="gen-action-cost"
                 className="mb-1 block text-xs font-semibold"
               >
-                هزینهٔ واقعی (دلار) *
+                هزینهٔ واقعی (میکرودلار) *
               </label>
-              <Input
+              <UsdmicroInput
                 id="gen-action-cost"
-                dir="ltr"
-                type="number"
-                min={0}
-                step="any"
                 value={cost}
-                onChange={(e) => setCost(e.target.value)}
-                placeholder="0.04"
+                onValueChange={(v) => setCost(v)}
+                placeholder="40000"
               />
+              <UsdmicroInputHint value={cost} className="mt-1" />
             </div>
           )}
           {kind === "external-task" && (

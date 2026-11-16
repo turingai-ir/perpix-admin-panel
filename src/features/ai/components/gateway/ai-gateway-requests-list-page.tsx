@@ -23,6 +23,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslate } from "@/hooks";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 import { cn } from "@/lib/utils";
 import type { AdminSort, GenerationStatusEnum } from "../../model/types";
 import {
@@ -120,17 +121,17 @@ export function AiGatewayRequestsListPage() {
       {
         id: "cost",
         header: t("features.ai.gateway.columns.cost", {
-          defaultValue: "هزینه (USD)",
+          defaultValue: "هزینه (میکرودلار)",
         }),
         cell: (item) => {
           const micro =
             item.actual_cost_usdmicro ?? item.estimated_cost_usdmicro;
-          if (micro === null || micro === undefined) return "-";
-          const usd = micro / 1_000_000;
           return (
-            <span className="font-mono text-xs font-semibold" dir="ltr">
-              ${usd.toFixed(4)}
-            </span>
+            <UsdmicroAmount
+              value={micro}
+              className="text-xs"
+              amountClassName="font-semibold"
+            />
           );
         },
       },

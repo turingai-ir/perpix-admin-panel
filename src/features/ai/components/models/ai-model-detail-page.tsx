@@ -7,17 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslate } from "@/hooks";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 import { APP_ROUTES_KEY } from "@/router/routes";
 import type { AiRegistryModelProviderLinkDetail } from "../../model/types";
 import { useAiModelDetail } from "../../hooks/use-ai-model-detail";
 import { useAiProvidersList } from "../../hooks/use-ai-providers-list";
 import { AiModelFormDialog } from "./ai-model-form-dialog";
 import { AiModelProvidersPanel } from "./ai-model-providers-panel";
-
-const formatUsd = (micro: number | null | undefined) =>
-  micro === null || micro === undefined
-    ? "-"
-    : `$${(micro / 1_000_000).toFixed(4)}`;
 
 export function AiModelDetailPage() {
   const { t } = useAppTranslate();
@@ -96,8 +92,13 @@ export function AiModelDetailPage() {
                 <BadgeList items={Array.from(model.supported_outputs)} />
               </Field>
               <Field label="دامنه هزینه">
-                <span className="font-mono text-xs" dir="ltr">
-                  {formatUsd(model.min_cost)} - {formatUsd(model.max_cost)}
+                <span className="flex flex-col gap-1 text-xs">
+                  <span>
+                    از <UsdmicroAmount value={model.min_cost} hint="inline" />
+                  </span>
+                  <span>
+                    تا <UsdmicroAmount value={model.max_cost} hint="inline" />
+                  </span>
                 </span>
               </Field>
               <Field label="برچسب‌ها">

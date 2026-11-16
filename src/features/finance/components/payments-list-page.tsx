@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 import { cn } from "@/lib/utils";
 import type {
   AdminSort,
@@ -235,11 +236,18 @@ export function PaymentsListPage() {
           defaultValue: "مبلغ (ریال)",
         }),
         cell: (item) => (
-          <div className="text-sm font-semibold tabular-nums">
-            {faNumber(item.total_irr)}{" "}
-            <span className="text-muted-foreground text-xs font-normal">
-              {t("common.rial", { defaultValue: "ریال" })}
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm font-semibold tabular-nums">
+              {faNumber(item.total_irr)}{" "}
+              <span className="text-muted-foreground text-xs font-normal">
+                {t("common.rial", { defaultValue: "ریال" })}
+              </span>
             </span>
+            <UsdmicroAmount
+              value={item.total_usdmicro}
+              hint="inline"
+              className="text-xs"
+            />
           </div>
         ),
       },

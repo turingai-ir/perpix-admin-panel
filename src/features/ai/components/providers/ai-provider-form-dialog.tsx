@@ -15,6 +15,7 @@ import { useAiProviderDetail } from "../../hooks/use-ai-provider-detail";
 import { parseJsonObject, stringifyJsonObject } from "../../model/json-object";
 import { JsonObjectField } from "../json-object-field";
 import { useAppTranslate } from "@/hooks";
+import { tokenHint } from "@/utils/usdmicro";
 import { Badge } from "@/components/ui/badge";
 import { providerAvailability } from "../../model/provider-availability";
 import type {
@@ -310,6 +311,11 @@ function AiProviderFormContent({
                   defaultValue: "باید بیشتر از صفر باشد؛ صفر یعنی ساخت رایگان.",
                 })}
           </span>
+          {costIsValid && costValue !== "" && (
+            <span className="text-muted-foreground block text-[11px] tabular-nums">
+              هر واحد ارائه‌دهنده {tokenHint(costValue)}
+            </span>
+          )}
         </div>
       </div>
 

@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 import type { AdminSort } from "../model/types";
 
 const faNumber = (val: number) => new Intl.NumberFormat("fa-IR").format(val);
@@ -188,14 +189,15 @@ export function PlansListPage() {
         header: t("features.subscriptions.plans.columns.gift", {
           defaultValue: "اعتبار هدیه",
         }),
-        cell: (item) => {
-          const giftUsd = (item.balance_gift_amount_usdmicro ?? 0) / 1_000_000;
-          return (
-            <span className="font-mono text-xs">
-              {giftUsd > 0 ? `${faNumber(giftUsd)} $` : "—"}
-            </span>
-          );
-        },
+        cell: (item) =>
+          item.balance_gift_amount_usdmicro ? (
+            <UsdmicroAmount
+              value={item.balance_gift_amount_usdmicro}
+              className="text-xs"
+            />
+          ) : (
+            <span className="text-muted-foreground text-xs">—</span>
+          ),
       },
       {
         id: "status",

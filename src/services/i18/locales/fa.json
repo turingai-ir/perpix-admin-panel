@@ -400,7 +400,7 @@
           "id": "شناسه پرداخت",
           "user": "کاربر",
           "target": "نوع هدف",
-          "amount": "مبلغ (دلار / ریال)",
+          "amount": "مبلغ (ریال / میکرودلار)",
           "financialStatus": "وضعیت مالی",
           "fulfillmentStatus": "وضعیت تحویل",
           "createdAt": "تاریخ ایجاد",
@@ -759,7 +759,7 @@
         "statusCode": "کد وضعیت HTTP",
         "retries": "تعداد تلاش‌های مجدد",
         "createdAt": "زمان ایجاد",
-        "costs": "هزینه و توکن‌ها",
+        "costs": "هزینه",
         "modelConfig": "پیکربندی مدل (AI Model Config)",
         "rawRequest": "بدنه درخواست ارسالی (Raw Request)",
         "rawResponse": "پاسخ دریافتی ارائه‌دهنده (Raw Response)",
@@ -786,7 +786,7 @@
           "status": "وضعیت",
           "model": "مدل",
           "provider": "ارائه‌دهنده",
-          "cost": "هزینه (USD)",
+          "cost": "هزینه (میکرودلار)",
           "retries": "تلاش مجدد",
           "createdAt": "زمان ثبت"
         }

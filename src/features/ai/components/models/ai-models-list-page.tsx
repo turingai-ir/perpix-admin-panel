@@ -30,6 +30,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
+import {
+  USDMICRO_UNIT_LABEL,
+  formatTokensFromUsdmicro,
+  formatUsdmicro,
+  tokenHint,
+} from "@/utils/usdmicro";
 import type { AdminSort, AiRegistryModelOwnerEnum } from "../../model/types";
 
 const modelDetailPath = (modelUuid: string) =>
@@ -171,13 +177,27 @@ export function AiModelsListPage() {
         header: t("features.ai.models.columns.costRange", {
           defaultValue: "دامنه هزینه",
         }),
-        cell: (item) => (
-          <div className="font-mono text-xs" dir="ltr">
-            {item.min_cost !== null && item.max_cost !== null
-              ? `$${(item.min_cost / 1_000_000).toFixed(4)} - $${(item.max_cost / 1_000_000).toFixed(4)}`
-              : "-"}
-          </div>
-        ),
+        cell: (item) =>
+          item.min_cost != null && item.max_cost != null ? (
+            <div
+              className="flex flex-col gap-0.5 text-xs tabular-nums"
+              title={`${tokenHint(item.min_cost)} تا ${formatTokensFromUsdmicro(item.max_cost)} توکن`}
+            >
+              <span>
+                {formatUsdmicro(item.min_cost)} تا{" "}
+                {formatUsdmicro(item.max_cost)}{" "}
+                <span className="text-muted-foreground">
+                  {USDMICRO_UNIT_LABEL}
+                </span>
+              </span>
+              <span className="text-muted-foreground text-[11px]">
+                ≈ {formatTokensFromUsdmicro(item.min_cost)} تا{" "}
+                {formatTokensFromUsdmicro(item.max_cost)} توکن
+              </span>
+            </div>
+          ) : (
+            "-"
+          ),
       },
       {
         id: "status",

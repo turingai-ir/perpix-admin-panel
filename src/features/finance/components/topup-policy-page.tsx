@@ -5,6 +5,7 @@ import { DetailPageLayout } from "@/components/custom/detail-page-layout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { UsdmicroInputHint } from "@/components/custom/usdmicro-amount";
 import { useAppTranslate } from "@/hooks";
 import { useSaveTopupPolicy, useTopupPolicy } from "../hooks/use-topup-policy";
 import {
@@ -16,12 +17,14 @@ import {
   type TopupPolicyForm,
 } from "../model/topup-policy-form";
 import { TopupTiersEditor } from "./topup-tiers-editor";
+import { UsdmicroInput } from "@/components/custom/usdmicro-input";
 
 const ERROR_TEXT: Record<TopupPolicyError, string> = {
   profit: "درصد سود باید یک عدد صحیح بین ۰ تا ۱۰۰۰ باشد.",
-  limits: "کف شارژ باید از صفر بیشتر و سقف شارژ برابر یا بیشتر از کف باشد.",
-  firstTier: "اولین لیگ باید از ۰ توکن شروع شود.",
-  tierOrder: "شروع لیگ‌ها باید عدد صحیح و صعودی باشد.",
+  limits:
+    "کف و سقف شارژ باید عدد صحیح میکرودلار باشند؛ کف از صفر بیشتر و سقف برابر یا بیشتر از کف.",
+  firstTier: "اولین لیگ باید از ۰ میکرودلار شروع شود.",
+  tierOrder: "شروع لیگ‌ها باید عدد صحیح میکرودلار و صعودی باشد.",
   tierDiscount: "تخفیف هر لیگ باید بین ۰ تا ۱۰۰ باشد و از لیگ قبلی کمتر نشود.",
   tierCount: "تعداد لیگ‌ها باید بین ۱ تا ۲۰ باشد.",
 };
@@ -85,27 +88,25 @@ function PolicyForm({ initial }: { initial: TopupPolicyForm }) {
           </Field>
           <Field
             label={t("features.finance.topupPolicy.min", {
-              defaultValue: "کف شارژ (توکن)",
+              defaultValue: "کف شارژ (میکرودلار)",
             })}
           >
-            <Input
-              dir="ltr"
-              inputMode="numeric"
-              value={form.minTokens}
-              onChange={(e) => set({ minTokens: e.target.value })}
+            <UsdmicroInput
+              value={form.minUsdmicro}
+              onValueChange={(v) => set({ minUsdmicro: v })}
             />
+            <UsdmicroInputHint value={form.minUsdmicro} />
           </Field>
           <Field
             label={t("features.finance.topupPolicy.max", {
-              defaultValue: "سقف شارژ (توکن)",
+              defaultValue: "سقف شارژ (میکرودلار)",
             })}
           >
-            <Input
-              dir="ltr"
-              inputMode="numeric"
-              value={form.maxTokens}
-              onChange={(e) => set({ maxTokens: e.target.value })}
+            <UsdmicroInput
+              value={form.maxUsdmicro}
+              onValueChange={(v) => set({ maxUsdmicro: v })}
             />
+            <UsdmicroInputHint value={form.maxUsdmicro} />
           </Field>
         </CardContent>
       </Card>

@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppTranslate } from "@/hooks";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 import { GenerationStatusBadge } from "./generation-status-badge";
 import { GenerationManualActions } from "./generation-manual-actions";
 
@@ -13,11 +14,6 @@ const REVIEW_REASON_LABELS = {
   COST_UNRESOLVED: "هزینهٔ واقعی مشخص نیست",
   RESULT_UNREADABLE: "نتیجهٔ ارائه‌دهنده قابل خواندن نیست",
 } as const;
-
-function formatUsd(micro: number | null | undefined, digits: number) {
-  if (micro === null || micro === undefined) return "-";
-  return `$${(micro / 1_000_000).toFixed(digits)}`;
-}
 
 function formatDate(value: string | null | undefined) {
   return value ? new Date(value).toLocaleString("fa-IR") : "-";
@@ -208,20 +204,19 @@ export function AiGatewayRequestDetailPage() {
                   <span className="text-muted-foreground block text-xs">
                     هزینه واقعی (Actual Cost):
                   </span>
-                  <span
-                    className="font-mono text-lg font-bold text-emerald-600"
-                    dir="ltr"
-                  >
-                    {formatUsd(generation?.actual_cost_usdmicro, 5)}
-                  </span>
+                  <UsdmicroAmount
+                    value={generation?.actual_cost_usdmicro}
+                    amountClassName="text-lg font-bold text-emerald-600"
+                  />
                 </div>
                 <div className="bg-muted/30 rounded-lg border p-3">
                   <span className="text-muted-foreground block text-xs">
                     هزینه تخمینی (Estimated Cost):
                   </span>
-                  <span className="font-mono text-sm font-semibold" dir="ltr">
-                    {formatUsd(generation?.estimated_cost_usdmicro, 5)}
-                  </span>
+                  <UsdmicroAmount
+                    value={generation?.estimated_cost_usdmicro}
+                    amountClassName="text-sm font-semibold"
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -238,9 +233,7 @@ export function AiGatewayRequestDetailPage() {
                   {generation?.reservation_status || "-"}
                 </Field>
                 <Field label="مبلغ رزروشده">
-                  <span className="font-mono" dir="ltr">
-                    {formatUsd(generation?.reserved_usdmicro, 5)}
-                  </span>
+                  <UsdmicroAmount value={generation?.reserved_usdmicro} />
                 </Field>
                 <Field label="علت آزادسازی">
                   {generation?.release_reason || "-"}

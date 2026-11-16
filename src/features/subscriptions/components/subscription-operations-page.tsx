@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/table";
 import { useAppTranslate } from "@/hooks";
 import type { AdminReportBucket, AdminSort } from "../model/types";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 
 const faNumber = (val: number) => new Intl.NumberFormat("fa-IR").format(val);
 
@@ -391,7 +392,7 @@ function SubscriptionBucketTable({
                     تعداد اشتراک
                   </TableHead>
                   <TableHead className="text-left font-mono text-xs">
-                    مبلغ معادل دلاری
+                    مبلغ (میکرودلار)
                   </TableHead>
                   <TableHead className="text-left font-mono text-xs">
                     مبلغ معادل ریالی
@@ -403,7 +404,6 @@ function SubscriptionBucketTable({
                   const displayKey = formatKeyAsDate
                     ? formatDate(b.key)
                     : b.key;
-                  const usd = (b.amount_usdmicro || 0) / 1_000_000;
 
                   return (
                     <TableRow key={`${b.key}-${idx}`}>
@@ -413,8 +413,11 @@ function SubscriptionBucketTable({
                       <TableCell className="text-center font-mono text-xs font-semibold">
                         {faNumber(b.count)}
                       </TableCell>
-                      <TableCell className="text-primary text-left font-mono text-xs">
-                        ${faNumber(Number(usd.toFixed(2)))}
+                      <TableCell className="text-left text-xs">
+                        <UsdmicroAmount
+                          value={b.amount_usdmicro || 0}
+                          amountClassName="text-primary font-semibold"
+                        />
                       </TableCell>
                       <TableCell className="text-muted-foreground text-left font-mono text-xs">
                         {b.amount_irr ? `${faNumber(b.amount_irr)} ریال` : "—"}

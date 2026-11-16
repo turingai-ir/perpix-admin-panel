@@ -23,13 +23,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
+import {
+  BalanceChange,
+  UsdmicroAmount,
+} from "@/components/custom/usdmicro-amount";
 import type {
   AdminSort,
   WalletTransactionTypeEnum,
   WalletOperationSourceEnum,
 } from "../model/types";
-
-const faNumber = (val: number) => new Intl.NumberFormat("fa-IR").format(val);
 
 const formatDate = (isoString?: string | null) => {
   if (!isoString) return "—";
@@ -215,18 +217,21 @@ export function TransactionsListPage() {
           defaultValue: "مبلغ",
         }),
         cell: (tx) => {
-          const micro = tx.amount_usdmicro ?? 0;
-          const usd = micro / 1_000_000;
           const isPositive = tx.type === "DEPOSIT" || tx.type === "REFUND";
           return (
-            <div className="flex items-center gap-1 text-sm font-semibold tabular-nums">
+            <span className="flex items-baseline gap-0.5 text-sm font-semibold">
               <span
                 className={isPositive ? "text-emerald-600" : "text-destructive"}
               >
                 {isPositive ? "+" : "-"}
-                {faNumber(usd)} $
               </span>
-            </div>
+              <UsdmicroAmount
+                value={tx.amount_usdmicro ?? 0}
+                amountClassName={
+                  isPositive ? "text-emerald-600" : "text-destructive"
+                }
+              />
+            </span>
           );
         },
       },
@@ -236,12 +241,10 @@ export function TransactionsListPage() {
           defaultValue: "مانده موجودی",
         }),
         cell: (tx) => (
-          <div className="text-muted-foreground font-mono text-xs tabular-nums">
-            {faNumber((tx.balance_before ?? 0) / 1_000_000)}$ →{" "}
-            <span className="text-foreground font-semibold">
-              {faNumber((tx.balance_after ?? 0) / 1_000_000)}$
-            </span>
-          </div>
+          <BalanceChange
+            before={tx.balance_before ?? 0}
+            after={tx.balance_after ?? 0}
+          />
         ),
       },
       {

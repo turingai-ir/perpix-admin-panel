@@ -12,8 +12,8 @@ export type GenerationActionKind = "fail" | "cost" | "external-task";
 export interface GenerationActionInput {
   kind: GenerationActionKind;
   reason: string;
-  /** Actual cost in USD (kind "cost"). */
-  costUsd?: number;
+  /** Actual cost in micro-dollars (kind "cost"). */
+  costUsdmicro?: number;
   /** Provider task id (kind "external-task"). */
   externalTaskId?: string;
 }
@@ -38,7 +38,7 @@ export function useAiGenerationActions(generationUuid: string) {
         case "cost":
           await setGenerationCost(generationUuid, {
             reason: input.reason,
-            actual_cost_usdmicro: Math.round((input.costUsd ?? 0) * 1_000_000),
+            actual_cost_usdmicro: input.costUsdmicro ?? 0,
           });
           break;
         case "external-task":

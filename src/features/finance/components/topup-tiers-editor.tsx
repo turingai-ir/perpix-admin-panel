@@ -2,12 +2,14 @@ import { Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { UsdmicroInputHint } from "@/components/custom/usdmicro-amount";
 import { useAppTranslate } from "@/hooks";
 import {
   effectiveProfit,
   MAX_TIERS,
   type TierForm,
 } from "../model/topup-policy-form";
+import { UsdmicroInput } from "@/components/custom/usdmicro-input";
 
 const faNumber = (value: string) =>
   value === "—" ? value : new Intl.NumberFormat("fa-IR").format(Number(value));
@@ -18,7 +20,7 @@ type Props = {
   onChange: (tiers: TierForm[]) => void;
 };
 
-/** The discount leagues: a charge from the given tokens up to the next league gets that discount. */
+/** The discount leagues: a charge from the given micro-dollar amount up to the next league gets that discount. */
 export function TopupTiersEditor({ tiers, profitPercent, onChange }: Props) {
   const { t } = useAppTranslate();
   const update = (index: number, patch: Partial<TierForm>) =>
@@ -31,7 +33,7 @@ export function TopupTiersEditor({ tiers, profitPercent, onChange }: Props) {
       <div className="text-muted-foreground grid grid-cols-[1fr_1fr_1fr_auto] gap-3 text-xs font-semibold">
         <span>
           {t("features.finance.topupPolicy.tierFrom", {
-            defaultValue: "از چند توکن شارژ",
+            defaultValue: "از مبلغ شارژ (میکرودلار)",
           })}
         </span>
         <span>
@@ -49,22 +51,23 @@ export function TopupTiersEditor({ tiers, profitPercent, onChange }: Props) {
       {tiers.map((tier, index) => (
         <div
           key={index}
-          className="grid grid-cols-[1fr_1fr_1fr_auto] items-center gap-3"
+          className="grid grid-cols-[1fr_1fr_1fr_auto] items-start gap-3"
         >
-          <Input
-            dir="ltr"
-            inputMode="numeric"
-            value={tier.fromTokens}
-            disabled={index === 0}
-            onChange={(e) => update(index, { fromTokens: e.target.value })}
-          />
+          <div className="space-y-1">
+            <UsdmicroInput
+              value={tier.fromUsdmicro}
+              disabled={index === 0}
+              onValueChange={(v) => update(index, { fromUsdmicro: v })}
+            />
+            <UsdmicroInputHint value={tier.fromUsdmicro} />
+          </div>
           <Input
             dir="ltr"
             inputMode="numeric"
             value={tier.discountPercent}
             onChange={(e) => update(index, { discountPercent: e.target.value })}
           />
-          <span className="text-sm font-semibold tabular-nums">
+          <span className="pt-2 text-sm font-semibold tabular-nums">
             {faNumber(effectiveProfit(profitPercent, tier.discountPercent))}٪
           </span>
           <Button
@@ -87,7 +90,7 @@ export function TopupTiersEditor({ tiers, profitPercent, onChange }: Props) {
         size="sm"
         disabled={tiers.length >= MAX_TIERS}
         onClick={() =>
-          onChange([...tiers, { fromTokens: "", discountPercent: "" }])
+          onChange([...tiers, { fromUsdmicro: "", discountPercent: "" }])
         }
       >
         <Plus className="size-4" />

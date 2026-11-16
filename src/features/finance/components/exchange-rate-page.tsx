@@ -18,7 +18,6 @@ import { useFinanceReports } from "../hooks/use-finance-reports";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
   Table,
@@ -30,6 +29,14 @@ import {
 } from "@/components/ui/table";
 import { useAppTranslate } from "@/hooks";
 import type { components } from "@/services/api/api";
+import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
+import {
+  USDMICRO_PER_TOKEN,
+  formatTokensFromUsdmicro,
+  formatUsdmicro,
+  parseUsdmicro,
+} from "@/utils/usdmicro";
+import { UsdmicroInput } from "@/components/custom/usdmicro-input";
 
 type ReportBucket = components["schemas"]["AdminReportBucket"];
 
@@ -58,7 +65,7 @@ export function ExchangeRatePage() {
   const { refreshExchangeRate, isRefreshingRate } = useFinanceActions();
 
   // Quick Calculator state
-  const [calcUsd, setCalcUsd] = useState("1");
+  const [calcUsdmicro, setCalcUsdmicro] = useState("1000000");
 
   // Report range filter: days
   const [daysRange, setDaysRange] = useState("30");
@@ -84,10 +91,11 @@ export function ExchangeRatePage() {
   } = useFinanceReports(dateFilter);
 
   const rateValue = exchangeRate?.value ? parseFloat(exchangeRate.value) : 0;
-  const parsedCalcUsd = parseFloat(calcUsd) || 0;
-  const calculatedIrr = Math.round(parsedCalcUsd * rateValue);
+  const parsedCalcUsdmicro = parseUsdmicro(calcUsdmicro) ?? 0;
+  const calculatedIrr = Math.round(
+    (parsedCalcUsdmicro * rateValue) / 1_000_000,
+  );
   const calculatedToman = Math.round(calculatedIrr / 10);
-  const calculatedMicro = Math.round(parsedCalcUsd * 1_000_000);
 
   const handleRefresh = async () => {
     try {
@@ -262,8 +270,11 @@ export function ExchangeRatePage() {
               </span>
             </div>
             <p className="text-muted-foreground text-xs">
-              هر ۱ دلار = ۱ میلیون میکرودلار برای دقت بالای اعشار در کسر
-              هزینه‌ها
+              همهٔ مبالغ پنل به میکرودلار است. هر توکن (واحد اپ کاربر) ={" "}
+              <span className="text-foreground font-mono font-semibold">
+                {formatUsdmicro(USDMICRO_PER_TOKEN)}
+              </span>{" "}
+              میکرودلار
             </p>
           </CardContent>
         </Card>
@@ -315,25 +326,15 @@ export function ExchangeRatePage() {
                 htmlFor="usd-calc-input"
                 className="text-muted-foreground text-xs font-medium"
               >
-                {t("features.finance.exchangeRate.amountUsd", {
-                  defaultValue: "مبلغ به دلار (USD):",
+                {t("features.finance.exchangeRate.amountUsdmicro", {
+                  defaultValue: "مبلغ (میکرودلار):",
                 })}
               </label>
-              <div className="relative">
-                <Input
-                  id="usd-calc-input"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={calcUsd}
-                  onChange={(e) => setCalcUsd(e.target.value)}
-                  className="pl-8 text-left font-mono"
-                  dir="ltr"
-                />
-                <span className="text-muted-foreground absolute top-1/2 left-2.5 -translate-y-1/2 font-mono text-xs">
-                  $
-                </span>
-              </div>
+              <UsdmicroInput
+                id="usd-calc-input"
+                value={calcUsdmicro}
+                onValueChange={(v) => setCalcUsdmicro(v)}
+              />
             </div>
 
             <div className="bg-muted/40 border-border rounded-xl border p-3">
@@ -356,10 +357,10 @@ export function ExchangeRatePage() {
 
             <div className="bg-muted/40 border-border rounded-xl border p-3">
               <div className="text-muted-foreground mb-1 text-xs">
-                میکرودلار (محاسباتی):
+                معادل توکن (اپ کاربر):
               </div>
               <div className="text-foreground truncate font-mono text-base font-bold">
-                {faNumber(calculatedMicro)} µ$
+                {formatTokensFromUsdmicro(parsedCalcUsdmicro)} توکن
               </div>
             </div>
           </div>
@@ -572,7 +573,7 @@ function ReportBucketTable({
                   </TableHead>
                   <TableHead className="text-center text-xs">تعداد</TableHead>
                   <TableHead className="text-left font-mono text-xs">
-                    مبلغ دلاری
+                    مبلغ (میکرودلار)
                   </TableHead>
                   <TableHead className="text-left font-mono text-xs">
                     مبلغ ریالی
@@ -586,7 +587,6 @@ function ReportBucketTable({
                     : translateKey
                       ? translateKey(b.key)
                       : b.key;
-                  const usd = (b.amount_usdmicro || 0) / 1_000_000;
 
                   return (
                     <TableRow key={`${b.key}-${idx}`}>
@@ -596,8 +596,11 @@ function ReportBucketTable({
                       <TableCell className="text-center font-mono text-xs">
                         {faNumber(b.count)}
                       </TableCell>
-                      <TableCell className="text-primary text-left font-mono text-xs font-semibold">
-                        ${faNumber(Number(usd.toFixed(2)))}
+                      <TableCell className="text-left text-xs">
+                        <UsdmicroAmount
+                          value={b.amount_usdmicro || 0}
+                          amountClassName="text-primary font-semibold"
+                        />
                       </TableCell>
                       <TableCell className="text-muted-foreground text-left font-mono text-xs">
                         {b.amount_irr ? `${faNumber(b.amount_irr)} ریال` : "—"}
