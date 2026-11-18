@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +21,10 @@ import { Badge } from "@/components/ui/badge";
 import { providerAvailability } from "../../model/provider-availability";
 import type {
   AiRegistryProviderDetail,
+  AiRegistryProviderKeyDetail,
+  AiRegistryProviderKeyRequest,
   AiRegistryProviderNameEnum,
+  AiRegistryProviderUnavailableReasonEnum,
   ProvidersRow,
 } from "../../model/types";
 
@@ -40,12 +44,55 @@ const PROVIDER_NAMES: AiRegistryProviderNameEnum[] = [
   "KIE",
 ];
 
+/** Only these take several keys; the others poll tasks with the creating key, so they keep one. */
+const MULTI_KEY_PROVIDERS: readonly AiRegistryProviderNameEnum[] = ["GOOGLE"];
+const MAX_PROVIDER_KEYS = 20;
+
+/** A key row in the form. `id` is set for a stored key; a blank `apiKey` keeps its stored value. */
+interface KeyDraft {
+  rowId: string;
+  id?: string;
+  label: string;
+  apiKey: string;
+  unavailableReason?: AiRegistryProviderUnavailableReasonEnum | null;
+}
+
+let draftCounter = 0;
+function newRowId(): string {
+  draftCounter += 1;
+  return `key-draft-${draftCounter}`;
+}
+
+function toKeyRequests(drafts: KeyDraft[]): AiRegistryProviderKeyRequest[] {
+  const requests: AiRegistryProviderKeyRequest[] = [];
+  for (const draft of drafts) {
+    const label = draft.label.trim() || null;
+    const value = draft.apiKey.trim();
+    if (draft.id) {
+      requests.push({
+        id: draft.id,
+        label,
+        ...(value ? { api_key: value } : {}),
+      });
+    } else if (value) {
+      // An empty new row is dropped: the API refuses a new key without a value.
+      requests.push({ label, api_key: value });
+    }
+  }
+  return requests;
+}
+
+/** The detail record; its key list is read as array-like because the query types it as a mapped array. */
+type ProviderFormSource = Omit<AiRegistryProviderDetail, "api_keys"> & {
+  readonly api_keys?: ArrayLike<AiRegistryProviderKeyDetail>;
+};
+
 function AiProviderFormContent({
   initialProvider,
   onClose,
   onSuccess,
 }: {
-  initialProvider?: AiRegistryProviderDetail | null;
+  initialProvider?: ProviderFormSource | null;
   onClose: () => void;
   onSuccess?: () => void;
 }) {
@@ -76,7 +123,20 @@ function AiProviderFormContent({
   const [baseApiUrl, setBaseApiUrl] = useState(
     initialProvider?.base_api_url ?? "",
   );
-  const [apiKey, setApiKey] = useState("");
+  const [keys, setKeys] = useState<KeyDraft[]>(() => {
+    const stored = Array.from(initialProvider?.api_keys ?? []).map(
+      (key): KeyDraft => ({
+        rowId: newRowId(),
+        id: key.id,
+        label: key.label ?? "",
+        apiKey: "",
+        unavailableReason: key.unavailable_reason ?? null,
+      }),
+    );
+    return stored.length > 0
+      ? stored
+      : [{ rowId: newRowId(), label: "", apiKey: "" }];
+  });
   const [metaText, setMetaText] = useState(
     stringifyJsonObject(initialProvider?.meta),
   );
@@ -89,6 +149,26 @@ function AiProviderFormContent({
       ? String(initialProvider.cost_to_usdmicro)
       : "",
   );
+
+  const multiKey = MULTI_KEY_PROVIDERS.includes(name);
+  const updateKey = (rowId: string, patch: Partial<KeyDraft>) =>
+    setKeys((prev) =>
+      prev.map((k) => (k.rowId === rowId ? { ...k, ...patch } : k)),
+    );
+  const removeKey = (rowId: string) =>
+    setKeys((prev) => prev.filter((k) => k.rowId !== rowId));
+  const moveKey = (index: number, delta: -1 | 1) =>
+    setKeys((prev) => {
+      const target = index + delta;
+      if (target < 0 || target >= prev.length) return prev;
+      const next = [...prev];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+  const addKey = () =>
+    setKeys((prev) => [...prev, { rowId: newRowId(), label: "", apiKey: "" }]);
+  // Switching to a single-key provider before saving: keep only the first row.
+  const effectiveKeys = multiKey ? keys : keys.slice(0, 1);
 
   const meta = parseJsonObject(metaText);
   const costValue = costToUsdmicro.trim();
@@ -116,11 +196,12 @@ function AiProviderFormContent({
     try {
       if (isEditing && initialProvider) {
         // Edit sends every field, so a cleared one is cleared (null), not left as it was.
-        // The key is the exception: blank keeps the stored one.
+        // The key list is sent whole, in the order the keys are tried; a key left out is removed,
+        // and a stored key with a blank value keeps its value.
         await updateProvider(initialProvider.uuid, {
           display_name: displayNameValue || null,
           base_api_url: baseApiUrlValue || null,
-          ...(apiKey ? { api_key: apiKey } : {}),
+          api_keys: toKeyRequests(effectiveKeys),
           rate_limit_per_min: rateLimitValue ? Number(rateLimitValue) : null,
           cost_to_usdmicro: costValue ? Number(costValue) : null,
           meta: meta.value,
@@ -130,7 +211,7 @@ function AiProviderFormContent({
           name,
           display_name: displayNameValue || undefined,
           base_api_url: baseApiUrlValue || undefined,
-          api_key: apiKey || undefined,
+          api_keys: toKeyRequests(effectiveKeys),
           rate_limit_per_min: rateLimitValue
             ? Number(rateLimitValue)
             : undefined,
@@ -233,34 +314,124 @@ function AiProviderFormContent({
         />
       </div>
 
-      <div>
-        <label className="text-foreground mb-1 block text-xs font-semibold">
-          {t("features.ai.providers.apiKey", {
-            defaultValue: isEditing
-              ? "کلید دسترسی (API Key) جدید (برای حفظ قبلی خالی بگذارید)"
-              : "کلید دسترسی (API Key)",
-          })}
+      <div className="space-y-2">
+        <label className="text-foreground block text-xs font-semibold">
+          {multiKey
+            ? t("features.ai.providers.apiKeys", {
+                defaultValue: "کلیدهای دسترسی (API Key)",
+              })
+            : t("features.ai.providers.apiKey", {
+                defaultValue: "کلید دسترسی (API Key)",
+              })}
         </label>
-        {isEditing && (
-          <span
-            className={
-              initialProvider?.has_api_key
-                ? "mb-1 block text-[11px] text-emerald-600"
-                : "text-destructive mb-1 block text-[11px]"
-            }
-          >
-            {initialProvider?.has_api_key
-              ? "یک کلید ثبت شده است (مقدارش نمایش داده نمی‌شود)."
-              : "هیچ کلیدی ثبت نشده است؛ درخواست به این ارائه‌دهنده کار نمی‌کند."}
+        <p className="text-muted-foreground text-[11px] leading-5">
+          {multiKey
+            ? "کلیدها به ترتیب همین فهرست امتحان می‌شوند. اگر ارائه‌دهنده کلیدی را به‌خاطر موجودی یا اعتبار رد کند، درخواست به کلید بعدی می‌رود. مقدار کلیدهای ثبت‌شده نمایش داده نمی‌شود؛ برای حفظ مقدار، خالی بگذارید."
+            : "این ارائه‌دهنده فقط یک کلید می‌پذیرد. مقدار کلید ثبت‌شده نمایش داده نمی‌شود؛ برای حفظ آن خالی بگذارید."}
+        </p>
+        {isEditing && !initialProvider?.has_api_key && (
+          <span className="text-destructive block text-[11px]">
+            هیچ کلیدی ثبت نشده است؛ درخواست به این ارائه‌دهنده کار نمی‌کند.
           </span>
         )}
-        <Input
-          type="password"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          placeholder="sk-..."
-          dir="ltr"
-        />
+        {effectiveKeys.map((key, index) => {
+          const keyAvailability = providerAvailability(key.unavailableReason);
+          return (
+            <div
+              key={key.rowId}
+              className="space-y-2 rounded-lg border p-2"
+              data-testid="provider-key-row"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-muted-foreground text-[11px]">
+                  {multiKey ? `کلید ${index + 1}` : "کلید"}
+                </span>
+                <div className="flex items-center gap-1">
+                  {key.id && (
+                    <Badge
+                      variant={keyAvailability.variant}
+                      title={keyAvailability.hint}
+                    >
+                      {keyAvailability.label}
+                    </Badge>
+                  )}
+                  {multiKey && (
+                    <>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="size-7 p-0"
+                        disabled={index === 0}
+                        aria-label="انتقال به بالا"
+                        onClick={() => moveKey(index, -1)}
+                      >
+                        <ArrowUp className="size-3.5" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="size-7 p-0"
+                        disabled={index === effectiveKeys.length - 1}
+                        aria-label="انتقال به پایین"
+                        onClick={() => moveKey(index, 1)}
+                      >
+                        <ArrowDown className="size-3.5" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive size-7 p-0"
+                        aria-label="حذف کلید"
+                        onClick={() => removeKey(key.rowId)}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                <Input
+                  value={key.label}
+                  onChange={(e) =>
+                    updateKey(key.rowId, { label: e.target.value })
+                  }
+                  placeholder="برچسب (اختیاری)"
+                  maxLength={128}
+                />
+                <Input
+                  className="sm:col-span-2"
+                  type="password"
+                  value={key.apiKey}
+                  onChange={(e) =>
+                    updateKey(key.rowId, { apiKey: e.target.value })
+                  }
+                  placeholder={
+                    key.id
+                      ? "کلید جدید (برای حفظ قبلی خالی بگذارید)"
+                      : "AIza..."
+                  }
+                  dir="ltr"
+                />
+              </div>
+            </div>
+          );
+        })}
+        {multiKey && effectiveKeys.length < MAX_PROVIDER_KEYS && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 gap-1 text-xs"
+            onClick={addKey}
+          >
+            <Plus className="size-3.5" />
+            افزودن کلید
+          </Button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

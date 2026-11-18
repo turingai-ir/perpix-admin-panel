@@ -36,6 +36,7 @@ import {
   formatUsdmicro,
   tokenHint,
 } from "@/utils/usdmicro";
+import { aiRegistryModelOwnerEnumValues } from "@/services/api/api";
 import type { AdminSort, AiRegistryModelOwnerEnum } from "../../model/types";
 
 const modelDetailPath = (modelUuid: string) =>
@@ -351,11 +352,11 @@ export function AiModelsListPage() {
             }
           >
             <option value="ALL">همه مالکان (Owners)</option>
-            <option value="OPEN_AI">OpenAI</option>
-            <option value="GOOGLE">Google</option>
-            <option value="BLACK_FOREST_LABS">Black Forest Labs</option>
-            <option value="MID_JOURNEY">Midjourney</option>
-            <option value="RUNWAY">Runway</option>
+            {aiRegistryModelOwnerEnumValues.map((owner) => (
+              <option key={owner} value={owner}>
+                {owner}
+              </option>
+            ))}
           </Select>
         </div>
 

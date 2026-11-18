@@ -15,6 +15,7 @@ import { useAiModelDetail } from "../../hooks/use-ai-model-detail";
 import { parseJsonObject, stringifyJsonObject } from "../../model/json-object";
 import { JsonObjectField } from "../json-object-field";
 import { useAppTranslate } from "@/hooks";
+import { aiRegistryModelOwnerEnumValues } from "@/services/api/api";
 import type {
   AiRegistryModelDetail,
   AiRegistryModelOwnerEnum,
@@ -29,26 +30,7 @@ interface AiModelFormDialogProps {
   onSuccess?: () => void;
 }
 
-const MODEL_OWNERS: AiRegistryModelOwnerEnum[] = [
-  "OPEN_AI",
-  "GOOGLE",
-  "BLACK_FOREST_LABS",
-  "MID_JOURNEY",
-  "RUNWAY",
-  "ALIBABA",
-  "BYTE_DANCE",
-  "K_LING_AI",
-  "BRIA",
-  "IDEOGRAM",
-  "MINI_MAX",
-  "PIX_VERSE",
-  "PRUNA_AI",
-  "SOURCE_FUL",
-  "VIDU",
-  "X_AI",
-  "IMAGINE_ART",
-  "LIGHT_TICKS",
-];
+const MODEL_OWNERS = aiRegistryModelOwnerEnumValues;
 
 const SUPPORTED_TYPES: AiRegistryModelSupportedTypesEnum[] = [
   "TEXT",
