@@ -15,6 +15,15 @@ import { useAppTranslate } from "@/hooks";
 import { UsdmicroInputHint } from "@/components/custom/usdmicro-amount";
 import { parseUsdmicro } from "@/utils/usdmicro";
 import type { PlansRowItem } from "../hooks/use-plans-list";
+import {
+  MAX_CAPTION_PRESET_LIMIT,
+  hasStudioScopes,
+  parseCaptionPresetLimit,
+  parseScopes,
+  readCaptionPresetLimit,
+  toPlanSettings,
+  withStudioScopes,
+} from "../model/plan-settings";
 import { UsdmicroInput } from "@/components/custom/usdmicro-input";
 
 interface PlanFormDialogProps {
@@ -69,6 +78,9 @@ function PlanFormContent({
       ? Array.from(initialPlan.allowed_models).join(", ")
       : "",
   );
+  const [captionPresetLimit, setCaptionPresetLimit] = useState(
+    String(readCaptionPresetLimit(initialPlan?.settings)),
+  );
   const [isActive, setIsActive] = useState(initialPlan?.is_active ?? true);
   const [isRecommended, setIsRecommended] = useState(
     initialPlan?.is_recommended ?? false,
@@ -94,10 +106,14 @@ function PlanFormContent({
       return;
     }
 
-    const scopes = scopesStr
-      .split(",")
-      .map((s) => s.trim())
-      .filter(Boolean);
+    const parsedPresetLimit = parseCaptionPresetLimit(captionPresetLimit);
+    if (parsedPresetLimit === null) return;
+
+    const scopes = parseScopes(scopesStr);
+
+    const settings = toPlanSettings(initialPlan?.settings, {
+      captionPresetLimit: parsedPresetLimit,
+    });
 
     const allowedModels = allowedModelsStr
       .split(",")
@@ -119,6 +135,7 @@ function PlanFormContent({
             balance_gift_amount_usdmicro: parsedGiftMicro,
             scopes,
             allowed_models: allowedModels,
+            settings,
           },
         });
       } else {
@@ -132,6 +149,7 @@ function PlanFormContent({
           balance_gift_amount_usdmicro: parsedGiftMicro,
           scopes,
           allowed_models: allowedModels,
+          settings,
           is_active: isActive,
           is_recommended: isRecommended,
           is_default: isDefault,
@@ -281,6 +299,83 @@ function PlanFormContent({
           dir="ltr"
         />
       </div>
+
+      <section className="border-border space-y-3 rounded-lg border p-3">
+        <div>
+          <h3 className="text-foreground text-sm font-bold">
+            {t("features.subscriptions.plans.settings.title", {
+              defaultValue: "تنظیمات",
+            })}
+          </h3>
+          <p className="text-muted-foreground text-xs">
+            {t("features.subscriptions.plans.settings.description", {
+              defaultValue:
+                "محدودیت‌ها و امکانات هر بخش از محصول برای کاربران این پلن.",
+            })}
+          </p>
+        </div>
+
+        <div className="bg-muted/30 space-y-3 rounded-md p-3">
+          <h4 className="text-foreground text-xs font-bold">
+            {t("features.subscriptions.plans.settings.studio.title", {
+              defaultValue: "استودیو",
+            })}
+          </h4>
+
+          <label className="flex cursor-pointer items-center gap-2 text-xs font-medium">
+            <input
+              type="checkbox"
+              checked={hasStudioScopes(parseScopes(scopesStr))}
+              onChange={(e) =>
+                setScopesStr(
+                  withStudioScopes(
+                    parseScopes(scopesStr),
+                    e.target.checked,
+                  ).join(", "),
+                )
+              }
+              className="text-primary focus:ring-primary size-4 rounded"
+            />
+            <span>
+              {t("features.subscriptions.plans.settings.studio.enabled", {
+                defaultValue: "دسترسی به استودیو",
+              })}
+            </span>
+          </label>
+          <p className="text-muted-foreground text-xs" dir="ltr">
+            studio:read, studio:write
+          </p>
+
+          <div className="space-y-1.5">
+            <label className="text-foreground text-xs font-semibold">
+              {t(
+                "features.subscriptions.plans.settings.studio.captionPresetLimit",
+                {
+                  defaultValue: "تعداد قالب کپشن ذخیره‌شده برای هر کاربر",
+                },
+              )}
+            </label>
+            <Input
+              type="number"
+              min={0}
+              max={MAX_CAPTION_PRESET_LIMIT}
+              step={1}
+              value={captionPresetLimit}
+              onChange={(e) => setCaptionPresetLimit(e.target.value)}
+              dir="ltr"
+            />
+            <p className="text-muted-foreground text-xs">
+              {t(
+                "features.subscriptions.plans.settings.studio.captionPresetLimitHint",
+                {
+                  defaultValue:
+                    "صفر یعنی کاربر فقط از قالب‌های ادمین استفاده می‌کند. حداکثر ۱۰۰.",
+                },
+              )}
+            </p>
+          </div>
+        </div>
+      </section>
 
       <div className="space-y-2 pt-2">
         <div className="flex flex-wrap gap-4">

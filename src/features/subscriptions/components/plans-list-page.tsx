@@ -24,6 +24,10 @@ import { Select } from "@/components/ui/select";
 import { useAppTranslate } from "@/hooks";
 import { UsdmicroAmount } from "@/components/custom/usdmicro-amount";
 import type { AdminSort } from "../model/types";
+import {
+  hasStudioScopes,
+  readCaptionPresetLimit,
+} from "../model/plan-settings";
 
 const faNumber = (val: number) => new Intl.NumberFormat("fa-IR").format(val);
 
@@ -195,6 +199,23 @@ export function PlansListPage() {
               value={item.balance_gift_amount_usdmicro}
               className="text-xs"
             />
+          ) : (
+            <span className="text-muted-foreground text-xs">—</span>
+          ),
+      },
+      {
+        id: "studio",
+        header: t("features.subscriptions.plans.columns.studio", {
+          defaultValue: "استودیو",
+        }),
+        cell: (item) =>
+          hasStudioScopes(Array.from(item.scopes)) ? (
+            <span className="text-xs font-semibold">
+              {faNumber(readCaptionPresetLimit(item.settings))}{" "}
+              {t("features.subscriptions.plans.columns.studioPresets", {
+                defaultValue: "قالب ذخیره‌شده",
+              })}
+            </span>
           ) : (
             <span className="text-muted-foreground text-xs">—</span>
           ),
