@@ -20,6 +20,7 @@ import {
   Boxes,
   Server,
   Files,
+  Captions,
   Shield,
   KeyRound,
   ShieldAlert,
@@ -128,6 +129,16 @@ const navGroups: readonly NavGroup[] = [
         path: APP_ROUTES_KEY.ai.providers.path,
         label: "features.ai.providers.menuTitle",
         icon: Server,
+      },
+    ],
+  },
+  {
+    sectionKey: "features.studio.menuSection",
+    items: [
+      {
+        path: APP_ROUTES_KEY.studio.captionPresets.path,
+        label: "features.studio.captionPresets.menuTitle",
+        icon: Captions,
       },
     ],
   },

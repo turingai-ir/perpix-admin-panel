@@ -33,6 +33,7 @@ import {
   AiProvidersListPage,
 } from "@/features/ai";
 import { FilesListPage, FileDetailPage } from "@/features/files";
+import { CaptionPresetsPage } from "@/features/studio";
 import {
   SessionsListPage,
   ApiTokensListPage,
@@ -128,6 +129,11 @@ export const router = createBrowserRouter([
             handle: {
               title: APP_ROUTES_KEY.subscriptions.operations.meta.title,
             },
+          },
+          {
+            path: APP_ROUTES_KEY.studio.captionPresets.path,
+            element: <CaptionPresetsPage />,
+            handle: { title: APP_ROUTES_KEY.studio.captionPresets.meta.title },
           },
           {
             path: APP_ROUTES_KEY.ai.tasks.list.path,

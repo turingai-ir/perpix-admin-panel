@@ -100,6 +100,12 @@ export const APP_ROUTES_KEY = {
       meta: { title: "ارائه‌دهندگان هوش مصنوعی | پرپیکس" },
     },
   },
+  studio: {
+    captionPresets: {
+      path: "/studio/caption-presets",
+      meta: { title: "قالب‌های کپشن | پرپیکس" },
+    },
+  },
   files: {
     list: {
       path: "/files",

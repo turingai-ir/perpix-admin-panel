@@ -863,6 +863,12 @@
         "reenableError": "فعال‌سازی دوباره ارائه‌دهنده ناموفق بود."
       }
     },
+    "studio": {
+      "menuSection": "استودیو",
+      "captionPresets": {
+        "menuTitle": "قالب‌های کپشن"
+      }
+    },
     "files": {
       "menuSection": "فایل‌ها",
       "menuTitle": "فایل‌ها",
