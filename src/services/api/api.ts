@@ -950,6 +950,53 @@ export interface paths {
     readonly patch?: never;
     readonly trace?: never;
   };
+  readonly "/api/admin/v1/studio/caption-presets": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    /**
+     * List Caption Presets
+     * @description The admin's presets in display order, hidden ones included.
+     */
+    readonly get: operations["admin_studio_list_caption_presets"];
+    readonly put?: never;
+    /** Create Caption Preset */
+    readonly post: operations["admin_studio_create_caption_preset"];
+    readonly delete?: never;
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
+  readonly "/api/admin/v1/studio/caption-presets/{preset_uuid}": {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly preset_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly get?: never;
+    /**
+     * Update Caption Preset
+     * @description Replace every field of one of the admin's presets.
+     */
+    readonly put: operations["admin_studio_update_caption_preset"];
+    readonly post?: never;
+    /**
+     * Delete Caption Preset
+     * @description Remove one of the admin's presets; copies users already saved are theirs and stay.
+     */
+    readonly delete: operations["admin_studio_delete_caption_preset"];
+    readonly options?: never;
+    readonly head?: never;
+    readonly patch?: never;
+    readonly trace?: never;
+  };
   readonly "/api/admin/v1/wallet/topup-policy": {
     readonly parameters: {
       readonly query?: never;
@@ -2130,8 +2177,8 @@ export interface components {
       readonly display_name?: string | null;
       /** Base Api Url */
       readonly base_api_url?: string | null;
-      /** Api Key */
-      readonly api_key?: string | null;
+      /** Api Keys */
+      readonly api_keys?: readonly components["schemas"]["AiRegistryProviderKeyRequest"][];
       /** Rate Limit Per Min */
       readonly rate_limit_per_min?: number | null;
       /** Cost To Usdmicro */
@@ -2164,6 +2211,8 @@ export interface components {
        * @default false
        */
       readonly has_api_key: boolean;
+      /** Api Keys */
+      readonly api_keys?: readonly components["schemas"]["AiRegistryProviderKeyDetail"][];
       /** Meta */
       readonly meta: {
         readonly [key: string]: unknown;
@@ -2178,6 +2227,33 @@ export interface components {
        * Format: date-time
        */
       readonly updated_at: string;
+    };
+    /**
+     * AiRegistryProviderKeyDetail
+     * @description A key as an admin sees it: never its value.
+     */
+    readonly AiRegistryProviderKeyDetail: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      readonly id: string;
+      /** Label */
+      readonly label: string | null;
+      readonly unavailable_reason?:
+        components["schemas"]["AiRegistryProviderUnavailableReasonEnum"] | null;
+    };
+    /**
+     * AiRegistryProviderKeyRequest
+     * @description An existing key by `id` (its value is kept unless `api_key` is sent), or a new one with its value.
+     */
+    readonly AiRegistryProviderKeyRequest: {
+      /** Id */
+      readonly id?: string | null;
+      /** Label */
+      readonly label?: string | null;
+      /** Api Key */
+      readonly api_key?: string | null;
     };
     /**
      * AiRegistryProviderNameEnum
@@ -2198,8 +2274,9 @@ export interface components {
       readonly display_name?: string | null;
       /** Base Api Url */
       readonly base_api_url?: string | null;
-      /** Api Key */
-      readonly api_key?: string | null;
+      /** Api Keys */
+      readonly api_keys?:
+        readonly components["schemas"]["AiRegistryProviderKeyRequest"][] | null;
       /** Rate Limit Per Min */
       readonly rate_limit_per_min?: number | null;
       /** Cost To Usdmicro */
@@ -2362,6 +2439,7 @@ export interface components {
       | 1504
       | 1505
       | 1506
+      | 1507
       | 1600
       | 1601
       | 1602
@@ -2386,7 +2464,14 @@ export interface components {
       | 1813
       | 1814
       | 1815
-      | 1816;
+      | 1816
+      | 1900
+      | 1901
+      | 1902
+      | 1903
+      | 1904
+      | 1906
+      | 1907;
     /** ApplicationErrorResponse */
     readonly ApplicationErrorResponse: {
       /**
@@ -2441,6 +2526,43 @@ export interface components {
        */
       readonly created_at: string;
     };
+    /** CaptionPresetListResponse */
+    readonly CaptionPresetListResponse: {
+      /** Items */
+      readonly items: readonly components["schemas"]["CaptionPresetResponse"][];
+    };
+    /** CaptionPresetResponse */
+    readonly CaptionPresetResponse: {
+      /**
+       * Uuid
+       * Format: uuid
+       */
+      readonly uuid: string;
+      /** Name */
+      readonly name: string;
+      /** Config */
+      readonly config: {
+        readonly [key: string]: unknown;
+      };
+      /** Schema Version */
+      readonly schema_version: number;
+      /** Is Active */
+      readonly is_active: boolean;
+      /** Sort Order */
+      readonly sort_order: number;
+      /** Source Preset Uuid */
+      readonly source_preset_uuid: string | null;
+      /**
+       * Created At
+       * Format: date-time
+       */
+      readonly created_at: string;
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      readonly updated_at: string;
+    };
     /** ChargeWalletRequest */
     readonly ChargeWalletRequest: {
       /**
@@ -2481,6 +2603,7 @@ export interface components {
       readonly duration_days: number;
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro?: number | null;
+      readonly settings?: components["schemas"]["PlanSettings"];
       /** Meta */
       readonly meta?: {
         readonly [key: string]: unknown;
@@ -2942,6 +3065,17 @@ export interface components {
        */
       readonly expires_at: string;
     };
+    /**
+     * PlanSettings
+     * @description What one subscription plan allows, one key per area of the product, each with its own rules.
+     *
+     *     Stored as a single JSON object on the plan, so a new area or a new limit needs no migration: add a
+     *     section here (like `studio`) or a field in a section, each with a default. A key nobody defined is
+     *     rejected, so a typo made in the admin panel is not silently stored and ignored.
+     */
+    readonly PlanSettings: {
+      readonly studio?: components["schemas"]["StudioPlanSettings"];
+    };
     /** PlansRow */
     readonly PlansRow: {
       /** Description */
@@ -2952,6 +3086,10 @@ export interface components {
       readonly allowed_models: readonly string[];
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro: number | null;
+      /** Settings */
+      readonly settings: {
+        readonly [key: string]: unknown;
+      };
       /** Meta */
       readonly meta: {
         readonly [key: string]: unknown;
@@ -3013,6 +3151,42 @@ export interface components {
        */
       readonly created_at: string;
     };
+    /**
+     * SaveAdminCaptionPresetRequest
+     * @description An admin preset: which users are offered it, and where in the list.
+     */
+    readonly SaveAdminCaptionPresetRequest: {
+      /**
+       * Name
+       * @description Shown to the user.
+       */
+      readonly name: string;
+      /**
+       * Config
+       * @description The look of the caption, in the frontend's own format; the backend only keeps it.
+       */
+      readonly config: {
+        readonly [key: string]: unknown;
+      };
+      /**
+       * Schema Version
+       * @description Which version of the frontend's format `config` is in.
+       * @default 1
+       */
+      readonly schema_version: number;
+      /**
+       * Is Active
+       * @description A hidden preset is no longer offered to users.
+       * @default true
+       */
+      readonly is_active: boolean;
+      /**
+       * Sort Order
+       * @description Lower comes first.
+       * @default 0
+       */
+      readonly sort_order: number;
+    };
     /** SessionsRow */
     readonly SessionsRow: {
       /**
@@ -3061,6 +3235,21 @@ export interface components {
        * @constant
        */
       readonly status: "queued";
+    };
+    /**
+     * StudioPlanSettings
+     * @description What one subscription plan allows in the studio; a new limit is a new field with a default here.
+     *
+     *     Stored as one JSON object on the plan, so a new limit needs no migration. A key nobody defined is
+     *     rejected, so a typo made in the admin panel is not silently stored and ignored.
+     */
+    readonly StudioPlanSettings: {
+      /**
+       * Caption Preset Limit
+       * @description How many caption presets of their own a user on this plan can keep.
+       * @default 0
+       */
+      readonly caption_preset_limit: number;
     };
     /** SubscriptionOperationRow */
     readonly SubscriptionOperationRow: {
@@ -3123,6 +3312,7 @@ export interface components {
       readonly duration_days: number;
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro: number | null;
+      readonly settings: components["schemas"]["PlanSettings"];
       /** Meta */
       readonly meta: {
         readonly [key: string]: unknown;
@@ -3312,6 +3502,7 @@ export interface components {
       readonly duration_days?: number | null;
       /** Balance Gift Amount Usdmicro */
       readonly balance_gift_amount_usdmicro?: number | null;
+      readonly settings?: components["schemas"]["PlanSettings"] | null;
       /** Meta */
       readonly meta?: {
         readonly [key: string]: unknown;
@@ -3833,6 +4024,10 @@ export type SchemaAiRegistryProviderCreateRequest =
   components["schemas"]["AiRegistryProviderCreateRequest"];
 export type SchemaAiRegistryProviderDetail =
   components["schemas"]["AiRegistryProviderDetail"];
+export type SchemaAiRegistryProviderKeyDetail =
+  components["schemas"]["AiRegistryProviderKeyDetail"];
+export type SchemaAiRegistryProviderKeyRequest =
+  components["schemas"]["AiRegistryProviderKeyRequest"];
 export type SchemaAiRegistryProviderNameEnum =
   components["schemas"]["AiRegistryProviderNameEnum"];
 export type SchemaAiRegistryProviderUnavailableReasonEnum =
@@ -3852,6 +4047,10 @@ export type SchemaApplicationErrorCode =
 export type SchemaApplicationErrorResponse =
   components["schemas"]["ApplicationErrorResponse"];
 export type SchemaAuditRow = components["schemas"]["AuditRow"];
+export type SchemaCaptionPresetListResponse =
+  components["schemas"]["CaptionPresetListResponse"];
+export type SchemaCaptionPresetResponse =
+  components["schemas"]["CaptionPresetResponse"];
 export type SchemaChargeWalletRequest =
   components["schemas"]["ChargeWalletRequest"];
 export type SchemaCreateSubscriptionPlanRequest =
@@ -3902,11 +4101,16 @@ export type SchemaPaymentFinancialStatus =
 export type SchemaPaymentFulfillmentStatus =
   components["schemas"]["PaymentFulfillmentStatus"];
 export type SchemaPaymentsRow = components["schemas"]["PaymentsRow"];
+export type SchemaPlanSettings = components["schemas"]["PlanSettings"];
 export type SchemaPlansRow = components["schemas"]["PlansRow"];
 export type SchemaProvidersRow = components["schemas"]["ProvidersRow"];
+export type SchemaSaveAdminCaptionPresetRequest =
+  components["schemas"]["SaveAdminCaptionPresetRequest"];
 export type SchemaSessionsRow = components["schemas"]["SessionsRow"];
 export type SchemaSmsTestRequest = components["schemas"]["SmsTestRequest"];
 export type SchemaSmsTestResponse = components["schemas"]["SmsTestResponse"];
+export type SchemaStudioPlanSettings =
+  components["schemas"]["StudioPlanSettings"];
 export type SchemaSubscriptionOperationRow =
   components["schemas"]["SubscriptionOperationRow"];
 export type SchemaSubscriptionPlanResponse =
@@ -7113,6 +7317,141 @@ export interface operations {
       };
     };
   };
+  readonly admin_studio_list_caption_presets: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["CaptionPresetListResponse"];
+        };
+      };
+    };
+  };
+  readonly admin_studio_create_caption_preset: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path?: never;
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveAdminCaptionPresetRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["CaptionPresetResponse"];
+        };
+      };
+      /** @description Unprocessable Content */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+    };
+  };
+  readonly admin_studio_update_caption_preset: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly preset_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly requestBody: {
+      readonly content: {
+        readonly "application/json": components["schemas"]["SaveAdminCaptionPresetRequest"];
+      };
+    };
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 200: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["CaptionPresetResponse"];
+        };
+      };
+      /** @description Not Found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+      /** @description Unprocessable Content */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+    };
+  };
+  readonly admin_studio_delete_caption_preset: {
+    readonly parameters: {
+      readonly query?: never;
+      readonly header?: never;
+      readonly path: {
+        readonly preset_uuid: string;
+      };
+      readonly cookie?: never;
+    };
+    readonly requestBody?: never;
+    readonly responses: {
+      /** @description Successful Response */
+      readonly 204: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description Not Found */
+      readonly 404: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["ApplicationErrorResponse"];
+        };
+      };
+      /** @description Validation Error */
+      readonly 422: {
+        headers: {
+          readonly [name: string]: unknown;
+        };
+        content: {
+          readonly "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   readonly admin_wallet_get_topup_policy: {
     readonly parameters: {
       readonly query?: never;
@@ -8700,8 +9039,9 @@ export const applicationErrorCodeValues: ReadonlyArray<
   900, 901, 902, 999, 1000, 1100, 1103, 1104, 1106, 1107, 1108, 1109, 1200,
   1201, 1202, 1203, 1204, 1205, 1206, 1300, 1301, 1302, 1303, 1304, 1305, 1306,
   1307, 1308, 1309, 1310, 1400, 1401, 1500, 1501, 1502, 1503, 1504, 1505, 1506,
-  1600, 1601, 1602, 1603, 1604, 1605, 1700, 1701, 1702, 1800, 1801, 1802, 1803,
-  1804, 1805, 1806, 1807, 1808, 1810, 1811, 1812, 1813, 1814, 1815, 1816,
+  1507, 1600, 1601, 1602, 1603, 1604, 1605, 1700, 1701, 1702, 1800, 1801, 1802,
+  1803, 1804, 1805, 1806, 1807, 1808, 1810, 1811, 1812, 1813, 1814, 1815, 1816,
+  1900, 1901, 1902, 1903, 1904, 1906, 1907,
 ];
 export const currencyUnitEnumValues: ReadonlyArray<
   FlattenedDeepRequired<components>["schemas"]["CurrencyUnitEnum"]
@@ -8906,6 +9246,7 @@ export const ApplicationErrorCodeMap = {
   1504: 1504,
   1505: 1505,
   1506: 1506,
+  1507: 1507,
   1600: 1600,
   1601: 1601,
   1602: 1602,
@@ -8931,6 +9272,13 @@ export const ApplicationErrorCodeMap = {
   1814: 1814,
   1815: 1815,
   1816: 1816,
+  1900: 1900,
+  1901: 1901,
+  1902: 1902,
+  1903: 1903,
+  1904: 1904,
+  1906: 1906,
+  1907: 1907,
 } as const;
 export type ApplicationErrorCodeKey = keyof typeof ApplicationErrorCodeMap;
 export type ApplicationErrorCodeValue =
